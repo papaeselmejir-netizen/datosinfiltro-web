@@ -647,6 +647,7 @@ a:hover {
     .nav-links {
         flex-direction: column;
         gap: 1rem;
+        align-items: center;
     }
     .article-title {
         font-size: 2.2rem;
@@ -663,5 +664,39 @@ a:hover {
         border-top: 4px double var(--card-border);
         padding-top: 2rem;
         margin-top: 2rem;
+    }
+}
+
+/* Optimización extra para celulares pequeños */
+@media (max-width: 600px) {
+    .newspaper-logo {
+        font-size: 1.5rem; /* Logo más pequeño */
+    }
+    .hero-card h2 {
+        font-size: 1.8rem; /* Título principal más pequeño */
+    }
+    .category-header .page-title {
+        font-size: 2.2rem;
+    }
+    .article-title {
+        font-size: 1.8rem;
+    }
+    .article-body h2 {
+        font-size: 1.5rem;
+    }
+    .top-bar {
+        padding: 0.8rem 5%;
+    }
+    .news-card img {
+        height: auto;
+        aspect-ratio: 16/9;
+    }
+    .hero-card img {
+        height: auto;
+        aspect-ratio: 16/9;
+        max-height: 250px;
+    }
+    .hero-category-card h2 {
+        font-size: 1.6rem;
     }
 }
