@@ -29,8 +29,8 @@ jobs:
           pip install -r requirements.txt
           
           # Instalar navegadores para el Web Scraping
-          playwright install chromium
-          playwright install-deps
+          python -m playwright install chromium
+          python -m playwright install-deps
           
       - name: Ejecutar el Bot de Noticias (main.py)
         env:
