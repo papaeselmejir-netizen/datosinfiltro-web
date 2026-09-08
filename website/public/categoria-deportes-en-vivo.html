@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DatoSinFiltro - Deportes en Vivo </title>
+    <!-- Google Fonts Clásicas (Estilo Periódico Tradicional) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+    
+</head>
+<body>
+    <header class="site-header">
+        <div class="top-bar">
+            <div class="menu-icon" id="menuToggle">≡</div>
+            <a href="./index.html" class="newspaper-logo">
+                DatoSinFiltro
+            </a>
+            <div class="top-bar-right">
+                <button class="search-toggle" id="searchToggle" title="Buscar">🔍</button>
+                <button class="theme-toggle" id="themeToggle" title="Modo Oscuro/Claro">🌙</button>
+            </div>
+        </div>
+        
+        <!-- Buscador Overlay -->
+        <div class="search-overlay" id="searchOverlay">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar noticias, autores, o temas..." autocomplete="off">
+                <button id="closeSearch">✕</button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <nav class="category-nav" id="categoryNav">
+            <ul class="nav-links">
+                <li><a href="./index.html">Portada</a></li>
+                <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html">Política & Última Hora</a></li>
+                <li><a href="./categoria-deportes-en-vivo.html">Deportes</a></li>
+                <li><a href="./categoria-finanzas-negocios-y-criptomonedas.html">Economía & Negocios</a></li>
+                <li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html">Tecnología</a></li>
+                <li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html">Salud</a></li>
+                <li><a href="./categoria-entretenimiento-farandula-y-cine.html">Cultura & Entretenimiento</a></li>
+                <li><a href="./categoria-gaming-y-esports.html">Gaming</a></li>
+                <li><a href="./categoria-tendencias.html">Tendencias</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Global Top Ad Placeholder -->
+    <div class="ad-slot leaderboard">
+        <span>Espacio para Anuncio (728x90)</span>
+        <!-- Aquí irá el script de Google AdSense -->
+    </div>
+
+    <main class="container">
+        
+<div class="category-page-container">
+    <div class="category-header">
+        <h1 class="page-title">Deportes en Vivo</h1>
+        <p class="page-subtitle">Las últimas noticias y actualizaciones sobre Deportes en Vivo.</p>
+    </div>
+
+    
+    <div class="news-grid classic-grid">
+        <!-- Featured Article in Category -->
+        <article class="news-card hero-category-card">
+            <a href="la-era-post-messi-quiénes-serán-los-primeros-rivales-de-la-s.html" class="img-link">
+                <img src="https://depor.com/resizer/v2/ISU36ULPRBDCJIJ6SZXSMQMORQ.jpg?auth=c889f03b1be0761c3843ecf57fa930f786f202dff0028cfc50cb4d61a8427bc6&width=980&height=528&quality=75&smart=true" alt="Hero" onerror="this.onerror=null; this.src='https://placehold.co/800x500/eeeeee/333333?text=Noticia'">
+            </a>
+            <div class="card-content">
+                <a href="la-era-post-messi-quiénes-serán-los-primeros-rivales-de-la-s.html" class="news-link">
+                    <h2>La era post Messi: ¿Quiénes serán los primeros rivales de la Selección Argentina?</h2>
+                </a>
+                <p class="excerpt">🚨 ¿Ayudas a los demás por pura bondad? La psicología revela una verdad incómoda. Los expertos coinciden: quienes intentan resolver los problemas ajeno...</p>
+                <span class="news-meta">2026-09-07</span>
+            </div>
+        </article>
+
+        <!-- Other Articles -->
+        <div class="standard-news-grid">
+            
+            <article class="news-card classic-card">
+                <a href="tensión-en-el-clásico-alianza-lima-eleva-nuevo-reclamo-a-con.html" class="img-link">
+                    <img src="https://depor.com/resizer/v2/PWXHHR5WX5GYVJQ4QVU55YDSTM.jpg?auth=b11560a2d16c7e96955906067c31df8e866427d20ece7c7af4c8e6aadef80ae7&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="tensión-en-el-clásico-alianza-lima-eleva-nuevo-reclamo-a-con.html" class="news-link">
+                        <h3>Tensión en el Clásico: Alianza Lima Eleva Nuevo Reclamo a CONAR por Arbitraje</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="real-madrid-vs-inter-guía-completa-de-canales-y-horarios-en-.html" class="img-link">
+                    <img src="https://depor.com/resizer/v2/A6IVQE3S55ESTGHWWUZYUZ6MYU.jpg?auth=c1968dbd2d7557e6d9c9016af1d21347ecace7029a29b5d4d2edb8c60debb14c&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="real-madrid-vs-inter-guía-completa-de-canales-y-horarios-en-.html" class="news-link">
+                        <h3>Real Madrid vs. Inter: Guía Completa de Canales y Horarios en Perú para la Champions League</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="toluca-vs-monterrey-en-vivo-horarios-y-canales-para-la-final.html" class="img-link">
+                    <img src="https://i.ytimg.com/vi/UY6nUu5vWKs/hqdefault.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="toluca-vs-monterrey-en-vivo-horarios-y-canales-para-la-final.html" class="news-link">
+                        <h3>Toluca vs. Monterrey EN VIVO: Horarios y Canales para la Final de la Leagues Cup 2026</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="debut-soñado-tiago-cantoro-anota-en-su-estreno-con-vigor-lam.html" class="img-link">
+                    <img src="https://depor.com/resizer/v2/https%3A%2F%2Fcdn.jwplayer.com%2Fv2%2Fmedia%2FK7SeY656%2Fposter.jpg?auth=13945e2c366497e9e567b9dd2f2d63628f4c88ab62c41fa614409654eb96a8f9&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="debut-soñado-tiago-cantoro-anota-en-su-estreno-con-vigor-lam.html" class="news-link">
+                        <h3>Debut Soñado: Tiago Cantoro Anota en su Estreno con Vigor Lamezia en la Serie D Italiana</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="accidente-aéreo-en-miami-avión-de-amazon-se-despista-e-impac.html" class="img-link">
+                    <img src="https://imagenes.voz.us/files/og_thumbnail/uploads/2026/09/07/6a9df44016104.jpeg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="accidente-aéreo-en-miami-avión-de-amazon-se-despista-e-impac.html" class="news-link">
+                        <h3>Accidente Aéreo en Miami: Avión de Amazon se Despista e Impacta Vehículos al Aterrizar</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="sporting-cristal-golea-5-0-a-los-chankas-y-reafirma-su-ambic.html" class="img-link">
+                    <img src="https://cdn.futbolperuano.com/sdi/2026/09/07/melgar-vs-adt-en-vivo-por-el-torneo-clausura-de-la-liga-1-1356097-0.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="sporting-cristal-golea-5-0-a-los-chankas-y-reafirma-su-ambic.html" class="news-link">
+                        <h3>Sporting Cristal Golea 5-0 a Los Chankas y Reafirma su Ambición en el Clausura</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="la-u-empata-con-comerciantes-unidos-y-asegura-el-liderato-pr.html" class="img-link">
+                    <img src="https://f.rpp-noticias.io/2026/09/05/544454_1904476.jpg?width=160&quality=60" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="la-u-empata-con-comerciantes-unidos-y-asegura-el-liderato-pr.html" class="news-link">
+                        <h3>La 'U' Empata con Comerciantes Unidos y Asegura el Liderato Provisional</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="auston-matthews-el-capitán-de-hockey-de-ee-uu-con-raíces-mex.html" class="img-link">
+                    <img src="https://www.eluniversal.com.mx/resizer/v2/6BBAPZUKJBBGZAGMYOG3B36IH4.jpg?auth=828c6fbc5c5ecdc30979b88019d21cb02fe32315e55d42d48ab8a2a75c3da27d&smart=true&height=200" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="auston-matthews-el-capitán-de-hockey-de-ee-uu-con-raíces-mex.html" class="news-link">
+                        <h3>Auston Matthews: El Capitán de Hockey de EE. UU. con Raíces Mexicanas en los Juegos Olímpicos</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="guía-definitiva-dónde-ver-fútbol-baloncesto-y-más-deportes-e.html" class="img-link">
+                    <img src="https://img.asmedia.epimg.net/resizer/v2/GQPJL7J7EZOUFKKTBJ3M7MN2JY.jpg?auth=49b6e370c029bb26ec6ee587238e8effdcb238a439b2d8bc9891091f6220a53b&width=1472&height=828&focal=554%2C182" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="guía-definitiva-dónde-ver-fútbol-baloncesto-y-más-deportes-e.html" class="news-link">
+                        <h3>Guía Definitiva: Dónde Ver Fútbol, Baloncesto y Más Deportes en 2026</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="2026-un-año-histórico-para-el-deporte-mundial-con-mundial-ol.html" class="img-link">
+                    <img src="https://www.aficioncentral.com/media/cache/resolve/lg/uploads/mas-deportes/2026/enero/fifa-coi-wimbledon-2026.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="2026-un-año-histórico-para-el-deporte-mundial-con-mundial-ol.html" class="news-link">
+                        <h3>2026: Un Año Histórico para el Deporte Mundial con Mundial, Olímpicos de Invierno y Más</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="los-eventos-deportivos-más-vistos-del-mundo-cuáles-rompen-ré.html" class="img-link">
+                    <img src="https://media.lunagroupcharter.com/lgc/88c85515-36e0-4f23-afd8-29137720e924_rugby-world-cup.jpg?width=394&format=webp" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="los-eventos-deportivos-más-vistos-del-mundo-cuáles-rompen-ré.html" class="news-link">
+                        <h3>Los Eventos Deportivos Más Vistos del Mundo: ¿Cuáles Rompen Récords de Audiencia?</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="agenda-deportiva-2026-mundial-dakar-y-juegos-olímpicos-de-in.html" class="img-link">
+                    <img src="https://www.infobae.com/resizer/v2/Q3HOZ6JELJAIDANI3WVRLMCOHI.JPG?auth=3c4465a465c2f19082768a60885ea879df528232c3c888e8c1e45a762cbf371d&smart=true&width=1200&height=630&quality=85" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="agenda-deportiva-2026-mundial-dakar-y-juegos-olímpicos-de-in.html" class="news-link">
+                        <h3>Agenda Deportiva 2026: Mundial, Dakar y Juegos Olímpicos de Invierno que No Te Puedes Perder</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+        </div>
+    </div>
+    
+</div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 DatoSinFiltro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script>
+        // Pass base_path to JS for fetching search.json
+        window.BASE_PATH = "./";
+    </script>
+    <script src="./js/script.js"></script>
+</body>
+</html>

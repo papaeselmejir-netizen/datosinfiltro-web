@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DatoSinFiltro - Tendencias </title>
+    <!-- Google Fonts Clásicas (Estilo Periódico Tradicional) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+    
+</head>
+<body>
+    <header class="site-header">
+        <div class="top-bar">
+            <div class="menu-icon" id="menuToggle">≡</div>
+            <a href="./index.html" class="newspaper-logo">
+                DatoSinFiltro
+            </a>
+            <div class="top-bar-right">
+                <button class="search-toggle" id="searchToggle" title="Buscar">🔍</button>
+                <button class="theme-toggle" id="themeToggle" title="Modo Oscuro/Claro">🌙</button>
+            </div>
+        </div>
+        
+        <!-- Buscador Overlay -->
+        <div class="search-overlay" id="searchOverlay">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar noticias, autores, o temas..." autocomplete="off">
+                <button id="closeSearch">✕</button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <nav class="category-nav" id="categoryNav">
+            <ul class="nav-links">
+                <li><a href="./index.html">Portada</a></li>
+                <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html">Política & Última Hora</a></li>
+                <li><a href="./categoria-deportes-en-vivo.html">Deportes</a></li>
+                <li><a href="./categoria-finanzas-negocios-y-criptomonedas.html">Economía & Negocios</a></li>
+                <li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html">Tecnología</a></li>
+                <li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html">Salud</a></li>
+                <li><a href="./categoria-entretenimiento-farandula-y-cine.html">Cultura & Entretenimiento</a></li>
+                <li><a href="./categoria-gaming-y-esports.html">Gaming</a></li>
+                <li><a href="./categoria-tendencias.html">Tendencias</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Global Top Ad Placeholder -->
+    <div class="ad-slot leaderboard">
+        <span>Espacio para Anuncio (728x90)</span>
+        <!-- Aquí irá el script de Google AdSense -->
+    </div>
+
+    <main class="container">
+        
+<div class="category-page-container">
+    <div class="category-header">
+        <h1 class="page-title">Tendencias</h1>
+        <p class="page-subtitle">Las últimas noticias y actualizaciones sobre Tendencias.</p>
+    </div>
+
+    
+    <div class="news-grid classic-grid">
+        <!-- Featured Article in Category -->
+        <article class="news-card hero-category-card">
+            <a href="martín-pérez-guedes-la-inesperada-reacción-de-cúper-ante-su-.html" class="img-link">
+                <img src="https://elcomercio.pe/resizer/v2/JZ5YRK6UKBGBVJVTPAC5K2Y3QQ.jpg?auth=d34eb1021da1fde23741401b516dbb9a69347e018e5c8dc864675735db88361b&width=980&height=528&quality=75&smart=true" alt="Hero" onerror="this.onerror=null; this.src='https://placehold.co/800x500/eeeeee/333333?text=Noticia'">
+            </a>
+            <div class="card-content">
+                <a href="martín-pérez-guedes-la-inesperada-reacción-de-cúper-ante-su-.html" class="news-link">
+                    <h2>Martín Pérez Guedes: La Inesperada Reacción de Cúper ante su Anuncio de Retiro</h2>
+                </a>
+                <p class="excerpt">¡BOMBA en el fútbol peruano! 🚨 Martín Pérez Guedes reveló la reacción de Cúper ante su anuncio de retiro. ¡Fue totalmente inesperada!...</p>
+                <span class="news-meta">2026-09-07</span>
+            </div>
+        </article>
+
+        <!-- Other Articles -->
+        <div class="standard-news-grid">
+            
+            <article class="news-card classic-card">
+                <a href="sudamericano-de-vóley-2026-perú-vs-argentina-en-vivo---horar.html" class="img-link">
+                    <img src="https://imgmedia.larepublica.pe/576x340/larepublica/original/2026/08/12/6a7d1cb0fd616886f0042d03.webp" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="sudamericano-de-vóley-2026-perú-vs-argentina-en-vivo---horar.html" class="news-link">
+                        <h3>Sudamericano de Vóley 2026: Perú vs Argentina EN VIVO - Horarios y Canales de Transmisión</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="contreras-explota-la-verdad-incómoda-detrás-de-la-salida-de-.html" class="img-link">
+                    <img src="https://www.semana.com/resizer/v2/AZ6LT7FJDNEHZFCON7FYTM6WZY.jpeg?auth=0b1c82238d93ceb8275261e70367f46caddeec859b53b512d7bc5aebf8486d79&smart=true&quality=75&width=1280&height=720" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="contreras-explota-la-verdad-incómoda-detrás-de-la-salida-de-.html" class="news-link">
+                        <h3>Contreras Explota: La Verdad Incómoda Detrás de la Salida de Bustos que Sacude al Deporte</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="guerra-comercial-se-intensifica-canadá-impone-aranceles-mill.html" class="img-link">
+                    <img src="https://assets1.cbsnewsstatic.com/hub/i/r/2026/08/23/55edb3bf-9ad4-4ceb-b2c2-b044be0b0467/thumbnail/1200x630/73cd4109ada89d79de39e681c17185b5/gettyimages-2281267274.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="guerra-comercial-se-intensifica-canadá-impone-aranceles-mill.html" class="news-link">
+                        <h3>Guerra Comercial se Intensifica: Canadá Impone Aranceles Millonarios a Productos de EE. UU.</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="cair-la-controversia-por-culpar-a-eeuu-del-11-s-y-promociona.html" class="img-link">
+                    <img src="https://matzav.com/wp-content/uploads/2026/08/Untitled-117-696x375.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="cair-la-controversia-por-culpar-a-eeuu-del-11-s-y-promociona.html" class="news-link">
+                        <h3>CAIR: La Controversia por Culpar a EE.UU. del 11-S y Promocionar Escritos de Bin Laden</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="el-futuro-millonario-de-mike-norvell-cuánto-costaría-su-desp.html" class="img-link">
+                    <img src="https://a57.foxsports.com/statics.foxsports.com/www.foxsports.com/content/uploads/2026/09/1294/728/8fa9ae1a-cd232629-eb8d809c-gettyimages-2293679919-scaled.jpg?ve=1&tl=1" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="el-futuro-millonario-de-mike-norvell-cuánto-costaría-su-desp.html" class="news-link">
+                        <h3>El Futuro Millonario de Mike Norvell: ¿Cuánto Costaría su Despido de Florida State en 2026?</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="curwen-en-habla-good-la-esperada-aparición-tras-el-ampay-de-.html" class="img-link">
+                    <img src="https://www.infobae.com/resizer/v2/CA2JUTUYBJDNVND6KGRWOJLCSI.jpg?auth=2a805776ff206383cb59b05c494cc0fdebf8cd8afcd0c64a9f49a4b012a91d92&smart=true&width=350&height=197&quality=85" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="curwen-en-habla-good-la-esperada-aparición-tras-el-ampay-de-.html" class="news-link">
+                        <h3>Curwen en 'Habla Good': La esperada aparición tras el ampay de Carla Campos</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="dragon-ball-super-beerus-confirma-su-regreso-y-fecha-de-estr.html" class="img-link">
+                    <img src="https://elcomercio.pe/resizer/v2/PGLS4YABMZCK3JR5GFJK7VKZBQ.jpg?auth=2ab3ebfd17949e9e7039addb6295268b00d46342cb79f864c14191426ae420eb&width=2896&height=4096&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="dragon-ball-super-beerus-confirma-su-regreso-y-fecha-de-estr.html" class="news-link">
+                        <h3>Dragon Ball Super: Beerus Confirma su Regreso y Fecha de Estreno, ¿Qué Esperar de su Vuelta?</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="tiktok-transforma-la-interacción-llegan-comentarios-de-voz-e.html" class="img-link">
+                    <img src="https://fc-bucket-100.s3.amazonaws.com/wp-content/uploads/2026/09/04144507/ChatGPT-Image-4-sept-2026-02_44_59-p.m.png" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="tiktok-transforma-la-interacción-llegan-comentarios-de-voz-e.html" class="news-link">
+                        <h3>TikTok Transforma la Interacción: Llegan Comentarios de Voz, Encuestas y Carruseles</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="el-pentágono-desclasifica-nuevos-archivos-ovni-qué-revelan-l.html" class="img-link">
+                    <img src="https://lanasa.net/media/2026/07/floating-brain-UAP-UFO-Forbes-4th-batch.webp" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="el-pentágono-desclasifica-nuevos-archivos-ovni-qué-revelan-l.html" class="news-link">
+                        <h3>El Pentágono Desclasifica Nuevos Archivos OVNI: ¿Qué Revelan las Imágenes Inéditas?</h3>
+                    </a>
+                    <span class="news-meta">2026-09-07</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="barcelona-sc-vs-aucas-el-agónico-empate-que-mantuvo-a-perú-e.html" class="img-link">
+                    <img src="https://img.eldiario.ec/upload/2026/09/17161D524C434D6D15100F55594944731F141C18524345701715-600x400.webp" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="barcelona-sc-vs-aucas-el-agónico-empate-que-mantuvo-a-perú-e.html" class="news-link">
+                        <h3>Barcelona SC vs. Aucas: El Agónico Empate que Mantuvo a Perú en Vilo y la Misteriosa Ausencia de Contreras</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+            <article class="news-card classic-card">
+                <a href="rob-lowe-confiesa-tom-cruise-le-robó-roles-icónicos-en-holly.html" class="img-link">
+                    <img src="https://www.europesays.com/us/wp-content/uploads/2026/09/crop-40665098_688c42.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
+                </a>
+                <div class="card-content">
+                    <a href="rob-lowe-confiesa-tom-cruise-le-robó-roles-icónicos-en-holly.html" class="news-link">
+                        <h3>Rob Lowe Confiesa: Tom Cruise Le 'Robó' Roles Icónicos en Hollywood</h3>
+                    </a>
+                    <span class="news-meta">2026-09-06</span>
+                </div>
+            </article>
+            
+        </div>
+    </div>
+    
+</div>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 DatoSinFiltro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script>
+        // Pass base_path to JS for fetching search.json
+        window.BASE_PATH = "./";
+    </script>
+    <script src="./js/script.js"></script>
+</body>
+</html>

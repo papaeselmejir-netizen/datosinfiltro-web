@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DatoSinFiltro{% endblock %}</title>
+    <!-- Google Fonts Clásicas (Estilo Periódico Tradicional) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ base_path }}css/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="top-bar">
+            <div class="menu-icon" id="menuToggle">≡</div>
+            <a href="{{ base_path }}index.html" class="newspaper-logo">
+                DatoSinFiltro
+            </a>
+            <div class="top-bar-right">
+                <button class="search-toggle" id="searchToggle" title="Buscar">🔍</button>
+                <button class="theme-toggle" id="themeToggle" title="Modo Oscuro/Claro">🌙</button>
+            </div>
+        </div>
+        
+        <!-- Buscador Overlay -->
+        <div class="search-overlay" id="searchOverlay">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar noticias, autores, o temas..." autocomplete="off">
+                <button id="closeSearch">✕</button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <nav class="category-nav" id="categoryNav">
+            <ul class="nav-links">
+                <li><a href="{{ base_path }}index.html">Portada</a></li>
+                <li><a href="{{ base_path }}categoria-noticias-de-ultima-hora-y-politica.html">Política & Última Hora</a></li>
+                <li><a href="{{ base_path }}categoria-deportes-en-vivo.html">Deportes</a></li>
+                <li><a href="{{ base_path }}categoria-finanzas-negocios-y-criptomonedas.html">Economía & Negocios</a></li>
+                <li><a href="{{ base_path }}categoria-tecnologia-gadgets-e-inteligencia-artificial.html">Tecnología</a></li>
+                <li><a href="{{ base_path }}categoria-salud-bienestar-y-estilo-de-vida.html">Salud</a></li>
+                <li><a href="{{ base_path }}categoria-entretenimiento-farandula-y-cine.html">Cultura & Entretenimiento</a></li>
+                <li><a href="{{ base_path }}categoria-gaming-y-esports.html">Gaming</a></li>
+                <li><a href="{{ base_path }}categoria-tendencias.html">Tendencias</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Global Top Ad Placeholder -->
+    <div class="ad-slot leaderboard">
+        <span>Espacio para Anuncio (728x90)</span>
+        <!-- Aquí irá el script de Google AdSense -->
+    </div>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 DatoSinFiltro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script>
+        // Pass base_path to JS for fetching search.json
+        window.BASE_PATH = "{{ base_path }}";
+    </script>
+    <script src="{{ base_path }}js/script.js"></script>
+</body>
+</html>

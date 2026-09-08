@@ -1,0 +1,50 @@
+name: Pipeline de Noticias Autonomo
+
+on:
+  schedule:
+    # Horarios estrategicos para Peru (UTC-5):
+    # 06:00 AM (11:00 UTC), 12:00 PM (17:00 UTC), 06:00 PM (23:00 UTC), 10:00 PM (03:00 UTC)
+    - cron: '0 11,17,23,3 * * *'
+  workflow_dispatch: # Permite ejecutar el bot manualmente con un click en GitHub
+
+permissions:
+  contents: write # Permiso critico para que el bot pueda guardar los borradores en tu repo
+
+jobs:
+  generar_noticias:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Clonar el Repositorio
+        uses: actions/checkout@v4
+        
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Instalar Dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+          # Instalar navegadores para el Web Scraping
+          playwright install chromium
+          playwright install-deps
+          
+      - name: Ejecutar el Bot de Noticias (main.py)
+        env:
+          # Estas llaves las sacará de tus GitHub Secrets
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          NEWS_COUNTRY: PE
+          NEWS_LANG: es
+        run: python main.py
+        
+      - name: Guardar los nuevos borradores en GitHub
+        run: |
+          git config --global user.name 'Robot Periodista'
+          git config --global user.email 'robot@datosinfiltro.com'
+          git add drafts/
+          git commit -m "🤖 [Bot] Nuevos borradores de noticias generados" || echo "No hay noticias nuevas para guardar"
+          git push
