@@ -6,7 +6,7 @@ Fecha: 3 de octubre de 2026.
 
 El proyecto ya tiene un flujo local y programado que investiga noticias, redacta borradores, exige dos fuentes con texto extraído, dos imágenes con licencia y un video relacionado, y publica automáticamente los artículos que cumplen las reglas. La web resultante es estática y está configurada para Vercel.
 
-**La versión nueva ya está publicada en Vercel.** Los secretos de Gemini y Pexels ya están configurados en GitHub Actions. La ejecución manual [#110](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37176448080) terminó correctamente y publicó una noticia nueva. La auditoría posterior detectó que la redacción mezcló Muse Gadgets con un generador de imágenes llamado Muse. Esa nota se retiró de `published/`, del sitio y de los sitemaps. Se añadió una comprobación del aspecto central del producto tanto al seleccionar fuentes como al aceptar el título y resumen redactados. El sistema vuelve a conservar solo la noticia verificada anterior mientras se prueba otra ejecución.
+**La versión nueva ya está publicada en Vercel.** Los secretos de Gemini y Pexels ya están configurados en GitHub Actions. Las ejecuciones manuales [#110](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37176448080) y [#111](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37177133245) terminaron sin errores técnicos, pero las noticias nuevas fallaron la auditoría posterior: una mezcló Muse Gadgets con un generador de imágenes y otra confundió la escuela de cine de San Marcos con una escuela de inteligencia artificial. Ambas notas se retiraron de `published/`, del sitio y de los sitemaps. Se reforzó la comprobación del asunto central al seleccionar fuentes, redactar título y resumen y escoger multimedia. El sistema conserva la noticia verificada anterior.
 
 ## Flujo implementado
 
@@ -27,11 +27,11 @@ El proyecto ya tiene un flujo local y programado que investiga noticias, redacta
 
 ## Pruebas realizadas
 
-- Doce pruebas Python: control editorial, fuentes, desambiguación de productos, URLs privadas, decodificación de Google News, conservación de artículos entre ejecuciones, generación del sitio, API de video Pexels y selección de archivo por tema específico.
+- Trece pruebas Python: control editorial, fuentes, desambiguación de productos y especialidades, URLs privadas, decodificación de Google News, conservación de artículos entre ejecuciones, generación del sitio, API de video Pexels y selección de archivo por tema específico.
 - `npm run lint`, `npx tsc --noEmit` y `npm run build` del CMS finalizaron correctamente. Next.js muestra una advertencia sobre trazado dinámico de archivos, sin impedir la compilación.
 - Prueba real con noticias de Lima: se obtuvo un borrador sobre los conciertos de BTS a partir de tres medios, dos imágenes de tráfico de Lima con licencia Pexels y un video específico de El Comercio. Se generó un checkout de despliegue aislado con ese artículo, portada y ocho categorías, conservando intactos los cambios anteriores del checkout principal.
 - Se inspeccionó visualmente la portada y el artículo generados en un servidor local. Se corrigió la navegación, que ocupaba varias líneas.
-- La nueva clave de Pexels respondió HTTP 200. Se corrigió la ruta de su API de video y se probaron búsquedas reales para tres temas: desvíos en Lima, inteligencia artificial universitaria y Premios Ariel; cada uno obtuvo dos imágenes y un video. YouTube devolvió HTTP 429 por límite de solicitudes, por lo que Pexels actuó como respaldo. La ejecución #110 probó que el flujo puede escribir en GitHub y desplegar en Vercel, pero su noticia se retiró tras detectar la mezcla de productos. Esta revisión evidencia por qué el control editorial debe seguir mejorándose y supervisándose.
+- La nueva clave de Pexels respondió HTTP 200. Se corrigió la ruta de su API de video y se probaron búsquedas reales para desvíos en Lima, tecnología universitaria, Premios Ariel y producción cinematográfica. YouTube devolvió HTTP 429 por límite de solicitudes, por lo que Pexels actuó como respaldo. Las ejecuciones #110 y #111 probaron que el flujo escribe en GitHub y despliega en Vercel; las notas nuevas se retiraron tras detectar mezclas de asuntos. Esta revisión evidencia por qué el control editorial debe seguir mejorándose y supervisándose.
 
 ## Pasos externos pendientes
 

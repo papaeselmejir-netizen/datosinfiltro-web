@@ -492,6 +492,8 @@ def _stock_topic(titulo):
     """Translate a few unambiguous Spanish news topics into stock-media searches."""
     terms = keywords(titulo)
     topics = (
+        ({"cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas"},
+         "film camera production", {"film", "filming", "filmmaking", "camera", "cinema", "movie", "videography", "video"}),
         ({"gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"},
          "electronics circuit board", {"electronic", "electronics", "circuit", "board", "chip", "microchip", "motherboard", "hardware", "soldering"}),
         ({"whatsapp", "instagram", "facebook", "meta"},
@@ -514,7 +516,7 @@ def _search_pexels_licensed(titulo, count):
     topic = _stock_topic(titulo)
     queries = [query_terms(titulo, 5)]
     if topic:
-        prioritize_stock = bool(keywords(titulo) & {"gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"}) or {"instagram", "whatsapp"} <= keywords(titulo)
+        prioritize_stock = bool(keywords(titulo) & {"cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas", "gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"}) or {"instagram", "whatsapp"} <= keywords(titulo)
         queries = [topic[0], queries[0]] if prioritize_stock else [queries[0], topic[0]]
     if not queries[0]:
         return []

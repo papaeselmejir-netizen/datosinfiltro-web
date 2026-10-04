@@ -42,6 +42,8 @@ def relevance(headline, candidate):
 STORY_ASPECTS = (
     {"gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"},
     {"generador", "imagenes", "imagen", "fotografias", "fotografia", "fotos"},
+    {"cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas"},
+    {"inteligencia", "artificial", "robotica"},
 )
 
 

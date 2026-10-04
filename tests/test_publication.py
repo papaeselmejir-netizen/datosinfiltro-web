@@ -88,6 +88,14 @@ class PublicationTests(unittest.TestCase):
         query, _ = multimedia._stock_topic("Meta lanza Muse Gadgets para dispositivos de IA")
         self.assertEqual(query, "electronics circuit board")
 
+    def test_cinema_school_is_not_ai_school(self):
+        primary = {"titulo": "San Marcos aprueba escuela pública de cine y audiovisual", "url": "https://a.example/1", "fuente": "A"}
+        candidates = [
+            {"titulo": "San Marcos aprueba escuela profesional de inteligencia artificial", "url": "https://b.example/2", "fuente": "B"},
+        ]
+        self.assertEqual(select_corrob_sources(primary, candidates), [])
+        self.assertEqual(multimedia._stock_topic(primary["titulo"])[0], "film camera production")
+
     def test_corrob_sources_excludes_unrelated_or_same_outlet(self):
         primary = {"titulo": "Cambio de transporte en Lima", "url": "https://a.example/1", "fuente": "A"}
         candidates = [
