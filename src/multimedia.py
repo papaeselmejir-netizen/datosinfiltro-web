@@ -488,45 +488,65 @@ def search_licensed_images(titulo, count=2):
     return matches[:count]
 
 
+def _stock_topic(titulo):
+    """Translate a few unambiguous Spanish news topics into stock-media searches."""
+    terms = keywords(titulo)
+    topics = (
+        ({"desvios", "viales", "cierres", "carreteras", "trafico", "transito", "vehicular", "movilidad", "transporte", "metropolitano"},
+         "traffic jam city", {"traffic", "road", "street", "car", "cars", "vehicle", "vehicles", "bus", "transport", "transit", "train"}),
+        ({"premios", "ariel", "galardones", "alfombra"},
+         "film awards red carpet", {"award", "awards", "carpet", "cinema", "film", "movie", "trophy"}),
+        ({"inteligencia", "artificial", "robotica"},
+         "artificial intelligence university", {"robot", "robotic", "technology", "computer", "computers", "digital", "intelligence", "laboratory", "school", "students"}),
+    )
+    for cues, query, media_terms in topics:
+        if terms & cues:
+            return query, media_terms
+    return None
+
+
 def _search_pexels_licensed(titulo, count):
-    query = query_terms(titulo, 5)
-    if not query:
+    topic = _stock_topic(titulo)
+    queries = [query_terms(titulo, 5)]
+    if topic:
+        queries.append(topic[0])
+    if not queries[0]:
         return []
-    try:
-        response = requests.get(
-            "https://api.pexels.com/v1/search",
-            params={"query": query, "per_page": 30, "orientation": "landscape"},
-            headers={"Authorization": PEXELS_API_KEY}, timeout=12,
-        )
-        response.raise_for_status()
-        matches = []
-        for photo in response.json().get("photos", []):
+    matches = []
+    seen = set()
+    for query in dict.fromkeys(queries):
+        if len(matches) >= count:
+            break
+        try:
+            response = requests.get(
+                "https://api.pexels.com/v1/search",
+                params={"query": query, "per_page": 40, "orientation": "landscape"},
+                headers={"Authorization": PEXELS_API_KEY}, timeout=12,
+            )
+            response.raise_for_status()
+            photos = response.json().get("photos", [])
+        except Exception as exc:
+            print(f"    [Pexels] No se pudieron validar imágenes: {type(exc).__name__}")
+            continue
+        for photo in photos:
             description = photo.get("alt") or ""
-            # A stock photo illustrates a topic; it must never be presented as event footage.
-            if not description or not (keywords(titulo) & keywords(description)):
+            description_terms = keywords(description)
+            if not description or not (
+                (topic and query == topic[0] and description_terms & topic[1])
+                or keywords(titulo) & description_terms
+            ):
                 continue
             lowered = description.lower()
-            # Pexels also returns "Lima" subway station in Buenos Aires for Lima news.
-            if "lima" in keywords(titulo) and (
-                not any(place in lowered for place in ("lima", "peru", "perú"))
-                or any(place in lowered for place in ("buenos aires", "argentina", "madrid"))
-            ):
+            if "lima" in keywords(titulo) and any(place in lowered for place in ("buenos aires", "argentina", "madrid")):
                 continue
-            title_terms = keywords(titulo)
-            if title_terms & {"metro", "metropolitano", "transporte", "bus", "buses"} and not any(
-                term in lowered for term in ("metro", "subway", "train", "bus", "traffic", "tram", "transit", "transport", "rail")
-            ):
-                continue
-            if title_terms & {"desvios", "viales", "cierres", "carreteras", "trafico", "transito"} and not any(
-                term in lowered for term in ("traffic", "road", "street", "bus", "car", "vehicle", "transport", "tránsito", "tráfico", "calle", "vía")
-            ):
+            if topic and not (description_terms & topic[1]):
                 continue
             url = photo.get("src", {}).get("large2x") or photo.get("src", {}).get("large")
-            if not url:
+            if not url or url in seen:
                 continue
+            seen.add(url)
             matches.append({
-                "url": url,
-                "descripcion": description,
+                "url": url, "descripcion": description,
                 "credito": photo.get("photographer", "Pexels"),
                 "origen": photo.get("url", ""),
                 "licencia": "Pexels License",
@@ -535,10 +555,7 @@ def _search_pexels_licensed(titulo, count):
             })
             if len(matches) >= count:
                 break
-        return matches
-    except Exception as exc:
-        print(f"    [Pexels] No se pudieron validar imágenes: {exc}")
-        return []
+    return matches
 
 
 def search_commons_images(titulo, count=2):
@@ -646,16 +663,13 @@ def search_licensed_stock_video(titulo):
     if not PEXELS_API_KEY:
         return None
     title_terms = keywords(titulo)
-    transport = bool(title_terms & {"metro", "metropolitano", "transporte", "bus", "buses"})
-    if transport and "lima" in title_terms:
-        query = "Lima Peru metro traffic"
-    else:
-        query = query_terms(titulo, 4)
+    topic = _stock_topic(titulo)
+    query = topic[0] if topic else query_terms(titulo, 4)
     if not query:
         return None
     try:
         response = requests.get(
-            "https://api.pexels.com/v1/videos/search",
+            "https://api.pexels.com/videos/search",
             params={"query": query, "per_page": 40, "orientation": "landscape"},
             headers={"Authorization": PEXELS_API_KEY}, timeout=15,
         )
@@ -664,10 +678,8 @@ def search_licensed_stock_video(titulo):
             origin = video.get("url", "")
             slug = origin.rsplit("/video/", 1)[-1].rsplit("/", 1)[0].replace("-", " ")
             slug_terms = keywords(slug)
-            if transport and "lima" in title_terms:
-                if not ({"lima", "peru"} & slug_terms) or not any(
-                    term in slug for term in ("metro", "subway", "train", "bus", "traffic", "transport", "transit")
-                ):
+            if topic:
+                if not (slug_terms & topic[1]):
                     continue
             elif len(title_terms & slug_terms) < 2:
                 continue

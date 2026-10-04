@@ -10,6 +10,7 @@ from src.editorial import publication_errors, rank_news, select_corrob_sources
 from src.crawler import _public_url, _public_dns, decode_google_news_url
 from website import builder
 from publish_verified import publish
+from src import multimedia
 
 
 def article():
@@ -57,6 +58,18 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(publication_errors(candidate), [])
         candidate["video_url"] = "https://example.com/clip.mp4"
         self.assertIn("Se requiere un video relacionado con origen verificable", publication_errors(candidate))
+
+    def test_pexels_video_uses_live_api_endpoint(self):
+        payload = {"videos": [{
+            "url": "https://www.pexels.com/video/lima-peru-traffic-1234/",
+            "user": {"name": "Autor"},
+            "video_files": [{"file_type": "video/mp4", "width": 1280, "link": "https://videos.pexels.com/video-files/1234/clip.mp4"}],
+        }]}
+        with patch.object(multimedia, "PEXELS_API_KEY", "test-key"), patch("src.multimedia.requests.get") as get:
+            get.return_value.json.return_value = payload
+            video = multimedia.search_licensed_stock_video("Tráfico y transporte en Lima")
+        self.assertEqual(get.call_args.args[0], "https://api.pexels.com/videos/search")
+        self.assertEqual(video["source"], "pexels")
 
     def test_corrob_sources_excludes_unrelated_or_same_outlet(self):
         primary = {"titulo": "Cambio de transporte en Lima", "url": "https://a.example/1", "fuente": "A"}
