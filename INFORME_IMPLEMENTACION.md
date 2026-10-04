@@ -6,7 +6,7 @@ Fecha: 3 de octubre de 2026.
 
 El proyecto ya tiene un flujo local y programado que investiga noticias, redacta borradores, exige dos fuentes con texto extraído, dos imágenes con licencia y un video relacionado, y publica automáticamente los artículos que cumplen las reglas. La web resultante es estática y está configurada para Vercel.
 
-**La versión de producción aún no recibió estos cambios.** GitHub ya tiene una sesión iniciada, pero exige verificación por correo antes de guardar los secretos. El código y la configuración local están listos y probados. La automatización remota comenzará a funcionar después de subir los cambios y actualizar los secretos.
+**La versión nueva ya está publicada en Vercel.** GitHub exige verificación por correo antes de guardar los secretos nuevos de Gemini y Pexels. El sitio público muestra una noticia verificada con dos imágenes y video. La automatización remota está programada; falta comprobar una ejecución exitosa con las claves actualizadas.
 
 ## Flujo implementado
 
@@ -35,8 +35,8 @@ El proyecto ya tiene un flujo local y programado que investiga noticias, redacta
 
 ## Pasos externos pendientes
 
-1. Terminar la verificación por correo de GitHub, subir estos cambios y actualizar los secretos `GEMINI_API_KEY` y `PEXELS_API_KEY` en **Settings → Secrets and variables → Actions**. `YOUTUBE_API_KEY` ya existe, pero conviene rotarla porque apareció en un registro de error durante las pruebas. Los `.env` locales están ignorados por Git y no llegan a Actions. Las claves `GNEWS_API_KEY` y `CURRENTS_API_KEY` son opcionales; la instancia local de GNews respondió HTTP 400, por lo que conviene revisarla o desactivarla.
-2. En Vercel, confirmar que el proyecto `datosinfiltro-web` está conectado a este repositorio, usa la raíz del repositorio como **Root Directory** y despliega la rama `main`. Si Vercel tiene otros ajustes de compilación guardados, `vercel.json` debe prevalecer, pero hay que verificar un despliegue real.
+1. Terminar la verificación por correo de GitHub y actualizar los secretos `GEMINI_API_KEY` y `PEXELS_API_KEY` en **Settings → Secrets and variables → Actions**. `YOUTUBE_API_KEY` ya existe, pero conviene rotarla porque apareció en un registro de error durante las pruebas. Los `.env` locales están ignorados por Git y no llegan a Actions. Las claves `GNEWS_API_KEY` y `CURRENTS_API_KEY` son opcionales; la instancia local de GNews respondió HTTP 400, por lo que conviene revisarla o desactivarla.
+2. Ejecutar manualmente el nuevo workflow de GitHub Actions y verificar que genere y publique noticias. La conexión GitHub–Vercel quedó confirmada por el despliegue de la portada y el artículo nuevo.
 3. Facilitar un correo editorial público y guardarlo como variable `CONTACT_EMAIL` del repositorio para mostrar contacto y correcciones. Actualmente no se publica ningún correo inventado.
 4. Revisar el contenido histórico. Los 144 JSON antiguos de `output/` carecen de trazabilidad suficiente de derechos y no se vuelven a publicar. Al generarse el primer sitio nuevo, las páginas HTML antiguas salen de la versión publicada; permanecen recuperables en Git. Es una decisión de calidad y licencias que conviene revisar antes del primer despliegue automático.
 5. Para AdSense: solicitar aprobación, aportar un identificador `ADSENSE_PUBLISHER_ID` real, actualizar la política de privacidad y el consentimiento de cookies cuando proceda, e integrar el código de anuncios solo después de la aprobación. El sistema no garantiza aprobación ni ingresos.

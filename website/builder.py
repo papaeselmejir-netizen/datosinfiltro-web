@@ -77,7 +77,9 @@ def load_articles():
             seen.add(source)
             digest = hashlib.sha256(source.encode("utf-8")).hexdigest()[:8]
             article["slug"] = f"{slugify(article['titulo_articulo'])}-{digest}"
-            article["fecha"] = published[:10]
+            local_time = datetime.fromisoformat(published.replace("Z", "+00:00")).astimezone(timezone(timedelta(hours=-5)))
+            article["fecha"] = local_time.strftime("%Y-%m-%d")
+            article["fecha_local"] = local_time.strftime("%d/%m/%Y %H:%M")
             article["fecha_publicacion"] = published
             article["html_content"] = render_markdown(article.get("articulo_web", ""))
             article["resumen"] = article.get("resumen") or re.sub(r"<[^>]+>", "", article["html_content"])[:155]
