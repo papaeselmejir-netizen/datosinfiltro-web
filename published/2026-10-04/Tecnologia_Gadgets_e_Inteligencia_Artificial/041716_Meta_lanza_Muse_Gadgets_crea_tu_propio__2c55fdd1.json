@@ -1,0 +1,71 @@
+{
+  "titulo_articulo": "Meta presenta Muse: su nuevo modelo de inteligencia artificial integrado en WhatsApp e Instagram",
+  "articulo_web": "Meta ha dado un nuevo paso en la carrera por el desarrollo de inteligencia artificial generativa con la llegada de Muse Image y un adelanto técnico de Muse Video. La herramienta, desarrollada por la división Meta Superintelligence Labs bajo la dirección de Alexandr Wang, ya se encuentra operativa dentro del ecosistema de la compañía, abarcando las aplicaciones de Meta AI, WhatsApp e Instagram.\n\n### Funcionamiento agéntico y capacidades técnicas\nA diferencia de los generadores tradicionales que convierten directamente una instrucción escrita en un archivo visual, Muse opera mediante un sistema agéntico. De acuerdo con los datos técnicos reportados, la herramienta tiene la capacidad de consultar internet para validar referencias, así como redactar y ejecutar código de programación para renderizar elementos complejos como tipografías, gráficos y códigos QR.\n\nAsimismo, el sistema cuenta con una función de autorrevisión desarrollada durante su entrenamiento: evalúa su propio resultado y corrige fallos puntuales o reinicia la generación si detecta errores estructurales. En evaluaciones del índice Arena AI, que mide preferencias humanas, Muse Image alcanzó el segundo puesto general, situándose detrás de GPT Image 2 de OpenAI y a la par de la herramienta Nano Banana de Google. Por su parte, Muse Video se posicionó en el tercer puesto dentro de la categoría de generación de video.\n\n### Privacidad y protección de contenido\nUna de las funciones más comentadas es la posibilidad de etiquetar perfiles públicos de Instagram en las instrucciones de Meta AI para generar composiciones visuales a partir de los rostros de dichas cuentas, lo que ha abierto un debate sobre la privacidad de los usuarios.\n\nPara contrarrestar posibles usos indebidos y diferenciar el contenido sintético de fotografías reales, Meta incorporó una marca de agua invisible denominada Content Seal. Según la firma tecnológica, esta firma digital está diseñada para mantenerse detectable incluso después de que las imágenes pasen por procesos de compresión, recortes o capturas de pantalla.",
+  "resumen": "Meta lanzó Muse Image, su nuevo modelo de IA para WhatsApp e Instagram que genera imágenes realistas y permite usar fotos de cuentas públicas.",
+  "hilo_x": "1/4 Meta lanzó formalmente Muse Image, su nuevo motor de IA generativa integrado en WhatsApp, Instagram y la app de Meta AI, junto con un adelanto de Muse Video.\n\n2/4 A diferencia de otros sistemas, Muse funciona de forma agéntica: busca en la web para contrastar referencias, ejecuta código para afinar gráficos y es capaz de autocorregirse antes de entregar el resultado final.\n\n3/4 En el ranking Arena AI, Muse Image se posicionó en segundo lugar detrás de GPT Image 2 de OpenAI. Para mitigar riesgos de desinformación, Meta incluye \"Content Seal\", una marca de agua invisible resistente a recortes y capturas.\n\n4/4 La polémica surge porque la herramienta permite tomar imágenes de cuentas públicas de Instagram para recrear rostros. Conoce todos los detalles técnicos aquí:",
+  "post_facebook": "Meta presentó formalmente Muse Image, su nuevo generador de imágenes con inteligencia artificial desarrollado por Meta Superintelligence Labs, el cual ya está disponible en las aplicaciones de WhatsApp, Instagram y Meta AI.\n\nEste modelo destaca por utilizar un enfoque agéntico: antes de mostrar un resultado, es capaz de buscar información visual en la web, escribir y correr código para crear gráficos o códigos QR precisos, y corregir sus propios errores si el resultado no cumple con sus parámetros de calidad. Además, la compañía adelantó las pruebas de Muse Video y anunció la inclusión de Content Seal, una marca de agua invisible diseñada para resistir recortes y capturas de pantalla.\n\nNo obstante, la herramienta ha generado debate en materia de privacidad, ya que permite etiquetar perfiles públicos de Instagram para utilizar sus fotos en la generación de nuevas imágenes con sus rostros.",
+  "guion_tiktok": "(0-3s) ¿Sabías que Meta ahora puede usar tus fotos públicas de Instagram para generar imágenes con IA?\n\n(3-45s) La compañía de Mark Zuckerberg acaba de lanzar Muse Image, su nuevo generador visual que ya funciona en WhatsApp, Instagram y la app de Meta AI. No funciona como los programas comunes: este modelo busca referencias en internet, escribe código para no equivocarse con textos o códigos QR y revisa su propio trabajo antes de mostrártelo. De hecho, ya ocupa el segundo lugar en el ranking global de Arena AI. Sin embargo, la función que más conversación está causando es que cualquier usuario puede mencionar una cuenta pública de Instagram y pedirle a la inteligencia artificial que genere imágenes utilizando el rostro de esa persona. Para evitar manipulaciones, Meta asegura que aplicará una marca de agua invisible llamada Content Seal, capaz de resistir capturas de pantalla.\n\n(45-60s) ¿Permitirías que una IA cree contenido utilizando las fotos de tu perfil? Déjame tu opinión en los comentarios. Tienes el link con la noticia completa en mi perfil.",
+  "categoria": "Tecnologia, Gadgets e Inteligencia Artificial",
+  "web_url": "",
+  "region": "Perú",
+  "schema_version": 2,
+  "titulo_fuente": "Meta lanza Muse Gadgets: crea tu propio dispositivo con inteligencia artificial - Cadena 3 Argentina",
+  "autor": "Equipo editorial DatoSinFiltro",
+  "fecha_creacion": "2026-10-03T23:17:16-05:00",
+  "fuentes": [
+    {
+      "titulo": "Meta lanza Muse Gadgets: crea tu propio dispositivo con inteligencia artificial - Cadena 3 Argentina",
+      "url": "https://www.cadena3.com/amp/noticia/tecnologia/meta-lanza-muse-gadgets-crea-tu-propio-dispositivo-con-inteligencia-artificial_600142",
+      "medio": "Cadena 3 Argentina",
+      "fecha": "Sat, 03 Oct 2026 05:15:23 GMT"
+    },
+    {
+      "titulo": "Meta lanza Muse, su generador de imágenes con IA, y deja tus fotos de Instagram accesibles por defecto - El Mundo",
+      "url": "https://www.elmundo.es/tecnologia/2026/07/08/6a4e8b04fdddff58358b45ad.html",
+      "medio": "El Mundo",
+      "fecha": "Wed, 08 Jul 2026 07:00:00 GMT"
+    },
+    {
+      "titulo": "Meta Muse: SDK abierto y 5.000 Home Links gratis - El Ecosistema Startup",
+      "url": "https://ecosistemastartup.com/meta-muse-sdk-abierto-y-5-000-home-links-gratis/",
+      "medio": "El Ecosistema Startup",
+      "fecha": "Fri, 02 Oct 2026 21:25:04 GMT"
+    }
+  ],
+  "imagenes": [
+    {
+      "url": "https://images.pexels.com/photos/8294654/pexels-photo-8294654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of a futuristic white robot showcasing innovation and design.",
+      "credito": "Pavel Danilyuk",
+      "origen": "https://www.pexels.com/photo/white-toy-robot-of-pink-and-purple-background-8294654/",
+      "licencia": "Pexels License",
+      "licencia_url": "https://www.pexels.com/license/",
+      "tipo": "Ilustración de archivo"
+    },
+    {
+      "url": "https://images.pexels.com/photos/8438958/pexels-photo-8438958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A robot and woman engage in chess, showcasing technology and strategic thinking.",
+      "credito": "Pavel Danilyuk",
+      "origen": "https://www.pexels.com/photo/a-woman-playing-chess-8438958/",
+      "licencia": "Pexels License",
+      "licencia_url": "https://www.pexels.com/license/",
+      "tipo": "Ilustración de archivo"
+    }
+  ],
+  "imagen_url": "https://images.pexels.com/photos/8294654/pexels-photo-8294654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "extra_images": [
+    "https://images.pexels.com/photos/8438958/pexels-photo-8438958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+  ],
+  "video_url": "https://videos.pexels.com/video-files/8566725/8566725-hd_1920_1080_30fps.mp4",
+  "video_titulo": "A robotic rover moving around the school 8566725",
+  "video_canal": "Kindel Media",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/a-robotic-rover-moving-around-the-school-8566725/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/8566725/ai-architecture-automatic-autonomous-8566725.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+  "fuente_url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQdWFmQjhWd0FzUVQtNTlpT1dkVnNpaTlCelF5MU1YNnd5Q01Ea2FTZ2NOaUZORHhEUURpWmtuMjN6RFB0UGIzc19MNDlBV0pOWXFOLWR1ZGpQQWxEZUlGN2hBX2s3dFItMW9IRVNod2hCT0VnZi02TDBrR1ZwbXNIS1BFRENqWXRWckl0M2YxRkplOEY5WUozYlFJNG1JX0wxQWtKMlI5YlpQMlp4X01vMGQ2ZHlkNFZGdWY3NGdGbkNsZkN0eHdDb1NVTzfSAcwBQVVfeXFMUHVhZkI4VndBc1FULTU5aU9XZFZzaWk5QnpReTFNWDZ3eUNNRGthU2djTmlGTkR4RFFEaVprbjIzekRQdFBiM3NfTDQ5QVdKTllxTi1kdWRqUEFsRGVJRjdoQV9rN3RSLTFvSEVTaHdoQk9FZ2YtNkwwa0dWcG1zSEtQRURDall0VnJJdDNmMUZKZThGOVlKM2JRSTRtSV9MMUFrSjJSOWJaUDJaeF9NbzBkNmR5ZDRWRnVmNzRnRm5DbGZDdHh3Q29TVU83?oc=5",
+  "fecha_publicacion": "2026-10-04T04:18:18+00:00",
+  "revision_humana": false
+}
