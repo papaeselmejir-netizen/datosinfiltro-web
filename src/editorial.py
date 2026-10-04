@@ -75,7 +75,12 @@ def rank_news(items):
     def score(item):
         title = item.get("titulo", "")
         lowered = title.lower()
-        if any(phrase in lowered for phrase in ("en vivo gratis", "ver gratis", "horóscopo", "horoscopo")):
+        if any(phrase in lowered for phrase in (
+            "en vivo gratis", "ver gratis", "horóscopo", "horoscopo",
+            "dónde ver", "donde ver", "cómo ver", "como ver", "canal tv",
+            "qué canal", "que canal", "horarios y canales",
+            "últimas noticias del perú y el mundo", "ultimas noticias del peru y el mundo",
+        )):
             return -100
         value = min(len(keywords(title)), 12) / 12
         value += min(len(item.get("snippet", "")), 300) / 300
@@ -83,7 +88,13 @@ def rank_news(items):
             value += 0.5
         raw_date = item.get("fecha", "")
         try:
-            published = parsedate_to_datetime(raw_date) if isinstance(raw_date, str) else raw_date
+            if isinstance(raw_date, str):
+                try:
+                    published = parsedate_to_datetime(raw_date)
+                except ValueError:
+                    published = datetime.fromisoformat(raw_date.replace("Z", "+00:00"))
+            else:
+                published = raw_date
             if published.tzinfo is None:
                 published = published.replace(tzinfo=timezone.utc)
             age_hours = (now - published).total_seconds() / 3600

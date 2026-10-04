@@ -1,6 +1,6 @@
 # Informe de implementación: DatoSinFiltro
 
-Fecha: 3 de octubre de 2026.
+Fecha: 4 de octubre de 2026.
 
 ## Estado
 
@@ -9,6 +9,14 @@ El proyecto ya tiene un flujo local y programado que investiga noticias, redacta
 **La versión nueva ya está publicada en Vercel.** Los secretos de Gemini y Pexels ya están configurados en GitHub Actions. Las ejecuciones manuales [#110](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37176448080), [#111](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37177133245) y [#112](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37177528310) terminaron sin errores técnicos, pero las noticias nuevas fallaron la auditoría posterior: una mezcló Muse Gadgets con un generador de imágenes, otra confundió escuelas de cine e inteligencia artificial en San Marcos y la tercera trató dos copias de un despacho de agencia como fuentes independientes. Las tres notas se retiraron de `published/`, del sitio y de los sitemaps. Se reforzó la comprobación del asunto central y se añadió detección de titulares y textos sindicados. El sistema conserva la noticia verificada anterior.
 
 La ejecución [#113](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37177922908), ya con estos controles, terminó correctamente y no publicó noticias nuevas. El repositorio mantuvo una sola noticia validada. Este resultado muestra un comportamiento conservador, pero también que el volumen actual todavía es insuficiente para una estrategia de monetización.
+
+## Búsqueda por categoría y región
+
+El cupo de búsqueda vuelve a ser **tres candidatas sobre Perú y tres del extranjero por categoría**. Hubo una configuración intermedia de dos y dos; se corrigió. El país de la interfaz de Google News no demuestra dónde ocurrió una noticia: la búsqueda de Perú ahora añade lugares peruanos y verifica el titular o resumen; la búsqueda internacional excluye los asuntos identificados como peruanos. El filtro elimina guías para ver transmisiones, resultados de redes sociales, notas de más de cuatro días y titulares duplicados. Se consultan hasta 18 resultados de Google News por región para completar tres candidatas recientes de medios distintos. Si un RSS local falla, se continúa con Google News; GNews y Currents son respaldos opcionales cuando hay claves válidas.
+
+El objetivo de seis se refiere a **candidatas investigadas**, no a seis publicaciones garantizadas. Actualmente se permite como máximo un borrador verificado por categoría y ocho por ejecución. Publicar exige fuentes independientes y multimedia relacionada con licencia; una categoría puede terminar con menos de tres candidatas o con ningún artículo si las fuentes no cumplen los controles. La clasificación geográfica por titular es conservadora y aún puede requerir auditoría humana en noticias ambiguas.
+
+En una consulta real del 4 de octubre, el buscador completó 3 + 3 en las ocho categorías. El resultado cambia con los feeds; esta comprobación demuestra capacidad de búsqueda, no valida por sí sola los hechos ni promete 48 publicaciones.
 
 ## Flujo implementado
 
@@ -29,7 +37,7 @@ La ejecución [#113](https://github.com/papaeselmejir-netizen/datosinfiltro-web/
 
 ## Pruebas realizadas
 
-- Quince pruebas Python: control editorial, fuentes, detección de despachos sindicados, desambiguación de productos y especialidades, URLs privadas, decodificación de Google News, conservación de artículos entre ejecuciones, generación del sitio, API de video Pexels y selección de archivo por tema específico.
+- Dieciocho pruebas Python: control editorial, fuentes, búsqueda de tres asuntos peruanos por categoría, filtro geográfico, actualidad, descarte de redes sociales y guías, detección de despachos sindicados, desambiguación de productos y especialidades, URLs privadas, decodificación de Google News, conservación de artículos entre ejecuciones, generación del sitio, API de video Pexels y selección de archivo por tema específico.
 - `npm run lint`, `npx tsc --noEmit` y `npm run build` del CMS finalizaron correctamente. Next.js muestra una advertencia sobre trazado dinámico de archivos, sin impedir la compilación.
 - Prueba real con noticias de Lima: se obtuvo un borrador sobre los conciertos de BTS a partir de tres medios, dos imágenes de tráfico de Lima con licencia Pexels y un video específico de El Comercio. Se generó un checkout de despliegue aislado con ese artículo, portada y ocho categorías, conservando intactos los cambios anteriores del checkout principal.
 - Se inspeccionó visualmente la portada y el artículo generados en un servidor local. Se corrigió la navegación, que ocupaba varias líneas.

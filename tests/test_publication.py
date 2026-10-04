@@ -2,6 +2,7 @@ import json
 import os
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 from xml.etree import ElementTree
@@ -10,7 +11,7 @@ from src.editorial import publication_errors, rank_news, select_corrob_sources, 
 from src.crawler import _public_url, _public_dns, decode_google_news_url
 from website import builder
 from publish_verified import publish
-from src import multimedia
+from src import multimedia, extractor
 
 
 def article():
@@ -39,6 +40,47 @@ def article():
 
 
 class PublicationTests(unittest.TestCase):
+    def test_category_search_combines_peru_feeds_to_fill_three_slots(self):
+        category = "Deportes en Vivo"
+        local = [{"titulo": "Alianza Lima anuncia fichaje - Depor", "url": "https://depor.com/a", "fuente": "Depor"}]
+        google = [
+            {"titulo": "Alianza Lima anuncia fichaje - Otro", "url": "https://otro.pe/a", "fuente": "Otro"},
+            {"titulo": "Universitario de Deportes anuncia fichaje - RPP", "url": "https://rpp.pe/b", "fuente": "RPP"},
+            {"titulo": "Sporting Cristal confirma entrenador - Infobae", "url": "https://infobae.com/c", "fuente": "Infobae"},
+            {"titulo": "Club argentino cambia de entrenador - TN", "url": "https://tn.com.ar/d", "fuente": "TN"},
+        ]
+        with patch.object(extractor, "extract_news_local_rss", return_value=local) as local_search, patch.object(
+            extractor, "extract_news_google_rss", return_value=google
+        ) as google_search:
+            news = extractor.extract_news_multi_source(category, max_items=3, lang="es", geo="PE")
+        self.assertEqual(len(news), 3)
+        self.assertEqual({item["fuente"] for item in news}, {"Depor", "RPP", "Infobae"})
+        self.assertEqual(local_search.call_args.kwargs["max_items"], 6)
+        self.assertEqual(google_search.call_args.kwargs["max_items"], 18)
+
+    def test_geography_checks_event_and_not_publisher_name(self):
+        self.assertFalse(extractor.is_peru_story({"titulo": "Nueva película en España - El Peruano"}))
+        self.assertTrue(extractor.is_peru_story({"titulo": "Nueva película llega a Lima - Medio español"}))
+        world = [
+            {"titulo": "Nueva película en España - Medio A", "url": "https://a.example/1", "fuente": "A"},
+            {"titulo": "Nueva película llega a Lima - Medio B", "url": "https://b.example/2", "fuente": "B"},
+        ]
+        with patch.object(extractor, "extract_news_google_rss", return_value=world):
+            selected = extractor.extract_news_multi_source("Entretenimiento, Farandula y Cine", max_items=3, geo="US")
+        self.assertEqual([item["fuente"] for item in selected], ["A"])
+
+    def test_search_skips_stale_social_and_viewing_guides(self):
+        stale = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+        items = [
+            {"titulo": "Dónde ver Argentina vs Brasil en Perú - Medio A", "url": "https://a.example/1", "fuente": "A"},
+            {"titulo": "Perú anuncia nueva ley de salud - Facebook", "url": "https://b.example/2", "fuente": "facebook.com"},
+            {"titulo": "Lima inaugura nuevo hospital - Medio B", "url": "https://c.example/3", "fuente": "B", "fecha": stale},
+            {"titulo": "Lima inaugura clínica pública - Medio C", "url": "https://d.example/4", "fuente": "C"},
+        ]
+        with patch.object(extractor, "extract_news_google_rss", return_value=items):
+            news = extractor.extract_news_multi_source("Salud, Bienestar y Estilo de Vida", max_items=3, geo="PE")
+        self.assertEqual([item["fuente"] for item in news], ["C"])
+
     def test_editorial_gate_requires_media_and_sources(self):
         candidate = article()
         self.assertEqual(publication_errors(candidate), [])

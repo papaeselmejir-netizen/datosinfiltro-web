@@ -198,7 +198,7 @@ def _insert_images_in_article(html_content, images, titulo):
     return html_content
 
 
-async def process_category(categoria, distributor=None, max_noticias=2, max_drafts=None):
+async def process_category(categoria, distributor=None, max_noticias=3, max_drafts=None):
     """
     Procesa una sola categoria: extrae noticias y procesa cada una individualmente.
     """
@@ -320,14 +320,18 @@ async def main(topic=None):
 
     todos_los_resultados = {}
     max_per_run = max(1, int(os.getenv("MAX_DRAFTS_PER_RUN", "8")))
-    max_per_region = max(1, int(os.getenv("MAX_NEWS_PER_REGION", "2")))
+    max_per_region = max(1, int(os.getenv("MAX_NEWS_PER_REGION", "3")))
+    max_drafts_per_category = max(1, int(os.getenv("MAX_DRAFTS_PER_CATEGORY", "1")))
 
     for categoria in CATEGORIAS_ACTIVAS:
         remaining = max_per_run - sum(len(group) for group in todos_los_resultados.values())
         if remaining <= 0:
             break
         try:
-            resultados = await process_category(categoria, distributor, max_noticias=max_per_region, max_drafts=remaining)
+            resultados = await process_category(
+                categoria, distributor, max_noticias=max_per_region,
+                max_drafts=min(remaining, max_drafts_per_category),
+            )
             if resultados:
                 todos_los_resultados[categoria] = resultados
         except Exception as e:

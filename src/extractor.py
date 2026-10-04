@@ -1,8 +1,11 @@
 import os
 import re
+import unicodedata
+from urllib.parse import quote, unquote
 import feedparser
 import requests
 from dotenv import load_dotenv
+from src.editorial import normalized_headline, rank_news
 
 load_dotenv()
 
@@ -14,13 +17,13 @@ CURRENTS_API_KEY = os.getenv("CURRENTS_API_KEY", "")
 
 # Mapeo de las 7 categorias del usuario a búsquedas estrictas por keywords en Google News RSS
 CATEGORIAS = {
-    "Deportes en Vivo": "search?q=deportes+futbol+tenis+nba+olimpiadas",
-    "Entretenimiento, Farandula y Cine": "search?q=farandula+OR+cine+OR+espectaculos+OR+famosos+OR+streamers+OR+tiktokers+OR+ibai+OR+auronplay",
-    "Noticias de Ultima Hora y Politica": "search?q=politica+gobierno+elecciones+crisis+noticias",
-    "Tecnologia, Gadgets e Inteligencia Artificial": "search?q=tecnologia+gadgets+inteligencia+artificial+software",
-    "Finanzas, Negocios y Criptomonedas": "search?q=finanzas+negocios+criptomonedas+economia+mercados",
-    "Gaming y Esports": "search?q=gaming+esports+videojuegos+consolas",
-    "Salud, Bienestar y Estilo de Vida": "search?q=salud+bienestar+medicina+vida+sana+nutricion",
+    "Deportes en Vivo": "search?q=deportes+OR+futbol+OR+tenis+OR+NBA",
+    "Entretenimiento, Farandula y Cine": "search?q=cine+OR+musica+OR+espectaculos+OR+streamers",
+    "Noticias de Ultima Hora y Politica": "search?q=politica+OR+gobierno+OR+elecciones",
+    "Tecnologia, Gadgets e Inteligencia Artificial": "search?q=tecnologia+OR+gadgets+OR+inteligencia+artificial",
+    "Finanzas, Negocios y Criptomonedas": "search?q=economia+OR+negocios+OR+criptomonedas",
+    "Gaming y Esports": "search?q=gaming+OR+esports+OR+videojuegos",
+    "Salud, Bienestar y Estilo de Vida": "search?q=salud+OR+medicina+OR+bienestar",
     "Tendencias": "trends",
 }
 
@@ -49,10 +52,27 @@ CATEGORIAS_CURRENTS = {
 # RSS Directos de Periódicos Peruanos
 FUENTES_LOCALES_PERU = {
     "Deportes en Vivo": "https://depor.com/arc/outboundfeeds/rss/?outputType=xml",
-    "Entretenimiento, Farandula y Cine": "https://peru21.pe/arc/outboundfeeds/rss/espectaculos/?outputType=xml",
     "Noticias de Ultima Hora y Politica": "https://elcomercio.pe/arc/outboundfeeds/rss/?outputType=xml",
     "Finanzas, Negocios y Criptomonedas": "https://gestion.pe/arc/outboundfeeds/rss/?outputType=xml",
 }
+
+PERU_TERMS = (
+    "peru", "peruano", "peruana", "peruanos", "peruanas", "lima", "callao",
+    "arequipa", "cusco", "cuzco", "trujillo", "piura", "chiclayo", "huancayo",
+    "iquitos", "puno", "tacna", "ica", "ancash", "huanuco", "cajamarca",
+    "ucayali", "loreto", "junin", "ayacucho", "apurimac", "lambayeque",
+    "moquegua", "tumbes", "pucallpa", "huaraz", "machu picchu",
+    "alianza lima", "universitario de deportes", "sporting cristal",
+    "congreso peruano", "bcrp", "reniec", "sunat", "indecopi", "essalud",
+)
+
+
+def is_peru_story(item):
+    """A Peruvian outlet alone does not establish where an event occurred."""
+    title = (item.get("titulo") or "").rsplit(" - ", 1)[0]
+    value = unicodedata.normalize("NFKD", " ".join((title, item.get("snippet", ""))))
+    value = "".join(char for char in value if not unicodedata.combining(char)).lower()
+    return any(re.search(r"\b" + re.escape(term) + r"\b", value) for term in PERU_TERMS)
 
 
 def extract_news_local_rss(categoria, max_items=3):
@@ -144,6 +164,15 @@ def extract_news_google_rss(categoria, lang=None, geo=None, max_items=3):
     # Determinar el codigo de idioma para ceid (ej: "es" de "es-419")
     lang_code = lang.split("-")[0] if "-" in lang else lang
 
+    # El país del feed localiza la interfaz, pero no limita el lugar de los hechos.
+    # La consulta de Perú exige indicios de ubicación y el filtro posterior los verifica.
+    if topic_path.startswith("search"):
+        query = "(" + unquote(topic_path.partition("q=")[2]).replace("+", " ") + ")"
+        if geo == "PE":
+            query += " (Perú OR Lima OR Arequipa OR Cusco OR Trujillo)"
+        query += " when:4d"
+        topic_path = "search?q=" + quote(query)
+
     # Construir URL del feed RSS de Google News
     base_url = "https://news.google.com/rss"
     if topic_path.startswith("search"):
@@ -154,8 +183,14 @@ def extract_news_google_rss(categoria, lang=None, geo=None, max_items=3):
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 
     try:
-        response = requests.get(url, headers=headers, timeout=15)
-        response.raise_for_status()
+        for attempt in range(2):
+            try:
+                response = requests.get(url, headers=headers, timeout=12)
+                response.raise_for_status()
+                break
+            except requests.RequestException:
+                if attempt:
+                    raise
     except Exception as e:
         print(f"  [Google RSS] Error de conexion: {e}")
         return []
@@ -350,60 +385,79 @@ def extract_news_currents(categoria, lang=None, country=None, max_items=3):
 
 def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
     """
-    Extrae noticias usando multiples fuentes con fallback automatico.
-    Orden: Local RSS (solo PE) -> Google News RSS -> GNews API -> Currents API.
+    Combina fuentes hasta llenar el cupo con titulares y medios distintos.
+    Orden: RSS local (solo PE) -> Google News RSS -> GNews API -> Currents API.
     :param categoria: Nombre exacto de una de las 7 categorias.
     :param max_items: Cantidad de noticias a extraer.
     :param lang: Idioma (ej: es)
     :param geo: Pais (ej: PE, US)
-    :return: Lista de dicts con noticias de la mejor fuente disponible.
+    :return: Hasta max_items noticias de fuentes diversas.
     """
-    # Si la categoria es Tendencias, ir directamente a Google Trends
-    if categoria == "Tendencias":
-        print(f"    Intentando Google Trends (geo={geo})...")
-        noticias = extract_google_trends(geo=geo, max_items=max_items)
-        if noticias:
-            print(f"    -> {len(noticias)} tendencias extraidas")
-            return noticias
-        return []
+    geo = geo or NEWS_COUNTRY
 
-    # Intento 0: RSS Locales Directos (SOLO PARA PERU)
+    selected = []
+    seen_titles = set()
+    seen_urls = set()
+    outlet_counts = {}
+
+    def add_candidates(candidates, limit=None):
+        added = 0
+        for item in rank_news(candidates):
+            title = normalized_headline(item.get("titulo", ""))
+            url = item.get("url", "")
+            outlet = (item.get("fuente") or "Desconocida").strip().lower()
+            if outlet in {"facebook.com", "instagram.com", "tiktok.com", "x.com", "youtube.com", "wordpress.com"}:
+                continue
+            if is_peru_story(item) != (geo == "PE"):
+                continue
+            if not title or not url or title in seen_titles or url in seen_urls:
+                continue
+            if outlet_counts.get(outlet, 0) >= 1:
+                continue
+            selected.append(item)
+            seen_titles.add(title)
+            seen_urls.add(url)
+            outlet_counts[outlet] = outlet_counts.get(outlet, 0) + 1
+            added += 1
+            if len(selected) >= max_items or (limit and added >= limit):
+                break
+
+    # Google Trends indica dónde se busca un tema, no dónde ocurrió el hecho.
+    if categoria == "Tendencias":
+        topic = "noticias virales Perú" if geo == "PE" else "noticias virales mundo"
+        candidates = extract_custom_topic_google_rss(topic + " when:4d", lang=lang, geo=geo, max_items=max_items * 6)
+        add_candidates(candidates)
+        if len(selected) < max_items:
+            topic = "tendencias Perú" if geo == "PE" else "tendencias internacionales"
+            add_candidates(extract_custom_topic_google_rss(topic + " when:4d", lang=lang, geo=geo, max_items=max_items * 6))
+        print(f"    -> {len(selected)}/{max_items} candidatas de {len(outlet_counts)} medios")
+        return selected
+
+    # Un titular local deja espacio para otros medios peruanos en Google News.
     if geo == "PE" and categoria in FUENTES_LOCALES_PERU:
         print(f"    Intentando Fuente Local Directa (Perú) para {categoria}...")
-        noticias = extract_news_local_rss(categoria, max_items=max_items)
-        if noticias:
-            print(f"    -> {len(noticias)} noticias via RSS Local Directo")
-            return noticias
+        add_candidates(extract_news_local_rss(categoria, max_items=max_items * 2), limit=1)
 
-    # Intento 1: Google News RSS (sin API key)
-    print(f"    Intentando Google News RSS (geo={geo})...")
-    noticias = extract_news_google_rss(categoria, max_items=max_items, lang=lang, geo=geo)
-    if noticias:
-        print(f"    -> {len(noticias)} noticias via Google RSS")
-        return noticias
+    if len(selected) < max_items:
+        print(f"    Intentando Google News RSS (geo={geo})...")
+        add_candidates(extract_news_google_rss(categoria, max_items=max_items * 6, lang=lang, geo=geo))
 
-    # Intento 2: GNews API
-    print(f"    Google RSS sin resultados. Intentando GNews API...")
-    noticias = extract_news_gnews(categoria, max_items=max_items, lang=lang, country=geo)
-    if noticias:
-        print(f"    -> {len(noticias)} noticias via GNews")
-        return noticias
+    if len(selected) < max_items and GNEWS_API_KEY:
+        print("    Completando con GNews API...")
+        add_candidates(extract_news_gnews(categoria, max_items=max_items * 2, lang=lang, country=geo))
 
-    # Intento 3: Currents API
-    print(f"    GNews sin resultados. Intentando Currents API...")
-    noticias = extract_news_currents(categoria, max_items=max_items, lang=lang, country=geo)
-    if noticias:
-        print(f"    -> {len(noticias)} noticias via Currents API")
-        return noticias
+    if len(selected) < max_items and CURRENTS_API_KEY:
+        print("    Completando con Currents API...")
+        add_candidates(extract_news_currents(categoria, max_items=max_items * 2, lang=lang, country=geo))
 
-    print(f"    Sin noticias de ninguna fuente para '{categoria}'.")
-    return []
+    print(f"    -> {len(selected)}/{max_items} candidatas de {len(outlet_counts)} medios")
+    return selected
 
 
 # Mantener compatibilidad con imports existentes
 def extract_news_by_category(categoria, lang=None, geo=None, max_items=3):
     """Wrapper de compatibilidad. Usa extract_news_multi_source internamente."""
-    return extract_news_multi_source(categoria, max_items=max_items)
+    return extract_news_multi_source(categoria, max_items=max_items, lang=lang, geo=geo)
 
 
 def get_all_categories_news(categorias=None, max_per_category=3):
