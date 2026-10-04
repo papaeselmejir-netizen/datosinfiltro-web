@@ -71,6 +71,19 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(get.call_args.args[0], "https://api.pexels.com/videos/search")
         self.assertEqual(video["source"], "pexels")
 
+    def test_named_social_apps_override_generic_ai_stock_topic(self):
+        title = "Meta presenta un modelo de inteligencia artificial para WhatsApp e Instagram"
+        query, _ = multimedia._stock_topic(title)
+        self.assertEqual(query, "instagram whatsapp smartphone")
+        payload = {"videos": [{
+            "url": "https://www.pexels.com/video/a-robotic-rover-moving-around-the-school-8566725/",
+            "video_files": [{"file_type": "video/mp4", "width": 1280, "link": "https://videos.pexels.com/video-files/8566725/clip.mp4"}],
+        }]}
+        with patch.object(multimedia, "PEXELS_API_KEY", "test-key"), patch("src.multimedia.requests.get") as get:
+            get.return_value.json.return_value = payload
+            self.assertIsNone(multimedia.search_licensed_stock_video(title))
+            self.assertEqual(get.call_args.kwargs["params"]["query"], query)
+
     def test_corrob_sources_excludes_unrelated_or_same_outlet(self):
         primary = {"titulo": "Cambio de transporte en Lima", "url": "https://a.example/1", "fuente": "A"}
         candidates = [

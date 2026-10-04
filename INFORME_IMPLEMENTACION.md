@@ -6,7 +6,7 @@ Fecha: 3 de octubre de 2026.
 
 El proyecto ya tiene un flujo local y programado que investiga noticias, redacta borradores, exige dos fuentes con texto extraído, dos imágenes con licencia y un video relacionado, y publica automáticamente los artículos que cumplen las reglas. La web resultante es estática y está configurada para Vercel.
 
-**La versión nueva ya está publicada en Vercel.** GitHub exige verificación por correo antes de guardar los secretos nuevos de Gemini y Pexels. El sitio público muestra una noticia verificada con dos imágenes y video. La automatización remota está programada; falta comprobar una ejecución exitosa con las claves actualizadas.
+**La versión nueva ya está publicada en Vercel.** Los secretos de Gemini y Pexels ya están configurados en GitHub Actions. La ejecución manual [#110](https://github.com/papaeselmejir-netizen/datosinfiltro-web/actions/runs/37176448080) terminó correctamente, creó y publicó una noticia nueva sobre Meta y reconstruyó el sitio. La revisión posterior detectó que el video de archivo era demasiado genérico; se mejoró la selección por tema y se reemplazaron el video y las imágenes de esa noticia por material de aplicaciones sociales con créditos y licencias.
 
 ## Flujo implementado
 
@@ -27,19 +27,18 @@ El proyecto ya tiene un flujo local y programado que investiga noticias, redacta
 
 ## Pruebas realizadas
 
-- Ocho pruebas Python: control editorial, fuentes, URLs privadas, decodificación de Google News, conservación de artículos entre ejecuciones, generación del sitio y video Pexels.
+- Diez pruebas Python: control editorial, fuentes, URLs privadas, decodificación de Google News, conservación de artículos entre ejecuciones, generación del sitio, API de video Pexels y selección de archivo por tema específico.
 - `npm run lint`, `npx tsc --noEmit` y `npm run build` del CMS finalizaron correctamente. Next.js muestra una advertencia sobre trazado dinámico de archivos, sin impedir la compilación.
 - Prueba real con noticias de Lima: se obtuvo un borrador sobre los conciertos de BTS a partir de tres medios, dos imágenes de tráfico de Lima con licencia Pexels y un video específico de El Comercio. Se generó un checkout de despliegue aislado con ese artículo, portada y ocho categorías, conservando intactos los cambios anteriores del checkout principal.
 - Se inspeccionó visualmente la portada y el artículo generados en un servidor local. Se corrigió la navegación, que ocupaba varias líneas.
-- La nueva clave de Pexels respondió HTTP 200. Gemini y YouTube respondieron correctamente en pruebas previas; YouTube devolvió luego HTTP 429 por límite de solicitudes. El respaldo de Pexels evita que ese límite obligue a usar un video irrelevante.
+- La nueva clave de Pexels respondió HTTP 200. Se corrigió la ruta de su API de video y se probaron búsquedas reales para tres temas: desvíos en Lima, inteligencia artificial universitaria y Premios Ariel; cada uno obtuvo dos imágenes y un video. YouTube devolvió HTTP 429 por límite de solicitudes, por lo que Pexels actuó como respaldo. La ejecución #110 guardó un artículo en `published/` y actualizó `website/public/`.
 
 ## Pasos externos pendientes
 
-1. Terminar la verificación por correo de GitHub y actualizar los secretos `GEMINI_API_KEY` y `PEXELS_API_KEY` en **Settings → Secrets and variables → Actions**. `YOUTUBE_API_KEY` ya existe, pero conviene rotarla porque apareció en un registro de error durante las pruebas. Los `.env` locales están ignorados por Git y no llegan a Actions. Las claves `GNEWS_API_KEY` y `CURRENTS_API_KEY` son opcionales; la instancia local de GNews respondió HTTP 400, por lo que conviene revisarla o desactivarla.
-2. Ejecutar manualmente el nuevo workflow de GitHub Actions y verificar que genere y publique noticias. La conexión GitHub–Vercel quedó confirmada por el despliegue de la portada y el artículo nuevo.
-3. Facilitar un correo editorial público y guardarlo como variable `CONTACT_EMAIL` del repositorio para mostrar contacto y correcciones. Actualmente no se publica ningún correo inventado.
-4. Revisar el contenido histórico. Los 144 JSON antiguos de `output/` carecen de trazabilidad suficiente de derechos y no se vuelven a publicar. Al generarse el primer sitio nuevo, las páginas HTML antiguas salen de la versión publicada; permanecen recuperables en Git. Es una decisión de calidad y licencias que conviene revisar antes del primer despliegue automático.
-5. Para AdSense: solicitar aprobación, aportar un identificador `ADSENSE_PUBLISHER_ID` real, actualizar la política de privacidad y el consentimiento de cookies cuando proceda, e integrar el código de anuncios solo después de la aprobación. El sistema no garantiza aprobación ni ingresos.
+1. Facilitar un correo editorial público y guardarlo como variable `CONTACT_EMAIL` del repositorio para mostrar contacto y correcciones. Actualmente no se publica ningún correo inventado.
+2. Rotar la clave de YouTube que apareció en un registro de error durante las pruebas. Las claves `GNEWS_API_KEY` y `CURRENTS_API_KEY` son opcionales; la instancia local de GNews respondió HTTP 400, por lo que conviene revisarla o desactivarla.
+3. Revisar el contenido histórico. Los 144 JSON antiguos de `output/` carecen de trazabilidad suficiente de derechos y no se vuelven a publicar. Permanecen recuperables en Git.
+4. Para AdSense: solicitar aprobación, aportar un identificador `ADSENSE_PUBLISHER_ID` real, actualizar la política de privacidad y el consentimiento de cookies cuando proceda, e integrar el código de anuncios solo después de la aprobación. El sistema no garantiza aprobación ni ingresos.
 
 ## Seguridad y riesgos operativos
 

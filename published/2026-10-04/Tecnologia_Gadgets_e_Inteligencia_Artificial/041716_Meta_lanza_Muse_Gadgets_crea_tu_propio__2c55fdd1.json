@@ -34,37 +34,37 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/8294654/pexels-photo-8294654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of a futuristic white robot showcasing innovation and design.",
-      "credito": "Pavel Danilyuk",
-      "origen": "https://www.pexels.com/photo/white-toy-robot-of-pink-and-purple-background-8294654/",
+      "url": "https://images.pexels.com/photos/16852355/pexels-photo-16852355.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of smartphone on table showing various social media app icons including WhatsApp and Instagram.",
+      "credito": "Viralyft",
+      "origen": "https://www.pexels.com/photo/social-media-in-smartphone-16852355/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/8438958/pexels-photo-8438958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A robot and woman engage in chess, showcasing technology and strategic thinking.",
-      "credito": "Pavel Danilyuk",
-      "origen": "https://www.pexels.com/photo/a-woman-playing-chess-8438958/",
+      "url": "https://images.pexels.com/photos/424299/pexels-photo-424299.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Black and white photo of smartphone showing popular app icons like Facebook and WhatsApp.",
+      "credito": "Mateusz Dach",
+      "origen": "https://www.pexels.com/photo/black-android-smartphone-424299/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/8294654/pexels-photo-8294654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/16852355/pexels-photo-16852355.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/8438958/pexels-photo-8438958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/424299/pexels-photo-424299.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://videos.pexels.com/video-files/8566725/8566725-hd_1920_1080_30fps.mp4",
-  "video_titulo": "A robotic rover moving around the school 8566725",
-  "video_canal": "Kindel Media",
+  "video_url": "https://videos.pexels.com/video-files/4169354/4169354-hd_1280_720_30fps.mp4",
+  "video_titulo": "Variety of social media icons 4169354",
+  "video_canal": "FAHIMG",
   "video_source": "pexels",
   "video_tipo": "Video ilustrativo de archivo",
-  "video_origen": "https://www.pexels.com/video/a-robotic-rover-moving-around-the-school-8566725/",
+  "video_origen": "https://www.pexels.com/video/variety-of-social-media-icons-4169354/",
   "video_licencia": "Pexels License",
   "video_licencia_url": "https://www.pexels.com/license/",
-  "video_poster": "https://images.pexels.com/videos/8566725/ai-architecture-automatic-autonomous-8566725.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+  "video_poster": "https://images.pexels.com/videos/4169354/chat-communication-digital-facebook-4169354.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQdWFmQjhWd0FzUVQtNTlpT1dkVnNpaTlCelF5MU1YNnd5Q01Ea2FTZ2NOaUZORHhEUURpWmtuMjN6RFB0UGIzc19MNDlBV0pOWXFOLWR1ZGpQQWxEZUlGN2hBX2s3dFItMW9IRVNod2hCT0VnZi02TDBrR1ZwbXNIS1BFRENqWXRWckl0M2YxRkplOEY5WUozYlFJNG1JX0wxQWtKMlI5YlpQMlp4X01vMGQ2ZHlkNFZGdWY3NGdGbkNsZkN0eHdDb1NVTzfSAcwBQVVfeXFMUHVhZkI4VndBc1FULTU5aU9XZFZzaWk5QnpReTFNWDZ3eUNNRGthU2djTmlGTkR4RFFEaVprbjIzekRQdFBiM3NfTDQ5QVdKTllxTi1kdWRqUEFsRGVJRjdoQV9rN3RSLTFvSEVTaHdoQk9FZ2YtNkwwa0dWcG1zSEtQRURDall0VnJJdDNmMUZKZThGOVlKM2JRSTRtSV9MMUFrSjJSOWJaUDJaeF9NbzBkNmR5ZDRWRnVmNzRnRm5DbGZDdHh3Q29TVU83?oc=5",
   "fecha_publicacion": "2026-10-04T04:18:18+00:00",
   "revision_humana": false

@@ -492,11 +492,14 @@ def _stock_topic(titulo):
     """Translate a few unambiguous Spanish news topics into stock-media searches."""
     terms = keywords(titulo)
     topics = (
+        ({"whatsapp", "instagram", "facebook", "meta"},
+         "instagram whatsapp smartphone" if {"instagram", "whatsapp"} <= terms else "smartphone social media",
+         {"smartphone", "phone", "mobile", "social", "media", "app", "screen", "device", "chat", "messaging"}),
         ({"desvios", "viales", "cierres", "carreteras", "trafico", "transito", "vehicular", "movilidad", "transporte", "metropolitano"},
          "traffic jam city", {"traffic", "road", "street", "car", "cars", "vehicle", "vehicles", "bus", "transport", "transit", "train"}),
         ({"premios", "ariel", "galardones", "alfombra"},
          "film awards red carpet", {"award", "awards", "carpet", "cinema", "film", "movie", "trophy"}),
-        ({"inteligencia", "artificial", "robotica"},
+        ({"escuela", "universidad", "estudiantes", "campus"},
          "artificial intelligence university", {"robot", "robotic", "technology", "computer", "computers", "digital", "intelligence", "laboratory", "school", "students"}),
     )
     for cues, query, media_terms in topics:
@@ -509,7 +512,7 @@ def _search_pexels_licensed(titulo, count):
     topic = _stock_topic(titulo)
     queries = [query_terms(titulo, 5)]
     if topic:
-        queries.append(topic[0])
+        queries = [topic[0], queries[0]] if {"instagram", "whatsapp"} <= keywords(titulo) else [queries[0], topic[0]]
     if not queries[0]:
         return []
     matches = []
