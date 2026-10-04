@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <title>Privacidad | DatoSinFiltro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="site-header">
+    <div class="top-bar">
+      <button class="menu-icon" id="menuToggle" type="button" aria-label="Mostrar categorías" aria-expanded="false" aria-controls="categoryNav">☰</button>
+      <a href="./index.html" class="newspaper-logo">DatoSinFiltro</a>
+      <div class="top-bar-right">
+        <button class="search-toggle" id="searchToggle" type="button" aria-label="Buscar noticias">⌕</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">◐</button>
+      </div>
+    </div>
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-container">
+        <input type="search" id="searchInput" placeholder="Buscar noticias o temas" aria-label="Buscar noticias" autocomplete="off">
+        <button id="closeSearch" type="button" aria-label="Cerrar búsqueda">✕</button>
+      </div>
+      <div id="searchResults" class="search-results" aria-live="polite"></div>
+    </div>
+    <nav class="category-nav" id="categoryNav" aria-label="Categorías">
+      <ul class="nav-links">
+        <li><a href="./index.html">Portada</a></li>
+        <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html" aria-label="Noticias de Ultima Hora y Politica">Actualidad</a></li><li><a href="./categoria-deportes-en-vivo.html" aria-label="Deportes en Vivo">Deportes</a></li><li><a href="./categoria-finanzas-negocios-y-criptomonedas.html" aria-label="Finanzas, Negocios y Criptomonedas">Economía</a></li><li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html" aria-label="Tecnologia, Gadgets e Inteligencia Artificial">Tecnología</a></li><li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html" aria-label="Salud, Bienestar y Estilo de Vida">Salud</a></li><li><a href="./categoria-entretenimiento-farandula-y-cine.html" aria-label="Entretenimiento, Farandula y Cine">Cultura</a></li><li><a href="./categoria-gaming-y-esports.html" aria-label="Gaming y Esports">Gaming</a></li><li><a href="./categoria-tendencias.html" aria-label="Tendencias">Tendencias</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container" id="contenido">
+<div class="info-page">
+  <p class="eyebrow">Transparencia</p>
+  <h1>Privacidad</h1>
+  <p>DatoSinFiltro es un sitio de noticias estático. La búsqueda funciona en el navegador y no exige crear una cuenta. Actualmente no incluimos código de publicidad ni de análisis propio.</p>
+  <h2>Servicios externos</h2>
+  <p>Vercel aloja el sitio y puede procesar datos técnicos de acceso, como dirección IP y registros de solicitudes. Las páginas cargan fuentes de Google Fonts, imágenes de Pexels o Wikimedia Commons y, cuando corresponda, videos de YouTube o Pexels. Al cargar estos recursos, el navegador se conecta con esos proveedores, que pueden recibir datos técnicos y aplicar sus propias políticas de privacidad.</p>
+  <h2>Publicidad futura</h2>
+  <p>Si se activan anuncios, esta página se actualizará antes de incorporarlos para explicar cookies, identificadores, proveedores, opciones de exclusión y los controles de consentimiento aplicables.</p>
+
+</div>
+</main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>DatoSinFiltro · Noticias con fuentes visibles y controles editoriales.</p>
+      <p><a href="./quienes-somos.html">Quiénes somos</a> · <a href="./politica-editorial.html">Política editorial</a> · <a href="./privacidad.html">Privacidad</a></p>
+      <small>© 2026 DatoSinFiltro</small>
+    </div>
+  </footer>
+  <script>window.BASE_PATH = "./";</script>
+  <script src="./js/script.js" defer></script>
+</body>
+</html>

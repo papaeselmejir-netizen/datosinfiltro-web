@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="DatoSinFiltro">
+  <rect width="64" height="64" rx="8" fill="#111827"/>
+  <path d="M13 48V16h15c12 0 19 6 19 16s-7 16-19 16H13zm9-8h6c7 0 10-3 10-8s-3-8-10-8h-6v16z" fill="#fff"/>
+  <rect x="47" y="16" width="5" height="32" fill="#c22"/>
+</svg>

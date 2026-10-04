@@ -3,7 +3,10 @@ import os
 import json
 import sys
 import argparse
+import glob
+import uuid
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 
 # Forzar UTF-8 en la consola de Windows
@@ -12,9 +15,9 @@ if sys.platform == "win32":
 
 from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, CATEGORIAS
 from src.crawler import investigate_news
-from src.writer import generate_multi_channel_content
-from src.multimedia import search_multimedia_images, search_youtube_video
-from src.distributor import ContentDistributor, start_telegram_listener
+from src.writer import generate_multi_channel_content, verify_article_against_sources
+from src.multimedia import search_licensed_images, search_relevant_video
+from src.editorial import query_terms, select_corrob_sources, source_host, publication_errors, rank_news
 
 load_dotenv()
 
@@ -27,13 +30,25 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "drafts")
 HISTORY_FILE = os.path.join(os.path.dirname(__file__), "history.json")
 
 def load_history():
+    history = set()
     if os.path.exists(HISTORY_FILE):
         try:
             with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-                return set(json.load(f))
+                history.update(json.load(f))
         except Exception:
-            return set()
-    return set()
+            pass
+    for folder in (OUTPUT_DIR, os.path.join(os.path.dirname(__file__), "published"), os.path.join(os.path.dirname(__file__), "output")):
+        for path in glob.glob(os.path.join(folder, "**", "*.json"), recursive=True):
+            try:
+                with open(path, encoding="utf-8") as file:
+                    article = json.load(file)
+                if article.get("fuente_url"):
+                    history.add(article["fuente_url"])
+                if article.get("titulo_fuente"):
+                    history.add(article["titulo_fuente"].lower())
+            except (OSError, ValueError):
+                continue
+    return history
 
 def save_history(history):
     with open(HISTORY_FILE, "w", encoding="utf-8") as f:
@@ -44,44 +59,33 @@ async def process_single_news(noticia, categoria, distributor=None):
     """
     Procesa UNA sola noticia: investiga, redacta y distribuye.
     Evita contaminacion de contexto al procesar cada noticia de forma independiente.
-    SIEMPRE publica: garantiza 3 imágenes + 1 video por artículo.
+    Solo crea un borrador cuando hay fuentes y multimedia verificables.
     """
     titulo = noticia["titulo"]
     print(f"\n    --- Procesando: {titulo[:70]}... ---")
 
     # FASE 2: Investigacion (leer el contenido real de la URL)
     print(f"    [Investigando] Leyendo contenido de la fuente...")
-    contexto, imagen_url, extra_images, video_url = await investigate_news([noticia])
-
-    if not contexto or len(contexto) < 50:
-        print(f"    Contexto insuficiente para esta noticia. Saltando.")
+    topic = query_terms(titulo)
+    candidates = await asyncio.to_thread(
+        extract_custom_topic_google_rss, topic, geo="PE" if noticia.get("region") == "Perú" else "US", max_items=12
+    )
+    corroborating = select_corrob_sources(noticia, candidates, limit=3)
+    contexto, _, _, _, sources = await investigate_news(
+        [noticia, *corroborating], return_sources=True
+    )
+    if len({source_host(source["url"]) for source in sources}) < 2:
+        print("    Faltan dos medios independientes con texto suficiente. Saltando.")
         return None
 
-    # FASE 2.5: Garantizar multimedia (3 imágenes + 1 video)
-    # Recopilar todas las imágenes que ya tenemos del crawler
-    crawler_images = []
-    if imagen_url:
-        crawler_images.append(imagen_url)
-    if extra_images:
-        crawler_images.extend(extra_images)
-
-    # Usar el orquestador multimedia para completar hasta 3 imágenes
-    # Cadena de fallback: Google Scraping -> Bing API -> Google CSE
-    print(f"    [Multimedia] Buscando imágenes relevantes...")
-    all_images = await asyncio.to_thread(
-        search_multimedia_images, titulo, count=3, existing_images=crawler_images
+    print("    [Multimedia] Buscando imágenes con licencia y un video relacionado...")
+    images, video = await asyncio.gather(
+        asyncio.to_thread(search_licensed_images, titulo, 2),
+        asyncio.to_thread(search_relevant_video, titulo),
     )
-
-    # Separar imagen principal de las extras para el artículo
-    imagen_principal = all_images[0] if all_images else ""
-    imagenes_inline = all_images[1:3] if len(all_images) > 1 else []
-
-    # Buscar video si el crawler no encontró uno embebido
-    if not video_url:
-        print(f"    [Multimedia] Buscando video en YouTube...")
-        video_url = await asyncio.to_thread(search_youtube_video, titulo)
-
-    print(f"    Contexto: {len(contexto)} chars | Imágenes: {len(all_images)} | Video: {'Sí' if video_url else 'No'}")
+    if len(images) < 2 or not video:
+        print("    Multimedia insuficiente o no verificable. Saltando.")
+        return None
 
     # FASE 3: Redaccion con IA
     print(f"    [Redactando] Generando contenido multi-canal...")
@@ -91,12 +95,9 @@ async def process_single_news(noticia, categoria, distributor=None):
     if not content:
         print(f"    Error en la generacion de contenido. Saltando.")
         return None
-
-    # FASE 3.5: Insertar imágenes distribuidas en el cuerpo del artículo
-    articulo_html = content.get("articulo_web", "")
-    if imagenes_inline and articulo_html:
-        articulo_html = _insert_images_in_article(articulo_html, imagenes_inline, titulo)
-        content["articulo_web"] = articulo_html
+    if not await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto):
+        print("    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
+        return None
 
     # Check if the LLM generated an error message instead of an article
     if content.get("titulo_articulo", "").lower().startswith("error"):
@@ -105,10 +106,28 @@ async def process_single_news(noticia, categoria, distributor=None):
 
     # Agregar region, imagen principal, imagenes extra y video al contenido generado
     content["region"] = noticia.get("region", "General")
-    content["imagen_url"] = imagen_principal
-    content["extra_images"] = imagenes_inline
-    content["video_url"] = video_url
+    content["schema_version"] = 2
+    content["titulo_fuente"] = titulo
+    content["autor"] = "Equipo editorial DatoSinFiltro"
+    content["fecha_creacion"] = datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds")
+    content["fuentes"] = sources
+    content["imagenes"] = images
+    content["imagen_url"] = images[0]["url"]
+    content["extra_images"] = [item["url"] for item in images[1:]]
+    content["video_url"] = video["url"]
+    content["video_titulo"] = video["titulo"]
+    content["video_canal"] = video["canal"]
+    content["video_source"] = video["source"]
+    content["video_tipo"] = video["tipo"]
+    content["video_origen"] = video.get("origen", "")
+    content["video_licencia"] = video.get("licencia", "")
+    content["video_licencia_url"] = video.get("licencia_url", "")
+    content["video_poster"] = video.get("poster", "")
     content["fuente_url"] = noticia.get("url", "")
+    errors = publication_errors(content)
+    if errors:
+        print(f"    Borrador rechazado: {', '.join(errors)}")
+        return None
     
     print(f"    Contenido generado exitosamente.")
 
@@ -120,7 +139,7 @@ async def process_single_news(noticia, categoria, distributor=None):
     
     timestamp = datetime.now().strftime("%H%M%S")
     safe_title = titulo[:40].replace(" ", "_").replace(",", "").replace(":", "")
-    filename = f"{timestamp}_{safe_title}.json"
+    filename = f"{timestamp}_{safe_title}_{uuid.uuid4().hex[:8]}.json"
     
     # Limpiar caracteres no validos para nombres de archivo
     filename = "".join(c for c in filename if c.isalnum() or c in "._-")
@@ -176,7 +195,7 @@ def _insert_images_in_article(html_content, images, titulo):
     return html_content
 
 
-async def process_category(categoria, distributor=None, max_noticias=3):
+async def process_category(categoria, distributor=None, max_noticias=2, max_drafts=None):
     """
     Procesa una sola categoria: extrae noticias y procesa cada una individualmente.
     """
@@ -199,7 +218,7 @@ async def process_category(categoria, distributor=None, max_noticias=3):
     for n in noticias_peru:
         n["region"] = "Perú"
         
-    noticias = noticias_mundial + noticias_peru
+    noticias = rank_news(noticias_mundial + noticias_peru)
 
     if not noticias:
         print(f"  No se encontraron noticias para '{categoria}'. Saltando.")
@@ -227,15 +246,15 @@ async def process_category(categoria, distributor=None, max_noticias=3):
     # Procesar cada noticia de forma INDIVIDUAL (sin contaminacion de contexto)
     resultados = []
     for noticia in noticias_filtradas:
+        if max_drafts is not None and len(resultados) >= max_drafts:
+            break
         try:
             result = await process_single_news(noticia, categoria, distributor=None) # Ya no enviamos 1 por 1
             if result:
                 resultados.append(result)
-                # Agregar al historial y guardar
-                if noticia.get("url"): 
-                    history.add(noticia["url"])
+                # Los borradores y publicados se consultan en load_history.
+                history.add(noticia.get("url", ""))
                 history.add(noticia["titulo"].lower())
-                save_history(history)
         except Exception as e:
             print(f"    ERROR procesando noticia: {e}")
             continue
@@ -272,16 +291,14 @@ async def main(topic=None):
     print(f"  Idioma: {os.getenv('NEWS_LANG', 'es')} | Pais: {os.getenv('NEWS_COUNTRY', 'PE')}")
     print("=" * 60)
 
-    # Preparar distribuidor de Telegram (si hay credenciales)
+    # Los borradores se revisan y publican desde el CMS protegido.
     distributor = None
-    if os.getenv("TELEGRAM_TOKEN") and os.getenv("TELEGRAM_CHAT_ID"):
-        distributor = ContentDistributor()
-    else:
-        print("\nSin credenciales de Telegram. Los articulos se guardaran localmente.")
 
     if topic:
         print(f"\n  [Fase 1] Buscando noticias sobre: {topic}")
-        noticias = extract_custom_topic_google_rss(topic, geo="US")
+        noticias = rank_news(extract_custom_topic_google_rss(topic, geo="PE", max_items=8))
+        for noticia in noticias:
+            noticia["region"] = "Perú"
         if not noticias:
             print("  No se encontraron noticias para el tema especificado.")
             return
@@ -290,18 +307,24 @@ async def main(topic=None):
             print(f"    {i}. [{n.get('origen')}] {n['titulo'][:80]}")
             
         print("\n  [Fase 2 y 3] Procesando...")
-        try:
-            # Procesamos como categoria 'Tendencias' o 'General'
-            await process_single_news(noticias[0], "Tendencias", distributor=None)
-        except Exception as e:
-            print(f"  ERROR procesando tema personalizado: {e}")
+        for noticia in noticias[:5]:
+            try:
+                if await process_single_news(noticia, "Tendencias", distributor=None):
+                    break
+            except Exception as e:
+                print(f"  ERROR procesando tema personalizado: {e}")
         return
 
     todos_los_resultados = {}
+    max_per_run = max(1, int(os.getenv("MAX_DRAFTS_PER_RUN", "8")))
+    max_per_region = max(1, int(os.getenv("MAX_NEWS_PER_REGION", "2")))
 
     for categoria in CATEGORIAS_ACTIVAS:
+        remaining = max_per_run - sum(len(group) for group in todos_los_resultados.values())
+        if remaining <= 0:
+            break
         try:
-            resultados = await process_category(categoria, distributor, max_noticias=3)
+            resultados = await process_category(categoria, distributor, max_noticias=max_per_region, max_drafts=remaining)
             if resultados:
                 todos_los_resultados[categoria] = resultados
         except Exception as e:

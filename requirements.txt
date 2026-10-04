@@ -6,8 +6,9 @@ pydantic
 python-telegram-bot
 python-dotenv
 googlenewsdecoder
+selectolax<1.0
 httpx
 jinja2==3.1.4
 markdown
-playwright  
- 
+bleach
+

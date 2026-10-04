@@ -5,6 +5,8 @@ __pycache__/
 
 # Environment variables
 .env
+.env.local
+.deps/
 
 # Output directory
 output/
@@ -19,4 +21,6 @@ Thumbs.db
 
 # Exclude scratch directory
 scratch/
+website/.publish-next-*/
+website/.publish-backup-*/
 

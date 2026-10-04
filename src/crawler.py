@@ -2,6 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import asyncio
 import re
+import ipaddress
+import socket
+from urllib.parse import urljoin, urlparse
 from googlenewsdecoder import gnewsdecoder
 
 
@@ -12,7 +15,7 @@ def decode_google_news_url(google_news_url):
     """
     try:
         result = gnewsdecoder(google_news_url)
-        if result.get("status"):
+        if result.get("success") or result.get("status"):
             return result["decoded_url"]
         else:
             print(f"    No se pudo decodificar: {result.get('message', 'Error desconocido')}")
@@ -74,7 +77,29 @@ def _truncate_at_sentence(text, max_length=2500):
         last_space = truncated.rfind(" ")
         if last_space > 0:
             return truncated[:last_space].strip() + "..."
-        return truncated.strip() + "..."
+    return truncated.strip() + "..."
+
+
+def _public_url(url):
+    parsed = urlparse(url or "")
+    host = parsed.hostname or ""
+    if parsed.scheme not in ("http", "https") or not host or parsed.username or parsed.password:
+        return False
+    if host == "localhost" or host.endswith((".local", ".internal")):
+        return False
+    try:
+        return ipaddress.ip_address(host).is_global
+    except ValueError:
+        return True
+
+
+def _public_dns(url):
+    parsed = urlparse(url)
+    try:
+        addresses = socket.getaddrinfo(parsed.hostname, parsed.port or (443 if parsed.scheme == "https" else 80))
+        return bool(addresses) and all(ipaddress.ip_address(address[4][0]).is_global for address in addresses)
+    except (OSError, ValueError, TypeError):
+        return False
 
 
 def _extract_text_sync(url, headers=None):
@@ -86,7 +111,18 @@ def _extract_text_sync(url, headers=None):
         headers = BROWSER_HEADERS
 
     try:
-        response = requests.get(url, headers=headers, timeout=15, allow_redirects=True)
+        if not _public_url(url) or not _public_dns(url):
+            return "", "", [], ""
+        for _ in range(5):
+            response = requests.get(url, headers=headers, timeout=15, allow_redirects=False)
+            if response.status_code not in (301, 302, 303, 307, 308):
+                break
+            destination = urljoin(url, response.headers.get("Location", ""))
+            if not _public_url(destination) or not _public_dns(destination):
+                return "", "", [], ""
+            url = destination
+        else:
+            return "", "", [], ""
         response.raise_for_status()
 
         # Corregir encoding: forzar deteccion automatica
@@ -242,7 +278,7 @@ def extract_text_from_url(url):
     return "", "", [], ""
 
 
-async def investigate_news(noticias):
+async def investigate_news(noticias, return_sources=False):
     """
     Recibe una lista de noticias (con titulo y URL) y extrae el contexto real.
     Ejecuta las peticiones HTTP en threads separados para no bloquear el event loop.
@@ -253,6 +289,7 @@ async def investigate_news(noticias):
     main_image_url = ""
     all_extra_images = []
     main_video_url = ""
+    verified_sources = []
 
     for i, noticia in enumerate(noticias):
         titulo = noticia["titulo"]
@@ -267,7 +304,7 @@ async def investigate_news(noticias):
 
         # Para Google RSS, necesitamos decodificar la URL
         real_url = noticia_url
-        if origen == "google_rss":
+        if origen in ("google_rss", "google_rss_custom"):
             decoded = await asyncio.to_thread(decode_google_news_url, noticia_url)
             if decoded:
                 real_url = decoded
@@ -292,24 +329,35 @@ async def investigate_news(noticias):
             main_video_url = video
 
         if text and len(text) > 100:
-            context_parts.append(f"--- Fuente: {titulo} ---\n{base_context}{text}")
+            if not return_sources or len(text) >= 300:
+                context_parts.append(f"--- Fuente: {titulo} ---\n{base_context}{text}")
+            if len(text) >= 300:
+                verified_sources.append({
+                    "titulo": titulo,
+                    "url": real_url,
+                    "medio": noticia.get("fuente", ""),
+                    "fecha": noticia.get("fecha", ""),
+                })
             img_count = 1 + len(extras) if image else len(extras)
             print(f"    OK ({len(text)} chars, imgs: {img_count}, video: {'Si' if video else 'No'})")
         elif base_context:
-            context_parts.append(f"--- Fuente: {titulo} ---\n{base_context}")
+            if not return_sources:
+                context_parts.append(f"--- Fuente: {titulo} ---\n{base_context}")
             print(f"    Sin contenido completo, usando snippet")
         else:
-            context_parts.append(f"--- Fuente: {titulo} ---\n(Solo titulo disponible)")
+            if not return_sources:
+                context_parts.append(f"--- Fuente: {titulo} ---\n(Solo titulo disponible)")
             print(f"    Sin contenido suficiente, usando titulo")
 
         await asyncio.sleep(1)
 
-    if not context_parts:
+    if not context_parts and not return_sources:
         titles_context = "\n".join([f"- {n['titulo']}" for n in noticias])
         context_parts.append(f"--- Titulares principales ---\n{titles_context}")
         print("  Usando titulares como contexto de respaldo")
 
-    return "\n\n".join(context_parts), main_image_url, all_extra_images[:4], main_video_url
+    result = ("\n\n".join(context_parts), main_image_url, all_extra_images[:4], main_video_url)
+    return (*result, verified_sources) if return_sources else result
 
 
 if __name__ == "__main__":

@@ -1,102 +1,20 @@
 {% extends "base.html" %}
-
-{% block title %}{{ article.titulo_articulo }} - DatoSinFiltro{% endblock %}
-
+{% block title %}{{ article.titulo_articulo }} | DatoSinFiltro{% endblock %}
 {% block head %}
-<!-- Meta tags para SEO y Redes Sociales -->
-<meta name="description" content="{{ article.hilo_x.split('\n')[0] }}">
-<meta property="og:title" content="{{ article.titulo_articulo }}">
-<meta property="og:image" content="{{ article.imagen_url }}">
-<meta property="og:type" content="article">
+<meta name="description" content="{{ article.resumen }}">
+{% if article.canonical %}<link rel="canonical" href="{{ article.canonical }}"><meta property="og:url" content="{{ article.canonical }}">{% endif %}
+<meta property="og:type" content="article"><meta property="og:title" content="{{ article.titulo_articulo }}"><meta property="og:description" content="{{ article.resumen }}"><meta property="og:image" content="{{ article.imagen_url }}">
+<meta property="article:published_time" content="{{ article.fecha_publicacion }}">
+<script type="application/ld+json">{{ article.news_schema | safe }}</script>
 {% endblock %}
-
 {% block content %}
-<div class="article-page-layout">
-<article class="article-container article-main-content">
-    <header class="article-header">
-        <span class="article-category">{{ article.categoria }} • {{ article.region }}</span>
-        <h1 class="article-title">{{ article.titulo_articulo }}</h1>
-        <div class="article-meta">
-            <span>Publicado: {{ article.fecha }}</span>
-        </div>
-    </header>
-
-    {% if article.imagen_url %}
-    <figure class="article-hero-figure">
-        <img src="{{ article.imagen_url }}" alt="{{ article.titulo_articulo }}" class="article-hero-img" onerror="this.onerror=null; this.src='https://placehold.co/1200x600/eeeeee/333333?text=Noticia'">
-    </figure>
-    {% endif %}
-
-    <!-- Article Top Ad Placeholder -->
-    <div class="ad-slot responsive">
-        <span>Espacio para Anuncio (Bajo el título)</span>
-    </div>
-
-    <div class="article-body">
-        {{ article.html_content | safe }}
-
-        {% if article.video_url %}
-        <div class="video-wrapper">
-            <h2>Video Relacionado</h2>
-            <iframe width="560" height="315" 
-                    src="{{ article.video_url }}" 
-                    title="YouTube video player" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-            </iframe>
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- Article Bottom Ad Placeholder -->
-    <div class="ad-slot responsive">
-        <span>Espacio para Anuncio (Final del artículo)</span>
-    </div>
-
-    <!-- Seccion de Noticias Recomendadas al final del articulo -->
-    <section class="related-news">
-        <h3>Noticias Recomendadas</h3>
-        <div class="standard-news-grid">
-            {% for rel_article in recent_articles[:4] %}
-            <article class="news-card classic-card">
-                <a href="{{ rel_article.slug }}.html" class="img-link">
-                    <img src="{{ rel_article.imagen_url }}" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="{{ rel_article.slug }}.html" class="news-link">
-                        <h4>{{ rel_article.titulo_articulo }}</h4>
-                    </a>
-                    <span class="news-meta">{{ rel_article.categoria }}</span>
-                </div>
-            </article>
-            {% endfor %}
-        </div>
-    </section>
-</article>
-
-<!-- Barra Lateral (Sidebar) -->
-<aside class="article-sidebar">
-    <div class="ad-slot rectangle">
-        <span>Anuncio Sidebar (300x250)</span>
-    </div>
-    
-    <div class="sidebar-widget">
-        <h3>Más Leídas</h3>
-        <ul>
-            {% for rel_article in recent_articles[1:5] %}
-            <li class="sidebar-news-item">
-                <a href="{{ rel_article.slug }}.html" class="sidebar-img-link">
-                    <img src="{{ rel_article.imagen_url }}" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/150x150/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="sidebar-news-content">
-                    <a href="{{ rel_article.slug }}.html" class="sidebar-news-title">{{ rel_article.titulo_articulo }}</a>
-                    <span class="news-meta">{{ rel_article.categoria }}</span>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-</aside>
-</div>
+<div class="article-page-layout"><article class="article-container article-main-content">
+  <header class="article-header"><span class="article-category">{{ article.categoria }} · {{ article.region }}</span><h1 class="article-title">{{ article.titulo_articulo }}</h1><p class="article-deck">{{ article.resumen }}</p><div class="article-meta">Por {{ article.autor }} · Publicado <time datetime="{{ article.fecha_publicacion }}">{{ article.fecha_publicacion[:16].replace('T', ' ') }} UTC</time></div></header>
+  <figure class="article-hero-figure"><img src="{{ article.imagenes[0].url }}" alt="{{ article.imagenes[0].descripcion }}" class="article-hero-img" width="1200" height="675" fetchpriority="high"><figcaption>{{ article.imagenes[0].tipo }} · Foto: {{ article.imagenes[0].credito }} · <a href="{{ article.imagenes[0].origen }}" rel="noopener noreferrer">Imagen original</a> · <a href="{{ article.imagenes[0].licencia_url }}" rel="noopener noreferrer">{{ article.imagenes[0].licencia }}</a></figcaption></figure>
+  <div class="article-body">{{ article.html_content | safe }}</div>
+  {% for image in article.imagenes[1:] %}<figure class="article-inline-img"><img src="{{ image.url }}" alt="{{ image.descripcion }}" loading="lazy" width="1000" height="600"><figcaption>{{ image.tipo }} · Foto: {{ image.credito }} · <a href="{{ image.origen }}" rel="noopener noreferrer">Imagen original</a> · <a href="{{ image.licencia_url }}" rel="noopener noreferrer">{{ image.licencia }}</a></figcaption></figure>{% endfor %}
+  <section class="video-section"><h2>Video relacionado</h2><p>{{ article.video_tipo or 'Video relacionado' }} · {{ article.video_titulo }} · {{ article.video_canal }}{% if article.video_origen %} · <a href="{{ article.video_origen }}" rel="noopener noreferrer">Video original</a> · <a href="{{ article.video_licencia_url }}" rel="noopener noreferrer">{{ article.video_licencia }}</a>{% endif %}</p><div class="video-wrapper">{% if article.video_source == 'pexels' %}<video controls preload="none" {% if article.video_poster %}poster="{{ article.video_poster }}"{% endif %} aria-label="{{ article.video_titulo }}"><source src="{{ article.video_url }}" type="video/mp4">Tu navegador no admite este video.</video>{% else %}<iframe src="{{ article.video_url }}" title="{{ article.video_titulo }}" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>{% endif %}</div></section>
+  <section class="source-box"><h2>Fuentes y método</h2><p>Esta nota se elaboró con asistencia de IA y controles automáticos de fuentes y multimedia{% if article.revision_humana %}, además de revisión humana{% endif %}. Las imágenes de archivo son ilustrativas y no muestran necesariamente el hecho narrado.</p><ul>{% for source in article.fuentes %}<li><a href="{{ source.url }}" rel="noopener noreferrer">{{ source.medio or source.titulo }}</a>{% if source.fecha %} · {{ source.fecha }}{% endif %}</li>{% endfor %}</ul></section>
+  {% if recent_articles %}<section class="related-news"><h2>Más noticias</h2><div class="more-news-grid">{% for item in recent_articles %}<article class="news-card small"><a href="{{ item.slug }}.html" class="news-link"><h3>{{ item.titulo_articulo }}</h3></a><span class="news-meta">{{ item.fecha }}</span></article>{% endfor %}</div></section>{% endif %}
+</article></div>
 {% endblock %}

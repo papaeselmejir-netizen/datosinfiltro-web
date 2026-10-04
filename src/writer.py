@@ -9,12 +9,11 @@ load_dotenv()
 
 # Configurar cliente con API Key
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# URL de ejemplo para el sitio web (placeholder hasta que se configure WordPress)
-WEB_URL_PLACEHOLDER = "https://www.tu-sitio-noticias.com"
+WEB_URL_PLACEHOLDER = os.getenv("SITE_URL", "")
 
 
 # Esquema de salida estructurado
@@ -23,17 +22,23 @@ class ContentOutput(BaseModel):
         description="Titulo atractivo y optimizado para SEO. Sin formato H1, solo el texto del titulo."
     )
     articulo_web: str = Field(
-        description="Articulo de 500-800 palabras. OPTIMIZADO PARA ADSENSE: Usa párrafos muy cortos (máximo 3-4 líneas), subtítulos H2, y SIEMPRE incluye al menos una lista con viñetas (bullet points). NO incluir el titulo H1 aqui."
+        description="Artículo periodístico claro en Markdown. Distingue hechos confirmados de contexto; no inventes ni rellenes datos. No incluyas H1."
     )
+    resumen: str = Field(description="Resumen factual de máximo 160 caracteres, sin emojis ni clickbait.")
     hilo_x: str = Field(
         description="Hilo de 3 a 5 tweets separados por saltos de linea. Urgente, incisivo, con datos duros. Maximo 3 emojis. El ultimo tweet debe incluir un CTA con enlace al sitio web."
     )
     post_facebook: str = Field(
-        description="Publicación de 100-200 palabras. Titulo en mayusculas/emojis. APLICA 'CURIOSITY GAP': Cuenta un 70% de la historia y deja un misterio para obligar al clic. Ej: '...el resultado te sorprenderá'. Finaliza con: Lee la noticia completa aqui: [ENLACE]"
+        description="Publicación fiel a los hechos. Resume lo importante sin promesas engañosas y enlaza al artículo si hay URL configurada."
     )
     guion_tiktok: str = Field(
         description="Guion de 45-60 segundos. Estructura: 0-3s gancho provocativo, 3-45s explicacion dinamica, 45-60s pregunta y CTA final diciendo EXPRESAMENTE 'Tienes el link con la noticia completa en mi perfil' (NO dictar URLs)."
     )
+
+
+class QualityOutput(BaseModel):
+    supported: bool = Field(description="True solo si cada dato concreto del artículo está respaldado por el contexto.")
+    unsupported_claims: list[str] = Field(description="Datos, cifras o citas no sustentados por el contexto.")
 
 
 def generate_multi_channel_content(tema, contexto, categoria, web_url=None, region=None):
@@ -57,9 +62,12 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
     Tu tarea es crear contenido multi-canal sobre las noticias de la categoria "{categoria}".
 
     REGLAS ESTRICTAS:
-    - NO INVENTES DATOS. Usa SOLO la informacion del contexto proporcionado.
+    - NO INVENTES DATOS, citas, cifras, fechas ni declaraciones. Usa SOLO el contexto proporcionado.
+    - Si las fuentes discrepan, explica la discrepancia y no presentes el dato como confirmado.
+    - No copies párrafos de las fuentes; aporta una síntesis propia con contexto y utilidad.
+    - Evita sensacionalismo, promesas de contenido oculto y afirmar que algo está ocurriendo EN VIVO sin prueba.
     - Redacta en espanol neutro (latinoamerica).
-    - Los posts de redes sociales DEBEN incluir un CTA (Call to Action) que lleve al lector a la pagina web: {web_url}
+    - Los posts de redes sociales pueden enlazar al artículo cuando exista una URL pública: {web_url}
     - Adapta el tono a cada plataforma.
 
     TEMA PRINCIPAL: {tema}
@@ -70,12 +78,13 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
 
     INSTRUCCIONES POR CANAL:
     1. titulo_articulo: Un titulo periodistico atractivo y optimizado para SEO.
-    2. articulo_web: Optimizado para AdSense. OBLIGATORIO: Párrafos de máximo 3-4 líneas (para móviles), subtítulos H2, y al menos una lista con viñetas.
-    3. hilo_x: Hilo de 3-5 tweets. Datos duros, tono urgente. Ultimo tweet con enlace a {web_url}
-    4. post_facebook: Usa Curiosity Gap. No resumas todo, deja un misterio que obligue a hacer clic en el enlace a {web_url}
-    5. guion_tiktok: Guion de 45-60 seg. Gancho visual, explicación rápida. El CTA final DEBE decir "Tienes el link con la noticia completa en mi perfil" (nunca dictes la url).
+    2. resumen: Una oración que responda qué sucedió y por qué importa.
+    3. articulo_web: Párrafos cortos, subtítulos útiles, antecedentes y límites de lo conocido. No añadas relleno.
+    4. hilo_x: Hilo de 3-5 posts fieles a la noticia.
+    5. post_facebook: Explica el hecho principal sin ocultar información para forzar clics.
+    6. guion_tiktok: Guion de 45-60 segundos, informativo y sin dramatización artificial.
 
-    Devuelve un JSON valido con los 5 campos.
+    Devuelve un JSON valido con todos los campos del esquema.
     """
 
     try:
@@ -105,6 +114,31 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
     except Exception as e:
         print(f"Error generando contenido con IA: {e}")
         return None
+
+
+def verify_article_against_sources(article, context):
+    """Second-pass source check for the automated publication gate."""
+    try:
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=(
+                "Compara el artículo con el contexto de fuentes. Marca supported=false si hay "
+                "cualquier cifra, fecha, cargo, declaración, resultado o hecho concreto que no esté "
+                "respaldado explícitamente. No uses conocimiento externo.\n\n"
+                f"FUENTES:\n{context}\n\nARTÍCULO:\n{article}"
+            ),
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=QualityOutput,
+                temperature=0,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+            ),
+        )
+        result = response.parsed or QualityOutput.model_validate_json(response.text)
+        return bool(result.supported and not result.unsupported_claims)
+    except Exception as exc:
+        print(f"Error verificando artículo: {exc}")
+        return False
 
 
 if __name__ == "__main__":

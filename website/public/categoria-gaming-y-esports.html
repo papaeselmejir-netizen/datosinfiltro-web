@@ -1,273 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DatoSinFiltro - Gaming y Esports </title>
-    <!-- Google Fonts Clásicas (Estilo Periódico Tradicional) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
-    <!-- CSS -->
-    <link rel="stylesheet" href="./css/style.css">
-    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <title>Gaming y Esports | DatoSinFiltro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+  <meta name="description" content="Noticias de Gaming y Esports con fuentes visibles y contexto útil."><link rel="canonical" href="https://datosinfiltro-web.vercel.app/categoria-gaming-y-esports.html">
 </head>
 <body>
-    <header class="site-header">
-        <div class="top-bar">
-            <div class="menu-icon" id="menuToggle">≡</div>
-            <a href="./index.html" class="newspaper-logo">
-                DatoSinFiltro
-            </a>
-            <div class="top-bar-right">
-                <button class="search-toggle" id="searchToggle" title="Buscar">🔍</button>
-                <button class="theme-toggle" id="themeToggle" title="Modo Oscuro/Claro">🌙</button>
-            </div>
-        </div>
-        
-        <!-- Buscador Overlay -->
-        <div class="search-overlay" id="searchOverlay">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Buscar noticias, autores, o temas..." autocomplete="off">
-                <button id="closeSearch">✕</button>
-            </div>
-            <div id="searchResults" class="search-results"></div>
-        </div>
-
-        <nav class="category-nav" id="categoryNav">
-            <ul class="nav-links">
-                <li><a href="./index.html">Portada</a></li>
-                <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html">Política & Última Hora</a></li>
-                <li><a href="./categoria-deportes-en-vivo.html">Deportes</a></li>
-                <li><a href="./categoria-finanzas-negocios-y-criptomonedas.html">Economía & Negocios</a></li>
-                <li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html">Tecnología</a></li>
-                <li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html">Salud</a></li>
-                <li><a href="./categoria-entretenimiento-farandula-y-cine.html">Cultura & Entretenimiento</a></li>
-                <li><a href="./categoria-gaming-y-esports.html">Gaming</a></li>
-                <li><a href="./categoria-tendencias.html">Tendencias</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Global Top Ad Placeholder -->
-    <div class="monetization-space leaderboard">
-        <span>Espacio para Anuncio (728x90)</span>
-        <!-- Aquí irá el script de Google AdSense -->
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="site-header">
+    <div class="top-bar">
+      <button class="menu-icon" id="menuToggle" type="button" aria-label="Mostrar categorías" aria-expanded="false" aria-controls="categoryNav">☰</button>
+      <a href="./index.html" class="newspaper-logo">DatoSinFiltro</a>
+      <div class="top-bar-right">
+        <button class="search-toggle" id="searchToggle" type="button" aria-label="Buscar noticias">⌕</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">◐</button>
+      </div>
     </div>
-
-    <main class="container">
-        
-<div class="category-page-container">
-    <div class="category-header">
-        <h1 class="page-title">Gaming y Esports</h1>
-        <p class="page-subtitle">Las últimas noticias y actualizaciones sobre Gaming y Esports.</p>
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-container">
+        <input type="search" id="searchInput" placeholder="Buscar noticias o temas" aria-label="Buscar noticias" autocomplete="off">
+        <button id="closeSearch" type="button" aria-label="Cerrar búsqueda">✕</button>
+      </div>
+      <div id="searchResults" class="search-results" aria-live="polite"></div>
     </div>
-
-    
-    <div class="news-grid classic-grid">
-        <!-- Featured Article in Category -->
-        <article class="news-card hero-category-card">
-            <a href="e-sports-debutan-en-sd2026-un-hito-histórico-para-el-gaming-.html" class="img-link">
-                <img src="https://cms.jcc2026.org/wp-content/uploads/2026/08/Saul-Leonardo-Mena-3.webp" alt="Hero" onerror="this.onerror=null; this.src='https://placehold.co/800x500/eeeeee/333333?text=Noticia'">
-            </a>
-            <div class="card-content">
-                <a href="e-sports-debutan-en-sd2026-un-hito-histórico-para-el-gaming-.html" class="news-link">
-                    <h2>E-Sports Debutan en SD2026: Un Hito Histórico para el Gaming Peruano</h2>
-                </a>
-                <p class="excerpt">¡URGENTE! 🚨 Los E-Sports harán su debut oficial en los Juegos SD2026. Un paso gigante para el reconocimiento global del gaming competitivo. ¡El futuro...</p>
-                <span class="news-meta">2026-09-07</span>
-            </div>
-        </article>
-
-        <!-- Other Articles -->
-        <div class="standard-news-grid">
-            
-            <article class="news-card classic-card">
-                <a href="el-pc-superará-a-consolas-en-2028-análisis-de-newzoo-sobre-e.html" class="img-link">
-                    <img src="https://media.vandal.net/i/200x112/4-2025/17/20254171554405_1.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="el-pc-superará-a-consolas-en-2028-análisis-de-newzoo-sobre-e.html" class="news-link">
-                        <h3>El PC Superará a Consolas en 2028: Análisis de Newzoo sobre el Futuro del Gaming</h3>
-                    </a>
-                    <span class="news-meta">2026-09-07</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="toei-games-el-gigante-de-la-animación-japonesa-irrumpe-en-el.html" class="img-link">
-                    <img src="https://i0.wp.com/levelup.buscafs.com/2026/04/Toei-Games.jpg?quality=75&strip=all" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="toei-games-el-gigante-de-la-animación-japonesa-irrumpe-en-el.html" class="news-link">
-                        <h3>Toei Games: El gigante de la animación japonesa irrumpe en el mundo de los videojuegos y esports</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="xbox-dice-adiós-a-la-consola-el-futuro-del-gaming-en-la-nube.html" class="img-link">
-                    <img src="https://cdn-3.expansion.mx/dims4/default/e9d6dfa/2147483647/strip/true/crop/5642x3839+0+0/resize/1200x817!/format/webp/quality/80/?url=https://cdn-3.expansion.mx/19/e6/d893daed4d24bf8658978de330b7/xbox-no-abandona-consolas.JPG" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="xbox-dice-adiós-a-la-consola-el-futuro-del-gaming-en-la-nube.html" class="news-link">
-                        <h3>Xbox Dice Adiós a la Consola: El Futuro del Gaming en la Nube Llega a Todas Tus Pantallas</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="el-auge-del-gaming-en-chile-móviles-fútbol-virtual-y-esports.html" class="img-link">
-                    <img src="https://cdn.elmorrocotudo.cl/sites/elmorrocotudo.cl/files/imagecache/380x285/imagen_noticia/u_jrmjeviymr-music-7502317_640.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="el-auge-del-gaming-en-chile-móviles-fútbol-virtual-y-esports.html" class="news-link">
-                        <h3>El Auge del Gaming en Chile: Móviles, Fútbol Virtual y eSports Redefinen el Entretenimiento</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="invencible-gaming-fest-rosario-se-consolidó-como-epicentro-d.html" class="img-link">
-                    <img src="https://www.redboing.com/wp-content/uploads/2026/08/Invencible-Gaming-Fest-Los-esports-se-preparan-para-los-XIII-Juegos-Suramericanos-con-una-gran-jornada-en-Rosario1-1024x683.jpeg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="invencible-gaming-fest-rosario-se-consolidó-como-epicentro-d.html" class="news-link">
-                        <h3>Invencible Gaming Fest: Rosario se Consolidó como Epicentro de Esports y Música</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="gamergy-vuelve-a-méxico-celebrando-cinco-años-de-gaming-y-es.html" class="img-link">
-                    <img src="https://static1-es.millenium.gg/articles/5/48/77/5/@/265182-gymx22-llegagymx-1920-llego-article_m-1.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="gamergy-vuelve-a-méxico-celebrando-cinco-años-de-gaming-y-es.html" class="news-link">
-                        <h3>Gamergy Vuelve a México: Celebrando Cinco Años de Gaming y Esports</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="toei-animation-lanza-toei-games-un-gigante-del-anime-entra-a.html" class="img-link">
-                    <img src="https://media.vandal.net/i/200x112/4-2026/21/20264211153852_1.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="toei-animation-lanza-toei-games-un-gigante-del-anime-entra-a.html" class="news-link">
-                        <h3>Toei Animation Lanza "Toei Games": Un Gigante del Anime Entra al Mundo del Gaming y Esports</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="invencible-gaming-fest-rosario-vibró-con-la-pasión-de-los-es.html" class="img-link">
-                    <img src="https://lavozderosario.com/wp-content/uploads/2026/08/Invencible-Gaming-Fest-compressed-130x90.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="invencible-gaming-fest-rosario-vibró-con-la-pasión-de-los-es.html" class="news-link">
-                        <h3>Invencible Gaming Fest: Rosario Vibró con la Pasión de los Esports y la Cultura Gamer</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="esports-nations-cup-2026-confirmados-los-16-juegos-y-un-prem.html" class="img-link">
-                    <img src="https://i0.wp.com/levelup.buscafs.com/2026/04/Esports-.jpg?fit=1280,960&quality=75&strip=all" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="esports-nations-cup-2026-confirmados-los-16-juegos-y-un-prem.html" class="news-link">
-                        <h3>Esports Nations Cup 2026: Confirmados los 16 juegos y un premio de 45 millones de dólares</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="gamergy-méxico-cinco-años-de-éxito-y-el-gran-regreso-del-fes.html" class="img-link">
-                    <img src="https://bunny-wp-pullzone-igwhdjali4.b-cdn.net/wp-content/uploads/2023/01/Camara1_Dia2_l2-5.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="gamergy-méxico-cinco-años-de-éxito-y-el-gran-regreso-del-fes.html" class="news-link">
-                        <h3>Gamergy México: Cinco Años de Éxito y el Gran Regreso del Festival Gaming</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="el-resurgimiento-del-pc-gaming-newzoo-predice-que-superará-a.html" class="img-link">
-                    <img src="https://external-preview.redd.it/pc-will-overtake-console-revenue-by-2028-says-newzoo-v0-h3RUS_GbNH-kTh7BjVYkKm5IsKDOlOJFlBiNmY4LiwQ.jpeg?width=640&crop=smart&auto=webp&s=509870f29c1b2f40c7be3cb3cbc195188afac1a3" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="el-resurgimiento-del-pc-gaming-newzoo-predice-que-superará-a.html" class="news-link">
-                        <h3>El Resurgimiento del PC Gaming: Newzoo Predice que Superará a las Consolas en 2028</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="gaming-sin-límites-xbox-expande-su-juego-en-la-nube-y-dice-a.html" class="img-link">
-                    <img src="https://tierragamer.com/wp-content/uploads/2026/09/cambios-en-xbox-cloud-gaming-1024x576.webp" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="gaming-sin-límites-xbox-expande-su-juego-en-la-nube-y-dice-a.html" class="news-link">
-                        <h3>Gaming sin límites: Xbox expande su juego en la nube y dice adiós a la consola</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="toei-games-el-gigante-del-anime-entra-con-fuerza-al-mundo-de.html" class="img-link">
-                    <img src="https://external-preview.redd.it/japanese-anime-and-film-giant-toei-enters-game-business-v0-euef1WtT2G9-0hqdBiU6UQFW6JDOXQeELFjsG5JlRGU.jpeg?width=640&crop=smart&auto=webp&s=11de075b8a978cfe800736af09200c698677197a" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="toei-games-el-gigante-del-anime-entra-con-fuerza-al-mundo-de.html" class="news-link">
-                        <h3>Toei Games: El Gigante del Anime Entra con Fuerza al Mundo de los Videojuegos y Esports</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="gamergy-vuelve-a-méxico-cinco-años-de-gaming-y-esports-en-un.html" class="img-link">
-                    <img src="https://vidagamer.mx/wp-content/uploads/image-98-1024x684.png" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="gamergy-vuelve-a-méxico-cinco-años-de-gaming-y-esports-en-un.html" class="news-link">
-                        <h3>Gamergy Vuelve a México: Cinco Años de Gaming y Esports en una Edición Imperdible</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-        </div>
+    <nav class="category-nav" id="categoryNav" aria-label="Categorías">
+      <ul class="nav-links">
+        <li><a href="./index.html">Portada</a></li>
+        <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html" aria-label="Noticias de Ultima Hora y Politica">Actualidad</a></li><li><a href="./categoria-deportes-en-vivo.html" aria-label="Deportes en Vivo">Deportes</a></li><li><a href="./categoria-finanzas-negocios-y-criptomonedas.html" aria-label="Finanzas, Negocios y Criptomonedas">Economía</a></li><li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html" aria-label="Tecnologia, Gadgets e Inteligencia Artificial">Tecnología</a></li><li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html" aria-label="Salud, Bienestar y Estilo de Vida">Salud</a></li><li><a href="./categoria-entretenimiento-farandula-y-cine.html" aria-label="Entretenimiento, Farandula y Cine">Cultura</a></li><li><a href="./categoria-gaming-y-esports.html" aria-label="Gaming y Esports">Gaming</a></li><li><a href="./categoria-tendencias.html" aria-label="Tendencias">Tendencias</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container" id="contenido"><div class="category-page-container"><div class="category-header"><p class="eyebrow">Sección</p><h1 class="page-title">Gaming y Esports</h1><p class="page-subtitle">Noticias verificadas con fuentes y contexto.</p></div><p class="empty-state">No hay noticias verificadas en esta sección por ahora.</p></div></main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>DatoSinFiltro · Noticias con fuentes visibles y controles editoriales.</p>
+      <p><a href="./quienes-somos.html">Quiénes somos</a> · <a href="./politica-editorial.html">Política editorial</a> · <a href="./privacidad.html">Privacidad</a></p>
+      <small>© 2026 DatoSinFiltro</small>
     </div>
-    
-</div>
-
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 DatoSinFiltro. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <!-- JS -->
-    <script>
-        // Pass base_path to JS for fetching search.json
-        window.BASE_PATH = "./";
-    </script>
-    <script src="./js/script.js"></script>
+  </footer>
+  <script>window.BASE_PATH = "./";</script>
+  <script src="./js/script.js" defer></script>
 </body>
 </html>

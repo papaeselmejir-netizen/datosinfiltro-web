@@ -1,14 +1,17 @@
 name: Pipeline de Noticias Autonomo
 
+concurrency:
+  group: noticias-programadas
+  cancel-in-progress: false
+
 on:
   schedule:
-    # Horarios estrategicos para Peru (UTC-5):
-    # 06:00 AM (11:00 UTC), 12:00 PM (17:00 UTC), 06:00 PM (23:00 UTC), 10:00 PM (03:00 UTC)
+    # 06:00, 12:00, 18:00 y 22:00 en Perú (UTC-5).
     - cron: '0 11,17,23,3 * * *'
-  workflow_dispatch: # Permite ejecutar el bot manualmente con un click en GitHub
+  workflow_dispatch:
 
 permissions:
-  contents: write # Permiso critico para que el bot pueda guardar los borradores en tu repo
+  contents: write
 
 jobs:
   generar_noticias:
@@ -23,28 +26,35 @@ jobs:
         with:
           python-version: '3.11'
           
-      - name: Instalar Dependencias
+      - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-          # Instalar navegadores para el Web Scraping
-          python -m playwright install chromium
-          python -m playwright install-deps
-          
-      - name: Ejecutar el Bot de Noticias (main.py)
+      - name: Investigar y crear borradores verificados
         env:
-          # Estas llaves las sacará de tus GitHub Secrets
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
+          CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           NEWS_COUNTRY: PE
           NEWS_LANG: es
         run: python main.py
+
+      - name: Publicar automáticamente los borradores que pasan los controles
+        env:
+          SITE_URL: https://datosinfiltro-web.vercel.app
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          ADSENSE_PUBLISHER_ID: ${{ vars.ADSENSE_PUBLISHER_ID }}
+        run: python publish_verified.py
         
-      - name: Guardar los nuevos borradores en GitHub
+      - name: Guardar artículos y sitio en GitHub
         run: |
-          git config --global user.name 'Robot Periodista'
-          git config --global user.email 'robot@datosinfiltro.com'
-          git add drafts/
-          git commit -m "🤖 [Bot] Nuevos borradores de noticias generados" || echo "No hay noticias nuevas para guardar"
-          git push
+          git config user.name '${{ github.actor }}'
+          git config user.email '${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com'
+          git add -A -- drafts/ published/ website/public/
+          if ! git diff --cached --quiet; then
+            git commit -m "Publicar noticias verificadas"
+            git push
+          fi

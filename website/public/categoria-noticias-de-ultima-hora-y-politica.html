@@ -1,261 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DatoSinFiltro - Noticias de Ultima Hora y Politica </title>
-    <!-- Google Fonts Clásicas (Estilo Periódico Tradicional) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
-    <!-- CSS -->
-    <link rel="stylesheet" href="./css/style.css">
-    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <title>Noticias de Ultima Hora y Politica | DatoSinFiltro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+  <meta name="description" content="Noticias de Noticias de Ultima Hora y Politica con fuentes visibles y contexto útil."><link rel="canonical" href="https://datosinfiltro-web.vercel.app/categoria-noticias-de-ultima-hora-y-politica.html">
 </head>
 <body>
-    <header class="site-header">
-        <div class="top-bar">
-            <div class="menu-icon" id="menuToggle">≡</div>
-            <a href="./index.html" class="newspaper-logo">
-                DatoSinFiltro
-            </a>
-            <div class="top-bar-right">
-                <button class="search-toggle" id="searchToggle" title="Buscar">🔍</button>
-                <button class="theme-toggle" id="themeToggle" title="Modo Oscuro/Claro">🌙</button>
-            </div>
-        </div>
-        
-        <!-- Buscador Overlay -->
-        <div class="search-overlay" id="searchOverlay">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Buscar noticias, autores, o temas..." autocomplete="off">
-                <button id="closeSearch">✕</button>
-            </div>
-            <div id="searchResults" class="search-results"></div>
-        </div>
-
-        <nav class="category-nav" id="categoryNav">
-            <ul class="nav-links">
-                <li><a href="./index.html">Portada</a></li>
-                <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html">Política & Última Hora</a></li>
-                <li><a href="./categoria-deportes-en-vivo.html">Deportes</a></li>
-                <li><a href="./categoria-finanzas-negocios-y-criptomonedas.html">Economía & Negocios</a></li>
-                <li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html">Tecnología</a></li>
-                <li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html">Salud</a></li>
-                <li><a href="./categoria-entretenimiento-farandula-y-cine.html">Cultura & Entretenimiento</a></li>
-                <li><a href="./categoria-gaming-y-esports.html">Gaming</a></li>
-                <li><a href="./categoria-tendencias.html">Tendencias</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Global Top Ad Placeholder -->
-    <div class="monetization-space leaderboard">
-        <span>Espacio para Anuncio (728x90)</span>
-        <!-- Aquí irá el script de Google AdSense -->
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="site-header">
+    <div class="top-bar">
+      <button class="menu-icon" id="menuToggle" type="button" aria-label="Mostrar categorías" aria-expanded="false" aria-controls="categoryNav">☰</button>
+      <a href="./index.html" class="newspaper-logo">DatoSinFiltro</a>
+      <div class="top-bar-right">
+        <button class="search-toggle" id="searchToggle" type="button" aria-label="Buscar noticias">⌕</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">◐</button>
+      </div>
     </div>
-
-    <main class="container">
-        
-<div class="category-page-container">
-    <div class="category-header">
-        <h1 class="page-title">Noticias de Ultima Hora y Politica</h1>
-        <p class="page-subtitle">Las últimas noticias y actualizaciones sobre Noticias de Ultima Hora y Politica.</p>
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-container">
+        <input type="search" id="searchInput" placeholder="Buscar noticias o temas" aria-label="Buscar noticias" autocomplete="off">
+        <button id="closeSearch" type="button" aria-label="Cerrar búsqueda">✕</button>
+      </div>
+      <div id="searchResults" class="search-results" aria-live="polite"></div>
     </div>
-
-    
-    <div class="news-grid classic-grid">
-        <!-- Featured Article in Category -->
-        <article class="news-card hero-category-card">
-            <a href="perú-vs-argentina-fecha-horarios-y-canales-para-el-sudameric.html" class="img-link">
-                <img src="https://elcomercio.pe/resizer/v2/QJ3GWBCE6ZBZJJLZ4QRGDBIMOI.jpg?auth=97e5a3d3668c8fa415ad03c9db7d16714a2f23add0d09f11fd80b7ac7990f412&width=980&height=528&quality=75&smart=true" alt="Hero" onerror="this.onerror=null; this.src='https://placehold.co/800x500/eeeeee/333333?text=Noticia'">
-            </a>
-            <div class="card-content">
-                <a href="perú-vs-argentina-fecha-horarios-y-canales-para-el-sudameric.html" class="news-link">
-                    <h2>Perú vs Argentina: Fecha, Horarios y Canales para el Sudamericano de Vóley 2026</h2>
-                </a>
-                <p class="excerpt">¡ALERTA VÓLEY! 🏐 Perú y Argentina se enfrentan en la fecha 1 del Sudamericano de Vóley 2026. La tensión crece, ¿quién se llevará la primera victoria?...</p>
-                <span class="news-meta">2026-09-07</span>
-            </div>
-        </article>
-
-        <!-- Other Articles -->
-        <div class="standard-news-grid">
-            
-            <article class="news-card classic-card">
-                <a href="real-madrid-vs-inter-guía-definitiva-para-ver-la-champions-l.html" class="img-link">
-                    <img src="https://elcomercio.pe/resizer/v2/BHVXPAEM7FET3LPVEJMUK5RRNE.jpg?auth=ca666c382b091d2f1170e145a78d10bbae32368ded18968370161aae77695224&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="real-madrid-vs-inter-guía-definitiva-para-ver-la-champions-l.html" class="news-link">
-                        <h3>Real Madrid vs. Inter: Guía Definitiva para Ver la Champions League en Perú</h3>
-                    </a>
-                    <span class="news-meta">2026-09-07</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="horóscopo-del-8-de-setiembre-predicciones-clave-para-tu-sign.html" class="img-link">
-                    <img src="https://elcomercio.pe/resizer/v2/IH64IFKP6JGZLFHMFFD5PFNUIQ.jpeg?auth=2545493a8fb5fc6cf2b6b6e26ed863f082eec339905833518d4294d60483044e&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="horóscopo-del-8-de-setiembre-predicciones-clave-para-tu-sign.html" class="news-link">
-                        <h3>Horóscopo del 8 de Setiembre: Predicciones Clave para tu Signo Zodiacal Hoy</h3>
-                    </a>
-                    <span class="news-meta">2026-09-07</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="victoria-de-la-extrema-derecha-en-sajonia-anhalt-desata-cris.html" class="img-link">
-                    <img src="https://imagenes.elpais.com/resizer/v2/55JYPHIUNRORRESOUFNPUHUG5U.jpg?auth=e7aa1e2c79225d5237ff6ebb66200f0eebd0e77ed3a26772754a510f3db61a6c&width=1200" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="victoria-de-la-extrema-derecha-en-sajonia-anhalt-desata-cris.html" class="news-link">
-                        <h3>Victoria de la Extrema Derecha en Sajonia-Anhalt Desata Crisis en el Gobierno Alemán</h3>
-                    </a>
-                    <span class="news-meta">2026-09-07</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="apple-tv-transmite-histórica-final-de-leagues-cup-toluca-ven.html" class="img-link">
-                    <img src="https://elcomercio.pe/resizer/v2/7BXSM5GWNVFCJHSOLU4NEW3TKU.jpg?auth=2103df639ddc1217d7d018152a8fa4ae20b146ef11b70dcddc1102ec94294e94&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="apple-tv-transmite-histórica-final-de-leagues-cup-toluca-ven.html" class="news-link">
-                        <h3>Apple TV Transmite Histórica Final de Leagues Cup: Toluca Vence a Monterrey 2-0</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="israel-bombardea-edificio-de-hizbulá-en-líbano-escalada-de-t.html" class="img-link">
-                    <img src="https://elcomercio.pe/resizer/v2/KZFEDV3O4RG7PHX3UDZNRTAVXQ.jpg?auth=d28b205a88ec1d3e8c1c21c80230cf5b6e658e5188c2f199d73d8ec99875ee79&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="israel-bombardea-edificio-de-hizbulá-en-líbano-escalada-de-t.html" class="news-link">
-                        <h3>Israel Bombardea Edificio de Hizbulá en Líbano: ¿Escalada de Tensión en Medio Oriente?</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="toluca-conquista-la-leagues-cup-2026-vence-2-0-a-monterrey-e.html" class="img-link">
-                    <img src="https://elcomercio.pe/resizer/v2/MLXM4EAQLNAF5DNI2X5PYNWLYE.jpg?auth=d79edaa559c2edbeefaaf842079a6edd31059dfcda9f4e3a7e3faf476b64694f&width=980&height=528&quality=75&smart=true" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="toluca-conquista-la-leagues-cup-2026-vence-2-0-a-monterrey-e.html" class="news-link">
-                        <h3>Toluca Conquista la Leagues Cup 2026: Vence 2-0 a Monterrey en una Final Épica</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="ascenso-de-la-extrema-derecha-afd-arrasa-en-elecciones-de-sa.html" class="img-link">
-                    <img src="https://img.rtve.es/n/17214247?w=1600" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="ascenso-de-la-extrema-derecha-afd-arrasa-en-elecciones-de-sa.html" class="news-link">
-                        <h3>Ascenso de la Extrema Derecha: AfD Arrasa en Elecciones de Sajonia-Anhalt y Sacude la Política Alemana</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="escalada-de-tensión-irán-ataca-portaviones-y-embarcaciones-d.html" class="img-link">
-                    <img src="https://i0.wp.com/imgmedia.larepublica.pe/1200x735/larepublica/original/2026/09/05/6a9cc28f8be50a73c50f1f16.jpg?resize=900,551&ssl=1" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="escalada-de-tensión-irán-ataca-portaviones-y-embarcaciones-d.html" class="news-link">
-                        <h3>Escalada de Tensión: Irán Ataca Portaviones y Embarcaciones de EE.UU. en el Estrecho de Ormuz</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="doble-explosión-en-cuartel-militar-de-bolivia-al-menos-3-mue.html" class="img-link">
-                    <img src="https://newscord.org/_next/image?url=https://cdn-cabinet.ua.news/uploads/images/bolivia_military_barracks_explosion_kill_1788576146903.webp&w=1920&q=75" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="doble-explosión-en-cuartel-militar-de-bolivia-al-menos-3-mue.html" class="news-link">
-                        <h3>Doble Explosión en Cuartel Militar de Bolivia: Al Menos 3 Muertos y Decenas de Heridos en Viacha</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="alemania-en-alerta-la-extrema-derecha-de-afd-arrasa-en-sajon.html" class="img-link">
-                    <img src="https://diariosabemos.com/uploads/s1/23/04/93/3/afd-arrasa-en-sajonia-anhalt-y-sacude-el-mapa-politico-aleman.jpeg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="alemania-en-alerta-la-extrema-derecha-de-afd-arrasa-en-sajon.html" class="news-link">
-                        <h3>Alemania en Alerta: La Extrema Derecha de AfD Arrasa en Sajonia-Anhalt y Sacude el Panorama Político</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="ceuta-y-elecciones-las-claves-del-nuevo-curso-político-en-es.html" class="img-link">
-                    <img src="https://img.rtve.es/imagenes/nuevo-curso-politico-claves-gobierno-elecciones/01787218570075.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="ceuta-y-elecciones-las-claves-del-nuevo-curso-político-en-es.html" class="news-link">
-                        <h3>Ceuta y Elecciones: Las Claves del Nuevo Curso Político en España</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="perú-economía-zombi-el-impacto-oculto-de-la-crisis-política-.html" class="img-link">
-                    <img src="https://ichef.bbci.co.uk/news/1200/branded_mundo/7e2b/live/72c15a60-366f-11f1-a169-f7f3edc44bf8.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="perú-economía-zombi-el-impacto-oculto-de-la-crisis-política-.html" class="news-link">
-                        <h3>Perú: ¿Economía Zombi? El Impacto Oculto de la Crisis Política en su Crecimiento</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="ascenso-de-la-extrema-derecha-en-alemania-afd-triunfa-en-saj.html" class="img-link">
-                    <img src="https://s.france24.com/media/display/998e9542-aa03-11f1-95dc-005056bf30b7/w:980/FOTO-ALEMANIA-CANDIDATO-AFD-SAJONIA.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="ascenso-de-la-extrema-derecha-en-alemania-afd-triunfa-en-saj.html" class="news-link">
-                        <h3>Ascenso de la Extrema Derecha en Alemania: AfD Triunfa en Sajonia-Anhalt y Sacude el Panorama Político</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-        </div>
+    <nav class="category-nav" id="categoryNav" aria-label="Categorías">
+      <ul class="nav-links">
+        <li><a href="./index.html">Portada</a></li>
+        <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html" aria-label="Noticias de Ultima Hora y Politica">Actualidad</a></li><li><a href="./categoria-deportes-en-vivo.html" aria-label="Deportes en Vivo">Deportes</a></li><li><a href="./categoria-finanzas-negocios-y-criptomonedas.html" aria-label="Finanzas, Negocios y Criptomonedas">Economía</a></li><li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html" aria-label="Tecnologia, Gadgets e Inteligencia Artificial">Tecnología</a></li><li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html" aria-label="Salud, Bienestar y Estilo de Vida">Salud</a></li><li><a href="./categoria-entretenimiento-farandula-y-cine.html" aria-label="Entretenimiento, Farandula y Cine">Cultura</a></li><li><a href="./categoria-gaming-y-esports.html" aria-label="Gaming y Esports">Gaming</a></li><li><a href="./categoria-tendencias.html" aria-label="Tendencias">Tendencias</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container" id="contenido"><div class="category-page-container"><div class="category-header"><p class="eyebrow">Sección</p><h1 class="page-title">Noticias de Ultima Hora y Politica</h1><p class="page-subtitle">Noticias verificadas con fuentes y contexto.</p></div><p class="empty-state">No hay noticias verificadas en esta sección por ahora.</p></div></main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>DatoSinFiltro · Noticias con fuentes visibles y controles editoriales.</p>
+      <p><a href="./quienes-somos.html">Quiénes somos</a> · <a href="./politica-editorial.html">Política editorial</a> · <a href="./privacidad.html">Privacidad</a></p>
+      <small>© 2026 DatoSinFiltro</small>
     </div>
-    
-</div>
-
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 DatoSinFiltro. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <!-- JS -->
-    <script>
-        // Pass base_path to JS for fetching search.json
-        window.BASE_PATH = "./";
-    </script>
-    <script src="./js/script.js"></script>
+  </footer>
+  <script>window.BASE_PATH = "./";</script>
+  <script src="./js/script.js" defer></script>
 </body>
 </html>

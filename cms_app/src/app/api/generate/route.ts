@@ -1,27 +1,24 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { exec } from 'child_process';
-import util from 'util';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
+import { requireAdmin } from '@/lib/admin';
+import { BASE_DIR, message } from '@/lib/drafts';
 
-const execPromise = util.promisify(exec);
-const BASE_DIR = path.join(process.cwd(), '../');
+const run = promisify(execFile);
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
-    const { topic } = await req.json();
-    if (!topic) return NextResponse.json({ success: false, error: 'Tema requerido' }, { status: 400 });
-
-    // Ejecutar main.py con el tema específico
-    // En Windows se debe escapar las comillas si el tema tiene espacios
-    const command = `python main.py --topic "${topic.replace(/"/g, '\\"')}"`;
-    
-    console.log(`Ejecutando: ${command}`);
-    const { stdout, stderr } = await execPromise(command, { cwd: BASE_DIR });
-    console.log('Generate Output:', stdout);
-
-    return NextResponse.json({ success: true, message: 'Borrador generado correctamente' });
-  } catch (error: any) {
-    console.error('Generate Error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const { topic } = await request.json();
+    if (typeof topic !== 'string' || topic.trim().length < 3 || topic.length > 160) {
+      return NextResponse.json({ success: false, error: 'Tema inválido' }, { status: 400 });
+    }
+    await run(process.env.PYTHON_BIN || 'python', ['main.py', '--topic', topic.trim()], {
+      cwd: BASE_DIR, timeout: 240_000, maxBuffer: 4 * 1024 * 1024,
+    });
+    return NextResponse.json({ success: true, message: 'Búsqueda terminada; revise los borradores' });
+  } catch (error: unknown) {
+    return NextResponse.json({ success: false, error: message(error) }, { status: 500 });
   }
 }

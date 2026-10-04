@@ -1,83 +1,101 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { exec } from 'child_process';
-import util from 'util';
+import { randomUUID } from 'crypto';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
+import { requireAdmin } from '@/lib/admin';
+import { CATEGORIES } from '@/lib/categories';
+import { BASE_DIR, OUTPUT_DIR, message, resolveDraft } from '@/lib/drafts';
+import { type ArticleDraft, validationErrors } from '@/lib/validation';
 
-const execPromise = util.promisify(exec);
+const run = promisify(execFile);
+const publicDir = path.join(BASE_DIR, 'website', 'public');
 
-const DRAFTS_DIR = path.join(process.cwd(), '../drafts');
-const OUTPUT_DIR = path.join(process.cwd(), '../output');
-const BASE_DIR = path.join(process.cwd(), '../');
+function categoryFolder(category: string): string {
+  return category.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '_');
+}
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
+  let destination = '';
+  let stage = '';
+  let backup = '';
   try {
-    const { id, category } = await req.json();
-    if (!id) return NextResponse.json({ success: false, error: 'ID requerido' }, { status: 400 });
-
-    const sourcePath = path.join(DRAFTS_DIR, id);
-
-    // Asegurar que el archivo de origen exista
-    if (!fs.existsSync(sourcePath)) {
-      return NextResponse.json({ success: false, error: 'El borrador no existe' }, { status: 404 });
+    const { id, category } = await request.json();
+    const source = resolveDraft(id);
+    if (!source || !fs.existsSync(source)) {
+      return NextResponse.json({ success: false, error: 'Borrador no encontrado' }, { status: 404 });
     }
-
-    // Leer y modificar la categoría en el JSON si se proporcionó una nueva
-    let draftData = {};
-    try {
-      const fileContent = fs.readFileSync(sourcePath, 'utf8');
-      draftData = JSON.parse(fileContent);
-      if (category) {
-        (draftData as any).categoria = category;
-      }
-    } catch (e) {
-      console.error('Error reading JSON:', e);
+    if (!CATEGORIES.includes(category)) {
+      return NextResponse.json({ success: false, error: 'Categoría inválida' }, { status: 400 });
     }
+    const article = JSON.parse(fs.readFileSync(source, 'utf8')) as ArticleDraft;
+    article.categoria = category;
+    const errors = validationErrors(article);
+    if (errors.length) {
+      return NextResponse.json({ success: false, error: errors.join('; ') }, { status: 422 });
+    }
+    article.fecha_publicacion = new Date().toISOString();
+    article.revision_humana = true;
+    const day = article.fecha_publicacion.slice(0, 10);
+    destination = path.join(OUTPUT_DIR, day, categoryFolder(category), path.basename(source));
+    if (fs.existsSync(/* turbopackIgnore: true */ destination)) {
+      return NextResponse.json({ success: false, error: 'Ya existe un artículo con ese ID' }, { status: 409 });
+    }
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.writeFileSync(destination, JSON.stringify(article, null, 2), 'utf8');
 
-    // Determinar la nueva ruta de destino basada en la categoría
-    let destRelativePath = id;
-    if (category) {
-      // id format is "YYYY-MM-DD/OldCategory/filename.json"
-      const parts = id.replace(/\\/g, '/').split('/');
-      if (parts.length >= 3) {
-        const dateFolder = parts[0];
-        const filename = parts[parts.length - 1];
-        const safeCategory = category.replace(/ /g, '_').replace(/,/g, '');
-        destRelativePath = path.join(dateFolder, safeCategory, filename);
+    // Build away from the live directory. A failed build leaves the draft untouched.
+    stage = fs.mkdtempSync(path.join(BASE_DIR, 'website', '.publish-next-'));
+    for (const asset of ['css', 'js', 'favicon.svg']) {
+      const sourceAsset = path.join(publicDir, asset);
+      if (fs.existsSync(/* turbopackIgnore: true */ sourceAsset)) {
+        fs.cpSync(/* turbopackIgnore: true */ sourceAsset, path.join(stage, asset), { recursive: true });
       }
     }
-
-    const destPath = path.join(OUTPUT_DIR, destRelativePath);
-
-    // Crear el directorio de destino si no existe
-    const destDir = path.dirname(destPath);
-    if (!fs.existsSync(destDir)) {
-      fs.mkdirSync(destDir, { recursive: true });
-    }
-
-    // Guardar el archivo modificado en el destino
-    fs.writeFileSync(destPath, JSON.stringify(draftData, null, 4), 'utf8');
-    
-    // Eliminar el archivo original de borradores
-    fs.unlinkSync(sourcePath);
-
-    // Ejecutar builder.py para reconstruir la página estática
-    const { stdout, stderr } = await execPromise('python website/builder.py', { cwd: BASE_DIR });
-    console.log('Builder Output:', stdout);
-
-    // Si el proyecto es un repositorio Git, subir los cambios automáticamente a GitHub
+    await run(process.env.PYTHON_BIN || 'python', ['website/builder.py'], {
+      cwd: BASE_DIR,
+      env: { ...process.env, PUBLIC_DIR: stage },
+      timeout: 120_000,
+      maxBuffer: 4 * 1024 * 1024,
+    });
+    if (!fs.existsSync(/* turbopackIgnore: true */ path.join(stage, 'index.html'))) throw new Error('El sitio generado no tiene portada');
+    const backupRoot = path.join(BASE_DIR, 'scratch', 'site-backups');
+    fs.mkdirSync(backupRoot, { recursive: true });
+    backup = path.join(backupRoot, randomUUID());
+    // Both paths are fixed descendants of the project and are on the same drive.
+    if (path.relative(BASE_DIR, publicDir).startsWith('..') || path.relative(BASE_DIR, backup).startsWith('..')) throw new Error('Ruta de publicación fuera del proyecto');
+    fs.renameSync(publicDir, backup);
     try {
-      // Usamos || echo para evitar que el script falle si no hay cambios que hacer commit
-      const gitCmd = `git pull && git add output/ website/ && git commit -m "Publicación aprobada desde el CMS" || echo "No changes to commit" && git push`;
-      const { stdout: gitOut } = await execPromise(gitCmd, { cwd: BASE_DIR });
-      console.log('Git Output:', gitOut);
-    } catch (gitErr: any) {
-      console.error('Git Push Error (Ignorando si no hay repositorio configurado aun):', gitErr.message);
+      fs.renameSync(stage, publicDir);
+      stage = '';
+    } catch (error) {
+      fs.renameSync(backup, publicDir);
+      backup = '';
+      throw error;
     }
+    fs.unlinkSync(source);
 
-    return NextResponse.json({ success: true, message: 'Borrador aprobado y sitio reconstruido (sincronizado con GitHub)' });
-  } catch (error: any) {
-    console.error('Approve Error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    let syncWarning = '';
+    if (process.env.AUTO_GIT_PUSH === '1') {
+      try {
+        await run('git', ['diff', '--cached', '--quiet'], { cwd: BASE_DIR });
+        await run('git', ['add', '-A', '--', 'published', 'website/public', 'drafts'], { cwd: BASE_DIR });
+        await run('git', ['commit', '-m', `Publicar noticia ${day}`], { cwd: BASE_DIR });
+        await run('git', ['push'], { cwd: BASE_DIR, timeout: 60_000 });
+      } catch (error: unknown) {
+        syncWarning = `Publicado localmente; no se pudo sincronizar Git: ${message(error)}`;
+      }
+    }
+    return NextResponse.json({ success: true, warning: syncWarning });
+  } catch (error: unknown) {
+    if (!backup && destination && fs.existsSync(/* turbopackIgnore: true */ destination)) fs.unlinkSync(destination);
+    return NextResponse.json({ success: false, error: message(error) }, { status: 500 });
+  } finally {
+    if (stage && path.relative(path.join(BASE_DIR, 'website'), stage).startsWith('.publish-next-') && fs.existsSync(/* turbopackIgnore: true */ stage)) {
+      fs.rmSync(stage, { recursive: true, force: true });
+    }
   }
 }

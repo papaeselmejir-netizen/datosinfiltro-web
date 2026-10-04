@@ -1,189 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DatoSinFiltro - Salud, Bienestar y Estilo de Vida </title>
-    <!-- Google Fonts Clásicas (Estilo Periódico Tradicional) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
-    <!-- CSS -->
-    <link rel="stylesheet" href="./css/style.css">
-    
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <title>Salud, Bienestar y Estilo de Vida | DatoSinFiltro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
+  <meta name="description" content="Noticias de Salud, Bienestar y Estilo de Vida con fuentes visibles y contexto útil."><link rel="canonical" href="https://datosinfiltro-web.vercel.app/categoria-salud-bienestar-y-estilo-de-vida.html">
 </head>
 <body>
-    <header class="site-header">
-        <div class="top-bar">
-            <div class="menu-icon" id="menuToggle">≡</div>
-            <a href="./index.html" class="newspaper-logo">
-                DatoSinFiltro
-            </a>
-            <div class="top-bar-right">
-                <button class="search-toggle" id="searchToggle" title="Buscar">🔍</button>
-                <button class="theme-toggle" id="themeToggle" title="Modo Oscuro/Claro">🌙</button>
-            </div>
-        </div>
-        
-        <!-- Buscador Overlay -->
-        <div class="search-overlay" id="searchOverlay">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Buscar noticias, autores, o temas..." autocomplete="off">
-                <button id="closeSearch">✕</button>
-            </div>
-            <div id="searchResults" class="search-results"></div>
-        </div>
-
-        <nav class="category-nav" id="categoryNav">
-            <ul class="nav-links">
-                <li><a href="./index.html">Portada</a></li>
-                <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html">Política & Última Hora</a></li>
-                <li><a href="./categoria-deportes-en-vivo.html">Deportes</a></li>
-                <li><a href="./categoria-finanzas-negocios-y-criptomonedas.html">Economía & Negocios</a></li>
-                <li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html">Tecnología</a></li>
-                <li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html">Salud</a></li>
-                <li><a href="./categoria-entretenimiento-farandula-y-cine.html">Cultura & Entretenimiento</a></li>
-                <li><a href="./categoria-gaming-y-esports.html">Gaming</a></li>
-                <li><a href="./categoria-tendencias.html">Tendencias</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Global Top Ad Placeholder -->
-    <div class="monetization-space leaderboard">
-        <span>Espacio para Anuncio (728x90)</span>
-        <!-- Aquí irá el script de Google AdSense -->
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="site-header">
+    <div class="top-bar">
+      <button class="menu-icon" id="menuToggle" type="button" aria-label="Mostrar categorías" aria-expanded="false" aria-controls="categoryNav">☰</button>
+      <a href="./index.html" class="newspaper-logo">DatoSinFiltro</a>
+      <div class="top-bar-right">
+        <button class="search-toggle" id="searchToggle" type="button" aria-label="Buscar noticias">⌕</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">◐</button>
+      </div>
     </div>
-
-    <main class="container">
-        
-<div class="category-page-container">
-    <div class="category-header">
-        <h1 class="page-title">Salud, Bienestar y Estilo de Vida</h1>
-        <p class="page-subtitle">Las últimas noticias y actualizaciones sobre Salud, Bienestar y Estilo de Vida.</p>
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-container">
+        <input type="search" id="searchInput" placeholder="Buscar noticias o temas" aria-label="Buscar noticias" autocomplete="off">
+        <button id="closeSearch" type="button" aria-label="Cerrar búsqueda">✕</button>
+      </div>
+      <div id="searchResults" class="search-results" aria-live="polite"></div>
     </div>
-
-    
-    <div class="news-grid classic-grid">
-        <!-- Featured Article in Category -->
-        <article class="news-card hero-category-card">
-            <a href="verano-la-clave-para-hábitos-saludables-que-perduran-todo-el.html" class="img-link">
-                <img src="https://www.infobae.com/resizer/v2/LSRAZDHIX5BE3BWYEIOEA7RMLU.jpg?auth=c829f0715c66ff0534a840fab790d8578a60ea3c2b90d1cce5c291dd6eade534&smart=true&width=1200&height=630&quality=85" alt="Hero" onerror="this.onerror=null; this.src='https://placehold.co/800x500/eeeeee/333333?text=Noticia'">
-            </a>
-            <div class="card-content">
-                <a href="verano-la-clave-para-hábitos-saludables-que-perduran-todo-el.html" class="news-link">
-                    <h2>Verano: La clave para hábitos saludables que perduran todo el año, según expertos</h2>
-                </a>
-                <p class="excerpt">¿Eres de los que dice 'Empiezo en enero' y abandona en febrero? 😩 No estás solo. Expertos revelan por qué fallamos al adoptar hábitos saludables y cóm...</p>
-                <span class="news-meta">2026-09-07</span>
-            </div>
-        </article>
-
-        <!-- Other Articles -->
-        <div class="standard-news-grid">
-            
-            <article class="news-card classic-card">
-                <a href="dolor-de-cabeza-y-náuseas-descubre-cómo-el-estrés-podría-ser.html" class="img-link">
-                    <img src="https://www.farmaleal.com.mx/cdn/shop/articles/solo-una-chica-que-no-sean-vectores-que-refleje-el-dolor-de-cabeza.png?v=1773338131&width=1100" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="dolor-de-cabeza-y-náuseas-descubre-cómo-el-estrés-podría-ser.html" class="news-link">
-                        <h3>¿Dolor de Cabeza y Náuseas? Descubre Cómo el Estrés Podría Ser el Verdadero Culpable</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="dengue-en-la-libertad-cerca-de-7-mil-casos-confirman-urgenci.html" class="img-link">
-                    <img src="https://elbuho.pe/wp-content/uploads/2024/04/Dengue-La-Libertad-2.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="dengue-en-la-libertad-cerca-de-7-mil-casos-confirman-urgenci.html" class="news-link">
-                        <h3>Dengue en La Libertad: Cerca de 7 Mil Casos Confirman Urgencia Sanitaria Regional</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="aurora-israel-explorando-la-salud-y-el-bienestar-en-el-mundo.html" class="img-link">
-                    <img src="https://i0.wp.com/www.enlacejudio.com/wp-content/uploads/2026/09/03-09-2026-ENRIQUE-CARBAJAL-1.jpg?fit=1280,720&ssl=1" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="aurora-israel-explorando-la-salud-y-el-bienestar-en-el-mundo.html" class="news-link">
-                        <h3>Aurora Israel: Explorando la Salud y el Bienestar en el Mundo Judío</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="estrés-silencioso-por-qué-tu-cuerpo-te-envía-señales-de-aler.html" class="img-link">
-                    <img src="https://estaticosgn-cdn.deia.eus/clip/84bb7b25-3037-4730-8258-1efa10444be2_16-9-aspect-ratio_default_0.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="estrés-silencioso-por-qué-tu-cuerpo-te-envía-señales-de-aler.html" class="news-link">
-                        <h3>Estrés silencioso: ¿Por qué tu cuerpo te envía señales de alerta como dolores de cabeza y náuseas?</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="tu-alimentación-hoy-la-clave-para-prevenir-enfermedades-maña.html" class="img-link">
-                    <img src="https://www.infobae.com/resizer/v2/UR5JXATLWVEQXHFILMN3STPYGE.jpg?auth=f3038592caac3d59abc1477bb51e47c797972fade37660dacc8b9f9f21ae11ef&smart=true&width=1200&height=630&quality=85" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="tu-alimentación-hoy-la-clave-para-prevenir-enfermedades-maña.html" class="news-link">
-                        <h3>Tu Alimentación Hoy: La Clave para Prevenir Enfermedades Mañana y Vivir Mejor</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="señales-clave-cómo-tu-cuerpo-te-alerta-de-enfermedades-según.html" class="img-link">
-                    <img src="https://e01-phantom-elmundo.uecdn.es/69650ae63b1d7445e402f70feeb4c1bb/crop/474x113/2656x3022/resize/1200/f/webp/assets/multimedia/imagenes/2026/04/10/17758110415236.jpg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="señales-clave-cómo-tu-cuerpo-te-alerta-de-enfermedades-según.html" class="news-link">
-                        <h3>Señales Clave: Cómo tu Cuerpo te Alerta de Enfermedades, Según la Dra. Carmen Ochoa</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-            <article class="news-card classic-card">
-                <a href="salud-integral-el-debate-crucial-entre-ciencia-y-hábitos-sal.html" class="img-link">
-                    <img src="https://imagenes.expreso.ec/files/og_thumbnail/uploads/2025/03/18/67d9dd6c8e5a6.jpeg" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <div class="card-content">
-                    <a href="salud-integral-el-debate-crucial-entre-ciencia-y-hábitos-sal.html" class="news-link">
-                        <h3>Salud Integral: El Debate Crucial entre Ciencia y Hábitos Saludables en Perú</h3>
-                    </a>
-                    <span class="news-meta">2026-09-06</span>
-                </div>
-            </article>
-            
-        </div>
+    <nav class="category-nav" id="categoryNav" aria-label="Categorías">
+      <ul class="nav-links">
+        <li><a href="./index.html">Portada</a></li>
+        <li><a href="./categoria-noticias-de-ultima-hora-y-politica.html" aria-label="Noticias de Ultima Hora y Politica">Actualidad</a></li><li><a href="./categoria-deportes-en-vivo.html" aria-label="Deportes en Vivo">Deportes</a></li><li><a href="./categoria-finanzas-negocios-y-criptomonedas.html" aria-label="Finanzas, Negocios y Criptomonedas">Economía</a></li><li><a href="./categoria-tecnologia-gadgets-e-inteligencia-artificial.html" aria-label="Tecnologia, Gadgets e Inteligencia Artificial">Tecnología</a></li><li><a href="./categoria-salud-bienestar-y-estilo-de-vida.html" aria-label="Salud, Bienestar y Estilo de Vida">Salud</a></li><li><a href="./categoria-entretenimiento-farandula-y-cine.html" aria-label="Entretenimiento, Farandula y Cine">Cultura</a></li><li><a href="./categoria-gaming-y-esports.html" aria-label="Gaming y Esports">Gaming</a></li><li><a href="./categoria-tendencias.html" aria-label="Tendencias">Tendencias</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container" id="contenido"><div class="category-page-container"><div class="category-header"><p class="eyebrow">Sección</p><h1 class="page-title">Salud, Bienestar y Estilo de Vida</h1><p class="page-subtitle">Noticias verificadas con fuentes y contexto.</p></div><p class="empty-state">No hay noticias verificadas en esta sección por ahora.</p></div></main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>DatoSinFiltro · Noticias con fuentes visibles y controles editoriales.</p>
+      <p><a href="./quienes-somos.html">Quiénes somos</a> · <a href="./politica-editorial.html">Política editorial</a> · <a href="./privacidad.html">Privacidad</a></p>
+      <small>© 2026 DatoSinFiltro</small>
     </div>
-    
-</div>
-
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 DatoSinFiltro. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <!-- JS -->
-    <script>
-        // Pass base_path to JS for fetching search.json
-        window.BASE_PATH = "./";
-    </script>
-    <script src="./js/script.js"></script>
+  </footer>
+  <script>window.BASE_PATH = "./";</script>
+  <script src="./js/script.js" defer></script>
 </body>
 </html>

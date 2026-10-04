@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Privacidad | DatoSinFiltro{% endblock %}
+{% block content %}
+<div class="info-page">
+  <p class="eyebrow">Transparencia</p>
+  <h1>Privacidad</h1>
+  <p>DatoSinFiltro es un sitio de noticias estático. La búsqueda funciona en el navegador y no exige crear una cuenta. Actualmente no incluimos código de publicidad ni de análisis propio.</p>
+  <h2>Servicios externos</h2>
+  <p>Vercel aloja el sitio y puede procesar datos técnicos de acceso, como dirección IP y registros de solicitudes. Las páginas cargan fuentes de Google Fonts, imágenes de Pexels o Wikimedia Commons y, cuando corresponda, videos de YouTube o Pexels. Al cargar estos recursos, el navegador se conecta con esos proveedores, que pueden recibir datos técnicos y aplicar sus propias políticas de privacidad.</p>
+  <h2>Publicidad futura</h2>
+  <p>Si se activan anuncios, esta página se actualizará antes de incorporarlos para explicar cookies, identificadores, proveedores, opciones de exclusión y los controles de consentimiento aplicables.</p>
+  {% if contact_email %}<h2>Contacto</h2><p>Para consultas sobre privacidad: <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.</p>{% endif %}
+</div>
+{% endblock %}

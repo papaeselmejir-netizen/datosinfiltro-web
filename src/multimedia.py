@@ -19,6 +19,7 @@ import requests
 from urllib.parse import quote_plus, urljoin, urlparse, parse_qs
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from src.editorial import keywords, query_terms, relevance
 
 load_dotenv()
 
@@ -474,6 +475,229 @@ def search_pexels_images(titulo, count=3):
     except Exception as e:
         print(f"    [Pexels] Error: {e}")
         return []
+
+
+def search_licensed_images(titulo, count=2):
+    """Return topic-matched images with recorded reuse terms."""
+    matches = []
+    if PEXELS_API_KEY:
+        matches = _search_pexels_licensed(titulo, count)
+    if len(matches) < count:
+        commons = search_commons_images(titulo, count - len(matches))
+        matches.extend(item for item in commons if item["url"] not in {match["url"] for match in matches})
+    return matches[:count]
+
+
+def _search_pexels_licensed(titulo, count):
+    query = query_terms(titulo, 5)
+    if not query:
+        return []
+    try:
+        response = requests.get(
+            "https://api.pexels.com/v1/search",
+            params={"query": query, "per_page": 30, "orientation": "landscape"},
+            headers={"Authorization": PEXELS_API_KEY}, timeout=12,
+        )
+        response.raise_for_status()
+        matches = []
+        for photo in response.json().get("photos", []):
+            description = photo.get("alt") or ""
+            # A stock photo illustrates a topic; it must never be presented as event footage.
+            if not description or not (keywords(titulo) & keywords(description)):
+                continue
+            lowered = description.lower()
+            # Pexels also returns "Lima" subway station in Buenos Aires for Lima news.
+            if "lima" in keywords(titulo) and (
+                not any(place in lowered for place in ("lima", "peru", "perú"))
+                or any(place in lowered for place in ("buenos aires", "argentina", "madrid"))
+            ):
+                continue
+            title_terms = keywords(titulo)
+            if title_terms & {"metro", "metropolitano", "transporte", "bus", "buses"} and not any(
+                term in lowered for term in ("metro", "subway", "train", "bus", "traffic", "tram", "transit", "transport", "rail")
+            ):
+                continue
+            if title_terms & {"desvios", "viales", "cierres", "carreteras", "trafico", "transito"} and not any(
+                term in lowered for term in ("traffic", "road", "street", "bus", "car", "vehicle", "transport", "tránsito", "tráfico", "calle", "vía")
+            ):
+                continue
+            url = photo.get("src", {}).get("large2x") or photo.get("src", {}).get("large")
+            if not url:
+                continue
+            matches.append({
+                "url": url,
+                "descripcion": description,
+                "credito": photo.get("photographer", "Pexels"),
+                "origen": photo.get("url", ""),
+                "licencia": "Pexels License",
+                "licencia_url": "https://www.pexels.com/license/",
+                "tipo": "Ilustración de archivo",
+            })
+            if len(matches) >= count:
+                break
+        return matches
+    except Exception as exc:
+        print(f"    [Pexels] No se pudieron validar imágenes: {exc}")
+        return []
+
+
+def search_commons_images(titulo, count=2):
+    """Use Commons file metadata to keep attribution and license alongside images."""
+    if count <= 0:
+        return []
+    query = query_terms(titulo, 5)
+    if not query:
+        return []
+    try:
+        response = requests.get(
+            "https://commons.wikimedia.org/w/api.php",
+            params={
+                "action": "query", "format": "json", "formatversion": 2,
+                "generator": "search", "gsrsearch": query, "gsrnamespace": 6,
+                "gsrlimit": 20, "prop": "imageinfo", "iiprop": "url|extmetadata|size",
+                "iiurlwidth": 1200,
+                "iiextmetadatafilter": "LicenseShortName|LicenseUrl|Artist|ImageDescription",
+            },
+            headers={"User-Agent": "DatoSinFiltro/0.2 (editorial image research)"},
+            timeout=15,
+        )
+        response.raise_for_status()
+        matches = []
+        for page in response.json().get("query", {}).get("pages", []):
+            title = page.get("title", "").removeprefix("File:")
+            if not page.get("imageinfo") or "logo" in title.lower():
+                continue
+            info = page["imageinfo"][0]
+            if info.get("width", 0) < 800 or info.get("height", 0) < 400:
+                continue
+            metadata = info.get("extmetadata", {})
+            license_name = BeautifulSoup(metadata.get("LicenseShortName", {}).get("value", ""), "html.parser").get_text(" ", strip=True)
+            normalized_license = license_name.lower()
+            if not any(value in normalized_license for value in ("cc by", "cc0", "public domain")) or re.search(r"\b(?:nc|nd)\b", normalized_license):
+                continue
+            license_url = metadata.get("LicenseUrl", {}).get("value", "") or "https://commons.wikimedia.org/wiki/Commons:Licensing"
+            author = BeautifulSoup(metadata.get("Artist", {}).get("value", ""), "html.parser").get_text(" ", strip=True)
+            description = BeautifulSoup(metadata.get("ImageDescription", {}).get("value", ""), "html.parser").get_text(" ", strip=True) or title
+            if not (keywords(titulo) & keywords(f"{title} {description}")):
+                continue
+            url = info.get("thumburl") or info.get("url", "")
+            if not url.startswith("https://"):
+                continue
+            matches.append({
+                "url": url,
+                "descripcion": description[:180],
+                "credito": author[:140] or "Wikimedia Commons",
+                "origen": "https://commons.wikimedia.org/wiki/" + page["title"].replace(" ", "_"),
+                "licencia": license_name,
+                "licencia_url": license_url,
+                "tipo": "Ilustración de archivo",
+            })
+            if len(matches) >= count:
+                break
+        return matches
+    except Exception as exc:
+        print(f"    [Commons] No se pudieron validar imágenes: {exc}")
+        return []
+
+
+def search_relevant_youtube_video(titulo):
+    """Choose a recent embeddable video whose title shares the story's terms."""
+    if not YOUTUBE_API_KEY:
+        return None
+    from datetime import datetime, timedelta, timezone
+    query = query_terms(titulo, 6)
+    anchor_terms = set(query_terms(titulo, 3).split())
+    if not query:
+        return None
+    try:
+        response = requests.get(
+            "https://www.googleapis.com/youtube/v3/search",
+            params={
+                "part": "snippet", "q": query, "type": "video", "maxResults": 10,
+                "relevanceLanguage": "es", "videoEmbeddable": "true",
+                "order": "relevance",
+                "publishedAfter": (datetime.now(timezone.utc) - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "key": YOUTUBE_API_KEY,
+            }, timeout=12,
+        )
+        response.raise_for_status()
+        matches = []
+        for item in response.json().get("items", []):
+            video_id = item.get("id", {}).get("videoId", "")
+            snippet = item.get("snippet", {})
+            score = relevance(titulo, snippet.get("title", ""))
+            video_terms = keywords(snippet.get("title", ""))
+            if len(video_id) == 11 and score >= 0.4 and len(keywords(titulo) & video_terms) >= 2 and anchor_terms & video_terms:
+                matches.append((score, {
+                    "url": f"https://www.youtube.com/embed/{video_id}",
+                    "titulo": snippet.get("title", ""),
+                    "canal": snippet.get("channelTitle", ""),
+                    "fecha": snippet.get("publishedAt", ""),
+                }))
+        return max(matches, key=lambda item: item[0])[1] if matches else None
+    except Exception as exc:
+        status = exc.response.status_code if isinstance(exc, requests.HTTPError) and exc.response is not None else type(exc).__name__
+        print(f"    [YouTube] No se pudo validar video ({status})")
+        return None
+
+
+def search_licensed_stock_video(titulo):
+    """Find clearly labelled illustrative footage when no event-specific video exists."""
+    if not PEXELS_API_KEY:
+        return None
+    title_terms = keywords(titulo)
+    transport = bool(title_terms & {"metro", "metropolitano", "transporte", "bus", "buses"})
+    if transport and "lima" in title_terms:
+        query = "Lima Peru metro traffic"
+    else:
+        query = query_terms(titulo, 4)
+    if not query:
+        return None
+    try:
+        response = requests.get(
+            "https://api.pexels.com/v1/videos/search",
+            params={"query": query, "per_page": 40, "orientation": "landscape"},
+            headers={"Authorization": PEXELS_API_KEY}, timeout=15,
+        )
+        response.raise_for_status()
+        for video in response.json().get("videos", []):
+            origin = video.get("url", "")
+            slug = origin.rsplit("/video/", 1)[-1].rsplit("/", 1)[0].replace("-", " ")
+            slug_terms = keywords(slug)
+            if transport and "lima" in title_terms:
+                if not ({"lima", "peru"} & slug_terms) or not any(
+                    term in slug for term in ("metro", "subway", "train", "bus", "traffic", "transport", "transit")
+                ):
+                    continue
+            elif len(title_terms & slug_terms) < 2:
+                continue
+            files = [item for item in video.get("video_files", []) if item.get("file_type") == "video/mp4" and item.get("width") and item.get("width") <= 1920]
+            if not files:
+                continue
+            file = max(files, key=lambda item: item["width"])
+            if urlparse(file.get("link", "")).hostname != "videos.pexels.com":
+                continue
+            return {
+                "url": file["link"], "titulo": slug.capitalize(),
+                "canal": video.get("user", {}).get("name", "Pexels"),
+                "origen": origin, "licencia": "Pexels License",
+                "licencia_url": "https://www.pexels.com/license/",
+                "poster": video.get("image", ""), "source": "pexels",
+                "tipo": "Video ilustrativo de archivo",
+            }
+    except Exception as exc:
+        status = exc.response.status_code if isinstance(exc, requests.HTTPError) and exc.response is not None else type(exc).__name__
+        print(f"    [Pexels Video] No se pudo validar video ({status})")
+    return None
+
+
+def search_relevant_video(titulo):
+    video = search_relevant_youtube_video(titulo)
+    if video:
+        video["source"] = "youtube"
+        video["tipo"] = "Video relacionado del canal original"
+        return video
+    return search_licensed_stock_video(titulo)
 
 
 if __name__ == "__main__":

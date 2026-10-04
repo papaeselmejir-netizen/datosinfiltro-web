@@ -1,50 +1,31 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { requireAdmin } from '@/lib/admin';
+import { DRAFTS_DIR, listDraftFiles, message } from '@/lib/drafts';
+import { type ArticleDraft, validationErrors } from '@/lib/validation';
 
-// Ruta hacia la carpeta de borradores (drafts) en el directorio padre
-const DRAFTS_DIR = path.join(process.cwd(), '../drafts');
-
-function getJsonFiles(dir: string, fileList: string[] = []) {
-  if (!fs.existsSync(dir)) {
-    return fileList;
-  }
-  
-  const files = fs.readdirSync(dir);
-
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    if (fs.statSync(filePath).isDirectory()) {
-      getJsonFiles(filePath, fileList);
-    } else if (file.endsWith('.json')) {
-      fileList.push(filePath);
-    }
-  }
-
-  return fileList;
-}
-
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
-    const jsonPaths = getJsonFiles(DRAFTS_DIR);
-    
-    const drafts = jsonPaths.map(filePath => {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const data = JSON.parse(content);
-      
-      // Extraemos metadatos básicos para el listado
+    const drafts = listDraftFiles().map(file => {
+      const data = JSON.parse(fs.readFileSync(file, 'utf8')) as ArticleDraft;
       return {
-        id: path.relative(DRAFTS_DIR, filePath).replace(/\\/g, '/'),
+        id: path.relative(DRAFTS_DIR, file).replace(/\\/g, '/'),
         titulo: data.titulo_articulo || 'Sin título',
-        fecha: data.fecha || 'Sin fecha',
-        categoria: data.categoria || 'Sin categoría',
-        region: data.region || 'General',
-        imagen_url: data.imagen_url || ''
+        fecha: data.fecha_creacion || '',
+        categoria: data.categoria || '',
+        region: data.region || '',
+        imagen_url: data.imagen_url || '',
+        fuentes: data.fuentes?.length || 0,
+        imagenes: data.imagenes?.length || 0,
+        video: Boolean(data.video_url),
+        errores: validationErrors(data),
       };
     });
-
     return NextResponse.json({ success: true, drafts });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    return NextResponse.json({ success: false, error: message(error) }, { status: 500 });
   }
 }

@@ -1,27 +1,19 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
-import path from 'path';
+import { requireAdmin } from '@/lib/admin';
+import { message, resolveDraft } from '@/lib/drafts';
 
-const DRAFTS_DIR = path.join(process.cwd(), '../drafts');
-
-export async function POST(req: Request) {
+export async function POST(request: Request) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
-    const { id } = await req.json();
-    if (!id) return NextResponse.json({ success: false, error: 'ID requerido' }, { status: 400 });
-
-    const targetPath = path.join(DRAFTS_DIR, id);
-
-    // Asegurar que el archivo exista
-    if (!fs.existsSync(targetPath)) {
-      return NextResponse.json({ success: false, error: 'El borrador no existe' }, { status: 404 });
-    }
-
-    // Eliminar el archivo (Rechazar)
-    fs.unlinkSync(targetPath);
-
-    return NextResponse.json({ success: true, message: 'Borrador eliminado correctamente' });
-  } catch (error: any) {
-    console.error('Reject Error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const { id } = await request.json();
+    const file = resolveDraft(id);
+    if (!file) return NextResponse.json({ success: false, error: 'ID inválido' }, { status: 400 });
+    if (!fs.existsSync(file)) return NextResponse.json({ success: false, error: 'Borrador no encontrado' }, { status: 404 });
+    fs.unlinkSync(file);
+    return NextResponse.json({ success: true });
+  } catch (error: unknown) {
+    return NextResponse.json({ success: false, error: message(error) }, { status: 500 });
   }
 }

@@ -1,96 +1,16 @@
 {% extends "base.html" %}
-
-{% block title %}DatoSinFiltro - Noticias al Instante{% endblock %}
-
+{% block title %}DatoSinFiltro | Noticias verificadas{% endblock %}
+{% block head %}<meta name="description" content="Noticias de Perú y el mundo con fuentes visibles y contexto útil.">{% if site_url %}<link rel="canonical" href="{{ site_url }}/index.html">{% endif %}{% endblock %}
 {% block content %}
 <div class="news-container">
-    {% if articles %}
-    
-    <div class="bbc-grid">
-        
-        <!-- Left Column: Medium News -->
-        <div class="left-col">
-            {% for article in articles[1:3] %}
-            <article class="news-card medium">
-                <a href="{{ article.slug }}.html" class="img-link">
-                    <img src="{{ article.imagen_url }}" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                </a>
-                <a href="{{ article.slug }}.html" class="news-link">
-                    <h3>{{ article.titulo_articulo }}</h3>
-                </a>
-                <p>{{ article.hilo_x.split('\n')[0][:80] }}...</p>
-                <span class="news-meta">1 hr ago | {{ article.categoria }}</span>
-            </article>
-            {% endfor %}
-        </div>
-
-        <!-- Center Column: Hero Featured -->
-        <div class="center-col">
-            <article class="hero-card">
-                <a href="{{ articles[0].slug }}.html" class="img-link">
-                    <img src="{{ articles[0].imagen_url }}" alt="Hero" onerror="this.onerror=null; this.src='https://placehold.co/800x500/eeeeee/333333?text=Noticia+Destacada'">
-                </a>
-                <a href="{{ articles[0].slug }}.html" class="news-link">
-                    <h2><span class="live-tag">🔴 NOTICIA</span> {{ articles[0].titulo_articulo }}</h2>
-                </a>
-                <p>{{ articles[0].hilo_x.split('\n')[0] }}</p>
-                <span class="news-meta">30 mins ago | {{ articles[0].categoria }}</span>
-            </article>
-        </div>
-
-        <!-- Right Column: Text Only -->
-        <div class="right-col">
-            {% for article in articles[3:7] %}
-            <article class="news-card text-only">
-                <a href="{{ article.slug }}.html" class="news-link">
-                    <h3>{{ article.titulo_articulo }}</h3>
-                </a>
-                <p>{{ article.hilo_x.split('\n')[0][:80] }}...</p>
-                <span class="news-meta">2 hrs ago | {{ article.categoria }}</span>
-            </article>
-            {% endfor %}
-        </div>
-        
-    </div>
-
-    <!-- Mid-Page Ad Placeholder -->
-    <div class="monetization-space responsive">
-        <span>Espacio para Anuncio Responsive</span>
-    </div>
-
-    <!-- Categorized Previews (Dynamic Sections) -->
-    <div class="categorized-sections">
-        {% set remaining_articles = articles[7:] %}
-        {% set grouped_articles = {} %}
-        {% for article in remaining_articles %}
-            {% if article.categoria not in grouped_articles %}
-                {% set _ = grouped_articles.update({article.categoria: []}) %}
-            {% endif %}
-            {% set _ = grouped_articles[article.categoria].append(article) %}
-        {% endfor %}
-
-        {% for categoria, group in grouped_articles.items() %}
-        <div class="category-section">
-            <h2 class="section-title">Lo Último en: <span class="highlight">{{ categoria }}</span></h2>
-            <div class="more-news-grid">
-                {% for article in group[:6] %} <!-- Limitamos a 6 por categoria para no saturar -->
-                <article class="news-card small">
-                    <a href="{{ article.slug }}.html" class="img-link">
-                        <img src="{{ article.imagen_url }}" alt="News" onerror="this.onerror=null; this.src='https://placehold.co/600x400/eeeeee/333333?text=Noticia'">
-                    </a>
-                    <a href="{{ article.slug }}.html" class="news-link">
-                        <h4>{{ article.titulo_articulo }}</h4>
-                    </a>
-                    <span class="news-meta">{{ article.fecha }}</span>
-                </article>
-                {% endfor %}
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    {% else %}
-    <p>No hay noticias disponibles.</p>
-    {% endif %}
+  <div class="section-heading"><p class="eyebrow">Actualidad con contexto</p><h1>Noticias que importan</h1><p>Información contrastada, fuentes a la vista y contenido multimedia pertinente.</p></div>
+  {% if articles %}
+  <div class="bbc-grid">
+    <div class="left-col">{% for article in articles[1:3] %}<article class="news-card medium"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="600" height="400"></a><a href="{{ article.slug }}.html" class="news-link"><h2>{{ article.titulo_articulo }}</h2></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }} · {{ article.categoria }}</span></article>{% endfor %}</div>
+    <div class="center-col"><article class="hero-card"><a href="{{ articles[0].slug }}.html" class="img-link"><img src="{{ articles[0].imagen_url }}" alt="{{ articles[0].imagenes[0].descripcion }}" width="900" height="600" fetchpriority="high"></a><a href="{{ articles[0].slug }}.html" class="news-link"><h2>{{ articles[0].titulo_articulo }}</h2></a><p>{{ articles[0].resumen }}</p><span class="news-meta">{{ articles[0].fecha }} · {{ articles[0].categoria }}</span></article></div>
+    <div class="right-col">{% for article in articles[3:7] %}<article class="news-card text-only"><a href="{{ article.slug }}.html" class="news-link"><h2>{{ article.titulo_articulo }}</h2></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }} · {{ article.categoria }}</span></article>{% endfor %}</div>
+  </div>
+  {% for item in categories if item.articles %}<section class="category-section"><h2 class="section-title"><a href="categoria-{{ item.slug }}.html">{{ item.name }}</a></h2><div class="more-news-grid">{% for article in item.articles[:4] %}<article class="news-card small"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="420" height="280"></a><a href="{{ article.slug }}.html" class="news-link"><h3>{{ article.titulo_articulo }}</h3></a><span class="news-meta">{{ article.fecha }}</span></article>{% endfor %}</div></section>{% endfor %}
+  {% else %}<p class="empty-state">El equipo editorial está preparando nuevas noticias verificadas.</p>{% endif %}
 </div>
 {% endblock %}

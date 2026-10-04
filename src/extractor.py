@@ -277,7 +277,8 @@ def extract_news_gnews(categoria, lang=None, country=None, max_items=3):
         response.raise_for_status()
         data = response.json()
     except Exception as e:
-        print(f"  [GNews] Error: {e}")
+        status = e.response.status_code if isinstance(e, requests.HTTPError) and e.response is not None else type(e).__name__
+        print(f"  [GNews] Error ({status})")
         return []
 
     noticias = []
@@ -325,7 +326,8 @@ def extract_news_currents(categoria, lang=None, country=None, max_items=3):
         response.raise_for_status()
         data = response.json()
     except Exception as e:
-        print(f"  [Currents] Error: {e}")
+        status = e.response.status_code if isinstance(e, requests.HTTPError) and e.response is not None else type(e).__name__
+        print(f"  [Currents] Error ({status})")
         return []
 
     if data.get("status") != "ok":

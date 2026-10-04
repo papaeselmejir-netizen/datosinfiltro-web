@@ -1,20 +1,18 @@
 import { NextResponse } from 'next/server';
-import { exec } from 'child_process';
-import util from 'util';
-import path from 'path';
+import { execFile } from 'child_process';
+import { promisify } from 'util';
+import { requireAdmin } from '@/lib/admin';
+import { BASE_DIR, message } from '@/lib/drafts';
 
-const execPromise = util.promisify(exec);
-const BASE_DIR = path.resolve(process.cwd(), '..'); // Raíz del proyecto content_pipeline
+const run = promisify(execFile);
 
 export async function POST(request: Request) {
+  const denied = requireAdmin(request);
+  if (denied) return denied;
   try {
-    // Sincronizar (git pull)
-    const { stdout, stderr } = await execPromise('git pull', { cwd: BASE_DIR });
-    console.log('Git Pull Output:', stdout);
-
-    return NextResponse.json({ success: true, message: 'Nube sincronizada', output: stdout });
-  } catch (error: any) {
-    console.error('Sync Error:', error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    const { stdout } = await run('git', ['pull', '--ff-only'], { cwd: BASE_DIR, timeout: 30_000 });
+    return NextResponse.json({ success: true, output: stdout });
+  } catch (error: unknown) {
+    return NextResponse.json({ success: false, error: message(error) }, { status: 500 });
   }
 }

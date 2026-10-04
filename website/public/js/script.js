@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryNav = document.getElementById('categoryNav');
 
     menuToggle.addEventListener('click', () => {
-        categoryNav.classList.toggle('active');
+        const open = categoryNav.classList.toggle('active');
+        menuToggle.setAttribute('aria-expanded', String(open));
     });
 
     // Search Functionality
@@ -82,13 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const el = document.createElement('a');
             el.href = `${path}${item.slug}.html`;
             el.className = 'search-result-item';
-            el.innerHTML = `
-                <img src="${item.image}" alt="">
-                <div>
-                    <h4>${item.title}</h4>
-                    <span>${item.category} • ${item.date}</span>
-                </div>
-            `;
+            const img = document.createElement('img');
+            img.src = item.image;
+            img.alt = '';
+            img.loading = 'lazy';
+            const details = document.createElement('div');
+            const title = document.createElement('h4');
+            title.textContent = item.title;
+            const meta = document.createElement('span');
+            meta.textContent = `${item.category} • ${item.date}`;
+            details.append(title, meta);
+            el.append(img, details);
             searchResults.appendChild(el);
         });
     });
