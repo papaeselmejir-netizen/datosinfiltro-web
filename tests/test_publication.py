@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest.mock import patch
 from xml.etree import ElementTree
 
-from src.editorial import publication_errors, rank_news, select_corrob_sources, matches_story_aspect
+from src.editorial import publication_errors, rank_news, select_corrob_sources, matches_story_aspect, near_duplicate_text
 from src.crawler import _public_url, _public_dns, decode_google_news_url
 from website import builder
 from publish_verified import publish
@@ -99,11 +99,21 @@ class PublicationTests(unittest.TestCase):
     def test_corrob_sources_excludes_unrelated_or_same_outlet(self):
         primary = {"titulo": "Cambio de transporte en Lima", "url": "https://a.example/1", "fuente": "A"}
         candidates = [
-            {"titulo": "Cambio de transporte en Lima", "url": "https://b.example/2", "fuente": "B"},
+            {"titulo": "Lima anuncia cambio de transporte", "url": "https://b.example/2", "fuente": "B"},
             {"titulo": "Cambio de transporte en Lima", "url": "https://a.example/3", "fuente": "A"},
             {"titulo": "Receta de cocina", "url": "https://c.example/4", "fuente": "C"},
         ]
         self.assertEqual([item["fuente"] for item in select_corrob_sources(primary, candidates)], ["B"])
+
+    def test_same_syndicated_headline_is_not_independent_corroboration(self):
+        primary = {"titulo": "Premios Ariel celebran diversidad del cine - Medio A", "url": "https://a.example/1", "fuente": "A"}
+        candidates = [{"titulo": "Premios Ariel celebran diversidad del cine - Medio B", "url": "https://b.example/2", "fuente": "B"}]
+        self.assertEqual(select_corrob_sources(primary, candidates), [])
+
+    def test_syndicated_body_with_new_title_is_detected(self):
+        dispatch = "La academia anunció apoyos para producciones independientes y entregó premios en la ceremonia. " * 12
+        self.assertTrue(near_duplicate_text(dispatch, "Publicidad y navegación. " + dispatch + "Más noticias."))
+        self.assertFalse(near_duplicate_text(dispatch, "El municipio confirmó nuevas rutas de autobuses para Lima. " * 12))
 
     def test_named_product_does_not_mix_gadgets_with_image_generator(self):
         primary = {"titulo": "Meta lanza Muse Gadgets y un SDK para dispositivos", "url": "https://a.example/1", "fuente": "A"}

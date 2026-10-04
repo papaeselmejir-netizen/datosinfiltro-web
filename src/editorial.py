@@ -53,6 +53,21 @@ def matches_story_aspect(reference, candidate):
     return all(not (reference_terms & aspect) or bool(candidate_terms & aspect) for aspect in STORY_ASPECTS)
 
 
+def normalized_headline(value):
+    """Ignore an outlet suffix when detecting syndicated copies of one dispatch."""
+    return query_terms((value or "").rsplit(" - ", 1)[0], limit=None)
+
+
+def near_duplicate_text(first, second):
+    """Detect the same wire story republished with different page furniture."""
+    def shingles(value):
+        words = re.findall(r"[a-z0-9]+", (value or "").lower())[:3000]
+        return {tuple(words[index:index + 5]) for index in range(max(0, len(words) - 4))}
+
+    left, right = shingles(first), shingles(second)
+    return bool(left and right and len(left & right) / min(len(left), len(right)) >= 0.65)
+
+
 def rank_news(items):
     """Prefer fresh, specific headlines and reject obvious traffic traps."""
     now = datetime.now(timezone.utc)
@@ -102,6 +117,8 @@ def select_corrob_sources(primary, candidates, limit=2):
         if not host or candidate.get("url") == primary.get("url"):
             continue
         if outlet == (primary.get("fuente") or source_host(primary.get("url"))).strip().lower():
+            continue
+        if normalized_headline(primary.get("titulo")) == normalized_headline(candidate.get("titulo")):
             continue
         if any(outlet == (item.get("fuente") or source_host(item.get("url"))).strip().lower() for item in selected):
             continue

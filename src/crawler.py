@@ -6,6 +6,7 @@ import ipaddress
 import socket
 from urllib.parse import urljoin, urlparse
 from googlenewsdecoder import gnewsdecoder
+from src.editorial import near_duplicate_text
 
 
 def decode_google_news_url(google_news_url):
@@ -290,6 +291,7 @@ async def investigate_news(noticias, return_sources=False):
     all_extra_images = []
     main_video_url = ""
     verified_sources = []
+    accepted_texts = []
 
     for i, noticia in enumerate(noticias):
         titulo = noticia["titulo"]
@@ -329,9 +331,13 @@ async def investigate_news(noticias, return_sources=False):
             main_video_url = video
 
         if text and len(text) > 100:
+            if return_sources and len(text) >= 300 and any(near_duplicate_text(text, accepted) for accepted in accepted_texts):
+                print("    Texto sindicado duplicado; no cuenta como fuente independiente")
+                continue
             if not return_sources or len(text) >= 300:
                 context_parts.append(f"--- Fuente: {titulo} ---\n{base_context}{text}")
             if len(text) >= 300:
+                accepted_texts.append(text)
                 verified_sources.append({
                     "titulo": titulo,
                     "url": real_url,
