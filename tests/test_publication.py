@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest.mock import patch
 from xml.etree import ElementTree
 
-from src.editorial import publication_errors, rank_news, select_corrob_sources
+from src.editorial import publication_errors, rank_news, select_corrob_sources, matches_story_aspect
 from src.crawler import _public_url, _public_dns, decode_google_news_url
 from website import builder
 from publish_verified import publish
@@ -84,6 +84,10 @@ class PublicationTests(unittest.TestCase):
             self.assertIsNone(multimedia.search_licensed_stock_video(title))
             self.assertEqual(get.call_args.kwargs["params"]["query"], query)
 
+    def test_gadgets_headline_uses_electronics_stock_topic(self):
+        query, _ = multimedia._stock_topic("Meta lanza Muse Gadgets para dispositivos de IA")
+        self.assertEqual(query, "electronics circuit board")
+
     def test_corrob_sources_excludes_unrelated_or_same_outlet(self):
         primary = {"titulo": "Cambio de transporte en Lima", "url": "https://a.example/1", "fuente": "A"}
         candidates = [
@@ -92,6 +96,15 @@ class PublicationTests(unittest.TestCase):
             {"titulo": "Receta de cocina", "url": "https://c.example/4", "fuente": "C"},
         ]
         self.assertEqual([item["fuente"] for item in select_corrob_sources(primary, candidates)], ["B"])
+
+    def test_named_product_does_not_mix_gadgets_with_image_generator(self):
+        primary = {"titulo": "Meta lanza Muse Gadgets y un SDK para dispositivos", "url": "https://a.example/1", "fuente": "A"}
+        candidates = [
+            {"titulo": "Meta Muse ofrece SDK para hardware", "url": "https://b.example/2", "fuente": "B"},
+            {"titulo": "Meta Muse lanza generador de imágenes", "url": "https://c.example/3", "fuente": "C"},
+        ]
+        self.assertEqual([item["fuente"] for item in select_corrob_sources(primary, candidates)], ["B"])
+        self.assertFalse(matches_story_aspect(primary["titulo"], "Muse genera imágenes en Instagram"))
 
     def test_rank_news_excludes_traffic_traps(self):
         items = [

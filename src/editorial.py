@@ -39,6 +39,18 @@ def relevance(headline, candidate):
     return len(primary & secondary) / min(len(primary), len(secondary))
 
 
+STORY_ASPECTS = (
+    {"gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"},
+    {"generador", "imagenes", "imagen", "fotografias", "fotografia", "fotos"},
+)
+
+
+def matches_story_aspect(reference, candidate):
+    """Keep similarly named products with different functions out of one story."""
+    reference_terms, candidate_terms = keywords(reference), keywords(candidate)
+    return all(not (reference_terms & aspect) or bool(candidate_terms & aspect) for aspect in STORY_ASPECTS)
+
+
 def rank_news(items):
     """Prefer fresh, specific headlines and reject obvious traffic traps."""
     now = datetime.now(timezone.utc)
@@ -93,6 +105,8 @@ def select_corrob_sources(primary, candidates, limit=2):
             continue
         overlap = keywords(primary.get("titulo")) & keywords(candidate.get("titulo"))
         if relevance(primary.get("titulo"), candidate.get("titulo")) < 0.20 or len(overlap) < 2:
+            continue
+        if not matches_story_aspect(primary.get("titulo"), candidate.get("titulo")):
             continue
         selected.append(candidate)
         if len(selected) >= limit:

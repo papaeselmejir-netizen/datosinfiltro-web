@@ -17,7 +17,7 @@ from src.extractor import extract_news_multi_source, extract_custom_topic_google
 from src.crawler import investigate_news
 from src.writer import generate_multi_channel_content, verify_article_against_sources
 from src.multimedia import search_licensed_images, search_relevant_video
-from src.editorial import query_terms, select_corrob_sources, source_host, publication_errors, rank_news
+from src.editorial import query_terms, select_corrob_sources, source_host, publication_errors, rank_news, matches_story_aspect
 
 load_dotenv()
 
@@ -94,6 +94,9 @@ async def process_single_news(noticia, categoria, distributor=None):
 
     if not content:
         print(f"    Error en la generacion de contenido. Saltando.")
+        return None
+    if not all(matches_story_aspect(titulo, content.get(field, "")) for field in ("titulo_articulo", "resumen")):
+        print("    El texto redactado cambió el producto o la función central. Saltando.")
         return None
     if not await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto):
         print("    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
