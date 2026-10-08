@@ -1,0 +1,65 @@
+{
+  "titulo_articulo": "Samsung Wallet integrará transferencias de USDC en 82 millones de dispositivos Galaxy en EE. UU.",
+  "articulo_web": "A partir de la última semana de octubre, Samsung Wallet comenzará a desplegar una función que permitirá a 82 millones de dispositivos Galaxy elegibles en Estados Unidos enviar la stablecoin USDC al extranjero sin necesidad de instalar una aplicación de criptomonedas adicional. Para acceder a esta herramienta, los usuarios deberán completar previamente controles de verificación de identidad. La cifra comunicada corresponde a los dispositivos técnicamente compatibles y no al número de personas que efectivamente activarán el servicio.\n\n## Estructura técnica y discrepancias operativas\n\nEl anuncio técnico presenta matices entre las partes involucradas. Brian Armstrong, director ejecutivo de Coinbase, afirmó que la herramienta está \"impulsada por Coinbase\", calificando a USDC como la primera stablecoin admitida por Samsung Wallet. No obstante, Samsung precisó que la gestión operativa de las cuentas corre a cargo de Bastion, una entidad de custodia con licencia de fideicomiso en Nueva York que cuenta con inversión de Andreessen Horowitz y Coinbase Ventures.\n\nEn este esquema, Bastion protege los activos y confía el USDC a Coinbase, que actúa como subcustodio almacenando los fondos en su plataforma Prime Vault. En cuanto a las redes blockchain, mientras que voceros de Solana sostuvieron que los envíos funcionarán sobre su red, Samsung mencionó tanto a Solana como a Sui, sumadas a otros proveedores de infraestructura técnica.\n\n## Costos de envío y alcance del servicio\n\nWoncheol Chai, jefe del equipo de Digital Wallet de Samsung, explicó que el propósito es que los usuarios elegibles puedan operar sin descargar plataformas de terceros. El sistema permitirá enviar USDC a billeteras externas sin que Samsung aplique una comisión directa. También admitirá transferencias a cuentas bancarias en más de 60 países, donde los fondos se depositarán convertidos a la moneda local.\n\nA pesar de la ausencia de comisiones directas de Samsung en envíos cripto, la empresa reconoció que las tarifas hacia cuentas bancarias variarán según el destino y la cantidad transferida. Por ende, aún no se ha determinado si los usuarios obtendrán un ahorro real frente a la banca tradicional. Un antecedente del Banco de Italia reveló previamente que las remesas mediante stablecoins pueden alcanzar costos de hasta el 9%, sin evidenciar ventajas de costo sistemáticas frente a las entidades bancarias.\n\n## Próximos pasos y panorama frente a la competencia\n\nPor el momento, la integración se limitará a operaciones de transferencia internacional. Samsung confirmó que los pagos sin contacto (tap-to-pay) con stablecoins en tiendas físicas están previstos únicamente para fases posteriores de desarrollo. Por su parte, competidores directos como Apple no han anunciado planes para incorporar pagos o transferencias con stablecoins en su servicio Apple Pay.",
+  "resumen": "Samsung Wallet permitirá enviar USDC a cuentas bancarias y billeteras desde 82 millones de dispositivos Galaxy en EE. UU. a fines de octubre.",
+  "hilo_x": "Samsung Wallet integrará envíos de USDC a finales de octubre para 82 millones de dispositivos Galaxy en EE. UU., sin exigir apps externas de criptomonedas. 📱\n\nPara operar, los usuarios deberán superar controles de identidad. Podrán enviar fondos a billeteras externas sin comisión de Samsung o a bancos de más de 60 países en moneda local.\n\nAunque Coinbase anunció estar detrás del servicio, Samsung aclaró que Bastion gestiona las cuentas y usa a Coinbase como subcustodio. A nivel de red, figuran tanto Solana como Sui.\n\nEl ahorro real es incierto: las tarifas bancarias dependerán del destino y monto. Por ahora no habrá pagos en comercios con tap-to-pay. Lee el informe completo: [enlace]",
+  "post_facebook": "Samsung Wallet permitirá enviar la stablecoin USDC directamente al extranjero desde 82 millones de dispositivos Galaxy elegibles en Estados Unidos a partir de finales de octubre, sin necesidad de descargar aplicaciones de terceros.\n\nLos usuarios deberán validar su identidad para acceder a la herramienta. Podrán transferir fondos a billeteras externas sin cobro de comisión por parte de Samsung, o enviarlos a cuentas bancarias en más de 60 países con conversión a moneda local. Samsung indicó que los costos de las transferencias bancarias dependerán del monto y del país destino, por lo que aún se desconoce si representará un ahorro sustancial frente a métodos tradicionales.\n\nA nivel técnico, Samsung aclaró que la gestión de cuentas corresponde a Bastion y la subcustodia a Coinbase Prime Vault, utilizando redes como Solana y Sui. La función solo abarcará envíos, manteniendo la opción de pago sin contacto en tiendas para el futuro. Encuentra todos los detalles técnicos en nuestro enlace.",
+  "guion_tiktok": "¿Enviar criptomonedas desde tu Samsung Galaxy sin descargar ninguna app extra? A partir de la última semana de octubre, 82 millones de dispositivos Galaxy en Estados Unidos podrán transferir la stablecoin USDC de forma nativa en Samsung Wallet. Ojo, tendrás que pasar filtros de identidad primero. Podrás mandar fondos a billeteras cripto sin comisión de Samsung o enviarlos a cuentas bancarias en más de 60 países en moneda local. A nivel técnico hay detalles clave: aunque Coinbase afirmó impulsar la función, Samsung aclaró que las cuentas las opera Bastion con Coinbase como subcustodio, usando redes como Solana y Sui. Las tarifas finales hacia bancos variarán según el monto y destino, por lo que el ahorro real frente a los bancos tradicionales todavía no está garantizado. ¿Crees que Apple responderá integrando stablecoins en Apple Pay? Tienes el link con la noticia completa en mi perfil.",
+  "categoria": "Finanzas, Negocios y Criptomonedas",
+  "web_url": "",
+  "region": "Mundial",
+  "schema_version": 2,
+  "titulo_fuente": "Samsung Wallet trae USDC a 82 millones de Galaxy en EEUU, sin necesidad de apps de criptomonedas - Yahoo",
+  "autor": "Equipo editorial DatoSinFiltro",
+  "fecha_creacion": "2026-10-08T12:45:19-05:00",
+  "fuentes": [
+    {
+      "titulo": "Samsung Wallet trae USDC a 82 millones de Galaxy en EEUU, sin necesidad de apps de criptomonedas - Yahoo",
+      "url": "https://es.finance.yahoo.com/noticias/samsung-wallet-trae-usdc-82-103700087.html",
+      "medio": "Yahoo",
+      "fecha": "Thu, 08 Oct 2026 10:37:00 GMT"
+    },
+    {
+      "titulo": "Samsung Wallet trae USDC con Solana y Sui: gratis entre carteras, con comisión hacia el banco - Martin Cid Magazine",
+      "url": "https://es.martincid.com/finanzas-y-negocios/samsung-wallet-trae-usdc-con-solana-y-sui-gratis-entre-carteras-con-comision-hacia-el-banco/",
+      "medio": "Martin Cid Magazine",
+      "fecha": "Thu, 08 Oct 2026 16:46:23 GMT"
+    }
+  ],
+  "imagenes": [
+    {
+      "url": "https://images.pexels.com/photos/6406691/pexels-photo-6406691.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Hand holding smartphone displaying digital wallet app interface, blurred monitor in background.",
+      "credito": "Tranmautritam",
+      "origen": "https://www.pexels.com/photo/digital-wallet-app-on-smartphone-6406691/",
+      "licencia": "Pexels License",
+      "licencia_url": "https://www.pexels.com/license/",
+      "tipo": "Ilustración de archivo"
+    },
+    {
+      "url": "https://images.pexels.com/photos/12198535/pexels-photo-12198535.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Bright 3D illustration of a purple wallet with cash and gold coins on a purple background.",
+      "credito": "crazy motions",
+      "origen": "https://www.pexels.com/photo/3d-render-of-paper-bills-and-coins-12198535/",
+      "licencia": "Pexels License",
+      "licencia_url": "https://www.pexels.com/license/",
+      "tipo": "Ilustración de archivo"
+    }
+  ],
+  "imagen_url": "https://images.pexels.com/photos/6406691/pexels-photo-6406691.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "extra_images": [
+    "https://images.pexels.com/photos/12198535/pexels-photo-12198535.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+  ],
+  "video_url": "https://www.youtube.com/embed/uDMN0fgHAgY",
+  "video_titulo": "毎日の移動を、Galaxy で | クレジットカード | Samsung Wallet | Samsung",
+  "video_canal": "Samsung Japan公式",
+  "video_source": "youtube",
+  "video_tipo": "Video relacionado del canal original",
+  "video_origen": "",
+  "video_licencia": "",
+  "video_licencia_url": "",
+  "video_poster": "",
+  "fuente_url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPWFhTY1RreV9kQXE2QndvbE56ZWNmcGhKYmZVOVRGRUlYa1BaTzJ2ZWlMLTl5TldDTm1RVW1nYUk0b1VzS1AwS1JOQWI3NE8tUE9LZ2tsakVqXzJyRW1BVHc1VGtDLUZydG5UdmJzTEptU1ZsZExJQktZVFhpRzk5WEV4M2V6dzg?oc=5",
+  "fecha_publicacion": "2026-10-08T17:48:22+00:00",
+  "revision_humana": false
+}
