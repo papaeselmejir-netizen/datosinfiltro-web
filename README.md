@@ -15,6 +15,7 @@ Las 24 noticias existentes se revisaron de nuevo con el filtro multimedia y se s
 ## Flujo
 
 1. GitHub Actions ejecuta `main.py` cuatro veces al día. Una búsqueda manual también se puede lanzar desde el CMS.
+   La búsqueda combina RSS directos, medios especializados definidos por categoría y región en `src/extractor.py`, Google News, Bing News y las API opcionales. Los medios especializados se consultan con búsquedas limitadas a sus dominios; los titulares siguen sujetos a fecha, tema, ubicación del hecho, diversidad de medios y corroboración. Ampliar esta lista no garantiza que haya seis hechos verificables por categoría cada día.
 2. Se comparan medios diferentes y se extrae texto suficiente de al menos dos dominios.
 3. Se buscan dos imágenes con licencia registrada en Pexels o Wikimedia Commons. Para video se prioriza uno reciente de YouTube que coincida con el hecho; si no existe, se puede usar un clip temático de Pexels claramente marcado como ilustración y con licencia visible.
 4. Gemini redacta un borrador y un segundo control comprueba que sus afirmaciones se apoyan en las fuentes. Si fallan las fuentes, la licencia, el video o la longitud mínima, ese candidato se descarta y el bot continúa.

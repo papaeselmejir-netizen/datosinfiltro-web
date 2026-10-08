@@ -44,6 +44,49 @@ def article():
 
 
 class PublicationTests(unittest.TestCase):
+    def setUp(self):
+        # Existing tests exercise the old providers without making live RSS calls.
+        self.real_specialist_search = extractor.extract_news_specialist_sources
+        specialist = patch.object(extractor, "extract_news_specialist_sources", return_value=[])
+        specialist.start()
+        self.addCleanup(specialist.stop)
+
+    def test_category_source_registry_covers_peru_and_world(self):
+        self.assertEqual(set(extractor.FUENTES_ESPECIALIZADAS), set(extractor.CATEGORIAS))
+        for sources in extractor.FUENTES_ESPECIALIZADAS.values():
+            for region in ("PE", "WORLD"):
+                self.assertGreaterEqual(len(set(sources[region])), 3)
+
+    def test_specialist_query_uses_category_sites_and_peru_location(self):
+        with patch.object(extractor, "extract_custom_topic_google_rss", return_value=[]) as search:
+            self.real_specialist_search("Gaming y Esports", geo="PE", max_items=18)
+            query = search.call_args.args[0]
+        self.assertIn("site:rpp.pe", query)
+        self.assertIn("site:elcomercio.pe", query)
+        self.assertIn("videojuegos", query)
+        self.assertIn("Perú", query)
+        self.assertIn("when:4d", query)
+        self.assertEqual(search.call_args.kwargs["max_items"], 18)
+        with patch.object(extractor, "extract_custom_topic_google_rss", return_value=[]) as world_search:
+            self.real_specialist_search("Salud, Bienestar y Estilo de Vida", geo="US")
+            world_query = world_search.call_args.args[0]
+        self.assertIn("site:sciencedaily.com", world_query)
+        self.assertIn("health", world_query)
+        self.assertNotIn("Perú", world_query)
+
+    def test_specialist_results_are_prioritized_and_general_search_fills_remainder(self):
+        specialist = [{"titulo": "Lima anuncia torneo de esports", "url": "https://rpp.pe/a", "fuente": "RPP"}]
+        general = [{"titulo": "Perú recibe nuevo campeonato de videojuegos", "url": "https://otro.pe/b", "fuente": "Otro"}]
+        with patch.object(extractor, "extract_news_specialist_sources", return_value=specialist) as specific, patch.object(
+            extractor, "extract_news_google_rss", return_value=general
+        ) as broad, patch.object(extractor, "extract_custom_topic_google_rss", return_value=[]), patch.object(
+            extractor, "extract_bing_news_rss", return_value=[]
+        ):
+            selected = extractor.extract_news_multi_source("Gaming y Esports", max_items=2, geo="PE")
+        self.assertEqual([item["fuente"] for item in selected], ["RPP", "Otro"])
+        specific.assert_called_once()
+        broad.assert_called_once()
+
     def test_recent_event_dedup_distinguishes_followup(self):
         published = "Mano Menezes hizo fuerte autocrítica tras derrota de Perú ante Canadá: Hay una diferencia física importante"
         duplicate = "La diferencia física con el rival es bastante: la voz de Mano tras el 2-0 ante Canadá"

@@ -16,7 +16,7 @@ NEWS_COUNTRY = os.getenv("NEWS_COUNTRY", "PE")
 GNEWS_API_KEY = os.getenv("GNEWS_API_KEY", "")
 CURRENTS_API_KEY = os.getenv("CURRENTS_API_KEY", "")
 
-# Mapeo de las 7 categorias del usuario a búsquedas estrictas por keywords en Google News RSS
+# Mapeo de las 8 categorias del usuario a búsquedas estrictas por keywords en Google News RSS
 CATEGORIAS = {
     "Deportes en Vivo": "search?q=deportes+OR+futbol+OR+tenis+OR+NBA",
     "Entretenimiento, Farandula y Cine": "search?q=cine+OR+musica+OR+espectaculos+OR+streamers",
@@ -81,17 +81,65 @@ FUENTES_INTERNACIONALES = {
     "Salud, Bienestar y Estilo de Vida": ["https://www.sciencedaily.com/rss/health_medicine.xml"],
 }
 
+# Medios con cobertura de la sección indicada. La búsqueda acotada por dominio
+# complementa los RSS directos y los índices generales sin requerir otra API.
+FUENTES_ESPECIALIZADAS = {
+    "Deportes en Vivo": {
+        "PE": ("depor.com", "rpp.pe", "andina.pe", "larepublica.pe"),
+        "WORLD": ("marca.com", "as.com", "espn.com", "apnews.com"),
+    },
+    "Entretenimiento, Farandula y Cine": {
+        "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe"),
+        "WORLD": ("variety.com", "hollywoodreporter.com", "elpais.com", "apnews.com"),
+    },
+    "Noticias de Ultima Hora y Politica": {
+        "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe"),
+        "WORLD": ("reuters.com", "apnews.com", "dw.com", "elpais.com"),
+    },
+    "Tecnologia, Gadgets e Inteligencia Artificial": {
+        "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe"),
+        "WORLD": ("xataka.com", "theverge.com", "techcrunch.com", "wired.com"),
+    },
+    "Finanzas, Negocios y Criptomonedas": {
+        "PE": ("gestion.pe", "andina.pe", "rpp.pe", "larepublica.pe"),
+        "WORLD": ("reuters.com", "cnbc.com", "expansion.com", "apnews.com"),
+    },
+    "Gaming y Esports": {
+        "PE": ("rpp.pe", "elcomercio.pe", "infobae.com", "larepublica.pe"),
+        "WORLD": ("vidaextra.com", "ign.com", "3djuegos.com", "gamespot.com"),
+    },
+    "Salud, Bienestar y Estilo de Vida": {
+        "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe"),
+        "WORLD": ("sciencedaily.com", "medicalxpress.com", "statnews.com", "apnews.com"),
+    },
+    "Tendencias": {
+        "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe"),
+        "WORLD": ("elpais.com", "wired.com", "bbc.com", "apnews.com"),
+    },
+}
+
+BUSQUEDAS_ESPECIALIZADAS = {
+    "Deportes en Vivo": ("(fútbol OR tenis OR vóley OR baloncesto)", "(football OR soccer OR tennis OR basketball OR fútbol)"),
+    "Entretenimiento, Farandula y Cine": ("(cine OR música OR concierto OR artistas)", "(film OR movie OR music OR concert OR cine)"),
+    "Noticias de Ultima Hora y Politica": ("(gobierno OR elecciones OR congreso OR parlamento)", "(government OR election OR congress OR parliament)"),
+    "Tecnologia, Gadgets e Inteligencia Artificial": ("(tecnología OR inteligencia artificial OR gadgets)", "(technology OR artificial intelligence OR gadgets OR tecnología)"),
+    "Finanzas, Negocios y Criptomonedas": ("(economía OR empresas OR mercados OR bitcoin)", "(economy OR business OR markets OR bitcoin OR economía)"),
+    "Gaming y Esports": ("(videojuegos OR esports OR Nintendo OR PlayStation)", "(videogames OR esports OR Nintendo OR PlayStation OR videojuegos)"),
+    "Salud, Bienestar y Estilo de Vida": ("(salud OR medicina OR investigación OR hospital)", "(health OR medicine OR clinical OR research)"),
+    "Tendencias": ("(viral OR cultura OR sociedad OR tendencias)", "(viral OR culture OR society OR trends OR cultura)"),
+}
+
 CATEGORY_CUES = {
-    "Deportes en Vivo": {"deporte", "deportes", "futbol", "tenis", "voley", "voleibol", "baloncesto", "basket", "basquet", "nba", "liga", "copa", "seleccion", "gol", "partido", "atleta", "deportista", "sporting", "alianza", "universitario", "entrenador", "fichaje"},
-    "Entretenimiento, Farandula y Cine": {"cine", "pelicula", "peliculas", "serie", "series", "musica", "concierto", "conciertos", "artista", "actor", "actriz", "festival", "estreno", "television", "streaming", "famoso", "famosos"},
-    "Noticias de Ultima Hora y Politica": {"gobierno", "congreso", "presidente", "presidencia", "elecciones", "electoral", "ministro", "senado", "parlamento", "alcalde", "cancilleria", "politica", "votacion", "tribunal"},
-    "Tecnologia, Gadgets e Inteligencia Artificial": {"tecnologia", "tecnologico", "inteligencia", "artificial", "openai", "chatgpt", "gemini", "software", "hardware", "robot", "robots", "digital", "chip", "chips", "smartphone", "computadora", "aplicacion", "internet", "ciberseguridad"},
-    "Finanzas, Negocios y Criptomonedas": {"economia", "economico", "finanzas", "financiero", "mercado", "bolsa", "empresa", "empresas", "negocio", "negocios", "inversion", "inversiones", "banco", "bancos", "bitcoin", "criptomonedas", "dolares", "millones", "logistico", "logistica", "ventas", "capital", "inflacion"},
-    "Gaming y Esports": {"gaming", "esports", "videojuego", "videojuegos", "juego", "juegos", "consola", "nintendo", "playstation", "xbox", "steam", "twitch", "torneo", "2k"},
+    "Deportes en Vivo": {"deporte", "deportes", "futbol", "tenis", "voley", "voleibol", "baloncesto", "basket", "basquet", "nba", "liga", "copa", "seleccion", "gol", "partido", "atleta", "deportista", "sporting", "alianza", "universitario", "entrenador", "fichaje", "football", "soccer", "tennis", "basketball", "volleyball"},
+    "Entretenimiento, Farandula y Cine": {"cine", "pelicula", "peliculas", "serie", "series", "musica", "concierto", "conciertos", "artista", "actor", "actriz", "festival", "estreno", "television", "streaming", "famoso", "famosos", "film", "movie", "music", "concert", "actress"},
+    "Noticias de Ultima Hora y Politica": {"gobierno", "congreso", "presidente", "presidencia", "elecciones", "electoral", "ministro", "senado", "parlamento", "alcalde", "cancilleria", "politica", "votacion", "tribunal", "government", "congress", "parliament", "election", "president", "minister"},
+    "Tecnologia, Gadgets e Inteligencia Artificial": {"tecnologia", "tecnologico", "inteligencia", "artificial", "openai", "chatgpt", "gemini", "software", "hardware", "robot", "robots", "digital", "chip", "chips", "smartphone", "computadora", "aplicacion", "internet", "ciberseguridad", "technology", "gadgets", "cybersecurity"},
+    "Finanzas, Negocios y Criptomonedas": {"economia", "economico", "finanzas", "financiero", "mercado", "bolsa", "empresa", "empresas", "negocio", "negocios", "inversion", "inversiones", "banco", "bancos", "bitcoin", "criptomonedas", "dolares", "millones", "logistico", "logistica", "ventas", "capital", "inflacion", "economy", "financial", "business", "markets", "bank", "investment", "inflation"},
+    "Gaming y Esports": {"gaming", "esports", "videojuego", "videojuegos", "juego", "juegos", "consola", "nintendo", "playstation", "xbox", "steam", "twitch", "torneo", "2k", "videogames", "videogame", "games", "console"},
     "Salud, Bienestar y Estilo de Vida": {"salud", "medicina", "medico", "medicos", "hospital", "clinica", "paciente", "pacientes", "vacuna", "vacunas", "enfermedad", "tratamiento", "bienestar", "nutricion", "ejercicio", "terapia", "investigacion", "health", "medicine", "medical", "disease", "hospital", "patient", "vaccine", "cancer", "diet", "nutrition", "clinical", "trial", "brain", "bacteria"},
 }
 
-TREND_CUES = {"viral", "virales", "tendencia", "tendencias", "moda", "redes", "tiktok", "streamer", "streamers", "creador", "creadores", "bts", "army", "fenomeno", "cultura", "consumo", "reto", "memes", "influencer", "influencers"}
+TREND_CUES = {"viral", "virales", "tendencia", "tendencias", "moda", "redes", "tiktok", "streamer", "streamers", "creador", "creadores", "bts", "army", "fenomeno", "cultura", "consumo", "reto", "memes", "influencer", "influencers", "trend", "trends", "culture"}
 TREND_EXCLUSIONS = {"elecciones", "electoral", "escrutinio", "presidente", "gobierno", "parlamento"}
 
 
@@ -168,8 +216,23 @@ def extract_news_local_rss(categoria, max_items=3):
 
 
 def extract_news_world_rss(categoria, max_items=3):
-    """Read verified Spanish-language specialist feeds for international stories."""
+    """Read specialist feeds for international stories."""
     return _extract_direct_rss(FUENTES_INTERNACIONALES.get(categoria, []), max_items, "direct_rss")
+
+
+def extract_news_specialist_sources(categoria, geo="PE", lang=None, max_items=20):
+    """Search current news from category-specific publishers in one RSS request."""
+    region = "PE" if geo == "PE" else "WORLD"
+    domains = FUENTES_ESPECIALIZADAS.get(categoria, {}).get(region, ())
+    topics = BUSQUEDAS_ESPECIALIZADAS.get(categoria)
+    if not domains or not topics:
+        return []
+    sites = " OR ".join(f"site:{domain}" for domain in domains)
+    location = " (Perú OR Lima OR Arequipa OR Cusco OR Trujillo)" if region == "PE" else ""
+    query = f"{topics[0 if region == 'PE' else 1]} ({sites}){location} when:4d"
+    results = extract_custom_topic_google_rss(query, lang=lang, geo=geo, max_items=max_items)
+    return [{**item, "origen": "specialist_rss"} for item in results]
+
 
 def extract_google_trends(geo="PE", max_items=3):
     """
@@ -208,7 +271,7 @@ def extract_google_trends(geo="PE", max_items=3):
 def extract_news_google_rss(categoria, lang=None, geo=None, max_items=3):
     """
     Extrae noticias de Google News RSS para una categoria especifica.
-    :param categoria: Nombre exacto de una de las 7 categorias.
+    :param categoria: Nombre exacto de una de las 8 categorias.
     :param lang: Idioma del feed (ej: es, en-US). Default desde .env.
     :param geo: Pais (ej: PE, MX, US). Default desde .env.
     :param max_items: Cantidad de noticias a extraer.
@@ -477,7 +540,7 @@ def extract_news_currents(categoria, lang=None, country=None, max_items=3):
 def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
     """
     Combina fuentes hasta llenar el cupo con titulares y medios distintos.
-    Orden: RSS de secciones (PE) -> Google general y específico -> Bing -> API opcionales.
+    Orden: RSS de secciones -> medios especializados -> Google general -> Bing -> API opcionales.
     :param categoria: Nombre exacto de una de las 7 categorias.
     :param max_items: Cantidad de noticias a extraer.
     :param lang: Idioma (ej: es)
@@ -520,9 +583,12 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
         if geo == "PE":
             print("    Intentando RSS cultural peruano para Tendencias...")
             add_candidates(extract_news_local_rss(categoria, max_items=max_items * 2), limit=1)
+        if len(selected) < max_items:
+            add_candidates(extract_news_specialist_sources(categoria, geo=geo, lang=lang, max_items=max_items * 6), limit=2)
         topic = "noticias virales Perú" if geo == "PE" else "noticias virales mundo"
-        candidates = extract_custom_topic_google_rss(topic + " when:4d", lang=lang, geo=geo, max_items=max_items * 6)
-        add_candidates(candidates)
+        if len(selected) < max_items:
+            candidates = extract_custom_topic_google_rss(topic + " when:4d", lang=lang, geo=geo, max_items=max_items * 6)
+            add_candidates(candidates)
         if len(selected) < max_items:
             topic = "tendencias Perú" if geo == "PE" else "tendencias internacionales"
             add_candidates(extract_custom_topic_google_rss(topic + " when:4d", lang=lang, geo=geo, max_items=max_items * 6))
@@ -538,6 +604,10 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
     elif geo != "PE" and categoria in FUENTES_INTERNACIONALES:
         print(f"    Intentando RSS especializado internacional para {categoria}...")
         add_candidates(extract_news_world_rss(categoria, max_items=max_items * 2), limit=1)
+
+    if len(selected) < max_items:
+        print(f"    Buscando medios especializados de {categoria} ({geo})...")
+        add_candidates(extract_news_specialist_sources(categoria, geo=geo, lang=lang, max_items=max_items * 6), limit=2)
 
     if len(selected) < max_items:
         print(f"    Intentando Google News RSS (geo={geo})...")
