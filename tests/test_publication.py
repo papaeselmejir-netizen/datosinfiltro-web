@@ -10,7 +10,7 @@ from unittest.mock import patch, AsyncMock
 from urllib.parse import quote
 from xml.etree import ElementTree
 
-from src.editorial import publication_errors, rank_news, select_corrob_sources, matches_story_aspect, near_duplicate_text, corroboration_queries, contradictory_candidate_count, social_source, same_recent_event, claim_evidence_errors
+from src.editorial import publication_errors, rank_news, select_corrob_sources, matches_story_aspect, near_duplicate_text, corroboration_queries, contradictory_candidate_count, social_source, same_recent_event, claim_evidence_errors, media_alignment_errors
 from src.crawler import _public_url, _public_dns, decode_google_news_url, investigate_news, readable_article_text, BROWSER_HEADERS
 from website import builder
 from publish_verified import publish, fresh_election_evidence
@@ -98,6 +98,12 @@ class PublicationTests(unittest.TestCase):
         candidate["imagenes"][0]["descripcion"] = "Bitcoin coins representing digital currency"
         candidate["imagenes"][1]["descripcion"] = "Smartphone digital wallet payment"
         self.assertIn("El material multimedia no representa el asunto central de la noticia", publication_errors(candidate))
+
+    def test_image_research_does_not_require_a_video_yet(self):
+        self.assertFalse(media_alignment_errors({
+            "titulo_articulo": "Conciertos de BTS en Lima",
+            "imagenes": [{"descripcion": "Crowd enjoying a music concert"}],
+        }))
 
     def test_ai_health_policy_needs_health_context(self):
         candidate = article()
