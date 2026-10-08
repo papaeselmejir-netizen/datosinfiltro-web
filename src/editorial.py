@@ -92,7 +92,8 @@ def corroboration_queries(headline):
     primary = " ".join(terms[:6])
     tail = terms[-4:] if len(terms) > 6 else terms[-2:]
     alternate = " ".join(dict.fromkeys(terms[:2] + tail))
-    return list(dict.fromkeys((primary, alternate)))
+    shorter = " ".join(terms[:3]) if len(terms) >= 5 else ""
+    return [query for query in dict.fromkeys((primary, alternate, shorter)) if query]
 
 
 def relevance(headline, candidate):

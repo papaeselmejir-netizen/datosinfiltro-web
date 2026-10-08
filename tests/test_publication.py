@@ -215,9 +215,10 @@ class PublicationTests(unittest.TestCase):
 
     def test_corroboration_queries_retry_distinctive_headline_terms(self):
         queries = corroboration_queries("Municipalidad de Lima anuncia nuevo plan de desvíos para concierto de BTS - Medio")
-        self.assertEqual(len(queries), 2)
+        self.assertEqual(len(queries), 3)
         self.assertIn("lima", queries[0])
         self.assertIn("bts", queries[1])
+        self.assertEqual(queries[2], "municipalidad lima anuncia")
 
     def test_crawler_tries_more_outlets_until_two_are_readable(self):
         items = [

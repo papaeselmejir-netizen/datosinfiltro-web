@@ -85,6 +85,25 @@ def recent_published_titles(hours=336):
     return titles
 
 
+def recent_category_counts(hours=24):
+    """Count recent published stories by category and where the event happened."""
+    from datetime import timedelta
+    cutoff = datetime.now(ZoneInfo("America/Lima")) - timedelta(hours=hours)
+    counts = Counter()
+    for path in glob.glob(os.path.join(os.path.dirname(__file__), "published", "**", "*.json"), recursive=True):
+        try:
+            with open(path, encoding="utf-8") as file:
+                article = json.load(file)
+            published = datetime.fromisoformat(article["fecha_publicacion"].replace("Z", "+00:00"))
+            if published.tzinfo is None:
+                published = published.replace(tzinfo=ZoneInfo("America/Lima"))
+            if published >= cutoff:
+                counts[(article.get("categoria"), article.get("region"))] += 1
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            continue
+    return counts
+
+
 async def process_single_news(noticia, categoria, distributor=None):
     """
     Procesa UNA sola noticia: investiga, redacta y distribuye.
@@ -261,7 +280,7 @@ def _insert_images_in_article(html_content, images, titulo):
     return html_content
 
 
-async def process_category(categoria, distributor=None, max_noticias=3, max_drafts=None):
+async def process_category(categoria, distributor=None, max_noticias=3, max_drafts=None, max_peru=None, max_world=None):
     """
     Procesa una sola categoria: extrae noticias y procesa cada una individualmente.
     """
@@ -274,13 +293,13 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
     
     # 1.1 Obtener noticias MUNDIALES (geo=US, lang=es)
     print(f"  -> Buscando noticias MUNDIALES...")
-    noticias_mundial = extract_news_multi_source(categoria, max_items=max_noticias, lang="es", geo="US")
+    noticias_mundial = extract_news_multi_source(categoria, max_items=max_world or max_noticias, lang="es", geo="US")
     for n in noticias_mundial:
         n["region"] = "Mundial"
         
     # 1.2 Obtener noticias LOCALES (geo=PE, lang=es)
     print(f"  -> Buscando noticias EXCLUSIVAS PERU...")
-    noticias_peru = extract_news_multi_source(categoria, max_items=max_noticias, lang="es", geo="PE")
+    noticias_peru = extract_news_multi_source(categoria, max_items=max_peru or max_noticias, lang="es", geo="PE")
     for n in noticias_peru:
         n["region"] = "Perú"
         
@@ -404,8 +423,14 @@ async def main(topic=None):
     max_per_run = max(1, int(os.getenv("MAX_DRAFTS_PER_RUN", "8")))
     max_per_region = max(1, int(os.getenv("MAX_NEWS_PER_REGION", "3")))
     max_drafts_per_category = max(1, int(os.getenv("MAX_DRAFTS_PER_CATEGORY", "1")))
+    missing_region_bonus = max(0, int(os.getenv("MISSING_REGION_CANDIDATE_BONUS", "3")))
+    recent_counts = recent_category_counts()
+    category_order = sorted(
+        CATEGORIAS_ACTIVAS,
+        key=lambda category: sum(recent_counts[(category, region)] for region in ("Perú", "Mundial")),
+    )
 
-    for categoria in CATEGORIAS_ACTIVAS:
+    for categoria in category_order:
         remaining = max_per_run - sum(len(group) for group in todos_los_resultados.values())
         if remaining <= 0:
             break
@@ -414,6 +439,8 @@ async def main(topic=None):
             resultados = await process_category(
                 categoria, distributor, max_noticias=max_per_region,
                 max_drafts=min(remaining, max_drafts_per_category),
+                max_peru=max_per_region + (missing_region_bonus if not recent_counts[(categoria, "Perú")] else 0),
+                max_world=max_per_region + (missing_region_bonus if not recent_counts[(categoria, "Mundial")] else 0),
             )
             if resultados:
                 todos_los_resultados[categoria] = resultados
