@@ -41,6 +41,47 @@ class QualityOutput(BaseModel):
     unsupported_claims: list[str] = Field(description="Datos, cifras o citas no sustentados por el contexto.")
 
 
+class ArticleRevision(BaseModel):
+    titulo_articulo: str
+    resumen: str
+    articulo_web: str
+
+
+class SourceCoverageOutput(BaseModel):
+    independent: bool = Field(description="Ambos textos aportan cobertura factual independiente del mismo hecho.")
+    reason: str = Field(description="Motivo concreto y breve de la decisión.")
+
+
+def verify_sources_are_independent(context):
+    """Reject two URLs that only repeat one wire dispatch or a generic opinion."""
+    try:
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=(
+                "Evalúa los DOS textos periodísticos siguientes como fuentes para una noticia. "
+                "independent=true solo si ambos confirman el mismo acontecimiento con hechos "
+                "concretos suficientes y aportan cobertura o verificación distinguible. "
+                "Marca false si el segundo solo parafrasea el mismo despacho de agencia, "
+                "repite una cita sin detalles propios, es opinión genérica o contradice "
+                "un hecho central. No uses conocimiento externo. En caso de duda, false.\n\n"
+                f"TEXTOS:\n{context}"
+            ),
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=SourceCoverageOutput,
+                temperature=0,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+            ),
+        )
+        result = response.parsed or SourceCoverageOutput.model_validate_json(response.text)
+        if not result.independent:
+            print(f"    Cobertura no independiente: {result.reason[:180]}")
+        return bool(result.independent)
+    except Exception as exc:
+        print(f"    No se pudo comprobar independencia editorial: {type(exc).__name__}")
+        return False
+
+
 def generate_multi_channel_content(tema, contexto, categoria, web_url=None, region=None):
     """
     Usa Gemini para redactar contenido multi-canal.
@@ -63,8 +104,10 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
 
     REGLAS ESTRICTAS:
     - NO INVENTES DATOS, citas, cifras, fechas ni declaraciones. Usa SOLO el contexto proporcionado.
+    - El artículo debe tener entre 270 y 360 palabras. Usa solo detalles que estén explícitos en las fuentes leídas.
+    - Si un detalle aparece en una sola fuente, atribúyelo a ese medio. Omite cifras secundarias que no puedas comprobar.
     - Si las fuentes discrepan, explica la discrepancia y no presentes el dato como confirmado.
-    - No copies párrafos de las fuentes; aporta una síntesis propia con contexto y utilidad.
+    - No copies párrafos de las fuentes; aporta una síntesis propia. No agregues antecedentes externos ni datos para alargar el texto.
     - Evita sensacionalismo, promesas de contenido oculto y afirmar que algo está ocurriendo EN VIVO sin prueba.
     - Redacta en espanol neutro (latinoamerica).
     - Los posts de redes sociales pueden enlazar al artículo cuando exista una URL pública: {web_url}
@@ -79,7 +122,7 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
     INSTRUCCIONES POR CANAL:
     1. titulo_articulo: Un titulo periodistico atractivo y optimizado para SEO.
     2. resumen: Una oración que responda qué sucedió y por qué importa.
-    3. articulo_web: Párrafos cortos, subtítulos útiles, antecedentes y límites de lo conocido. No añadas relleno.
+    3. articulo_web: Párrafos cortos, dos o tres subtítulos útiles y límites de lo conocido. No añadas relleno.
     4. hilo_x: Hilo de 3-5 posts fieles a la noticia.
     5. post_facebook: Explica el hecho principal sin ocultar información para forzar clics.
     6. guion_tiktok: Guion de 45-60 segundos, informativo y sin dramatización artificial.
@@ -124,7 +167,10 @@ def verify_article_against_sources(article, context):
             contents=(
                 "Compara el artículo con el contexto de fuentes. Marca supported=false si hay "
                 "cualquier cifra, fecha, cargo, declaración, resultado o hecho concreto que no esté "
-                "respaldado explícitamente. No uses conocimiento externo.\n\n"
+                "respaldado explícitamente. Revisa de forma específica la temporalidad: si una fuente "
+                "dice que algo ocurrirá y el artículo afirma que ya ocurrió, supported=false. "
+                "Comprueba también que los subtotales sumen el total "
+                "y que las cifras no se contradigan dentro del artículo. No uses conocimiento externo.\n\n"
                 f"FUENTES:\n{context}\n\nARTÍCULO:\n{article}"
             ),
             config=types.GenerateContentConfig(
@@ -139,6 +185,34 @@ def verify_article_against_sources(article, context):
     except Exception as exc:
         print(f"Error verificando artículo: {exc}")
         return False
+
+
+def revise_article_against_sources(content, context):
+    """One bounded repair pass; the revised text must pass verification again."""
+    try:
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=(
+                "Corrige este borrador periodístico. Elimina toda afirmación no respaldada "
+                "explícitamente por FUENTES, incluidas cifras, fechas, citas y antecedentes. "
+                "Respeta el tiempo verbal: un acto futuro no puede redactarse como ya celebrado. "
+                "Si un dato consta en una sola fuente, atribúyelo. Comprueba las sumas. "
+                "Escribe 270 a 360 palabras con información concreta, sin relleno. "
+                "Si no hay evidencia suficiente, deja articulo_web vacío. No uses conocimiento externo.\n\n"
+                f"FUENTES:\n{context}\n\nBORRADOR:\n{content.get('articulo_web', '')}"
+            ),
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=ArticleRevision,
+                temperature=0,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+            ),
+        )
+        result = response.parsed or ArticleRevision.model_validate_json(response.text)
+        return result.model_dump() if result.articulo_web.strip() else None
+    except Exception as exc:
+        print(f"No se pudo corregir el borrador: {type(exc).__name__}")
+        return None
 
 
 if __name__ == "__main__":

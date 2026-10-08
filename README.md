@@ -4,6 +4,12 @@ Véase [INFORME_IMPLEMENTACION.md](INFORME_IMPLEMENTACION.md) para el estado de 
 
 Sistema de noticias con recolección programada, borradores investigados, revisión editorial y publicación estática.
 
+## Publicación automática en Vercel
+
+GitHub Actions investiga las ocho categorías cuatro veces al día y publica los borradores que pasan la comprobación de fuentes, redacción, licencias y pertinencia multimedia. Cada ejecución investiga hasta cinco hechos de Perú y cinco internacionales por categoría, con un máximo de dos publicaciones aprobadas por categoría y ejecución. Son topes de búsqueda y publicación, no una cuota garantizada: una noticia sin evidencia o material apropiado no se publica. El resumen de cada ejecución en GitHub Actions muestra la cobertura y las causas de descarte.
+
+La web de producción se genera con `SITE_URL=https://datosinfiltro-web.vercel.app`; una compilación para localhost bloquea deliberadamente la indexación. El servidor local se usa para pruebas y no debe ejecutar un segundo proceso de publicación junto al flujo de GitHub.
+
 ## Flujo
 
 1. GitHub Actions ejecuta `main.py` cuatro veces al día. Una búsqueda manual también se puede lanzar desde el CMS.

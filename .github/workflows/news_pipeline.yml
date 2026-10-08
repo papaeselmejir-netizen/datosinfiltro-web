@@ -40,6 +40,9 @@ jobs:
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
           NEWS_COUNTRY: PE
           NEWS_LANG: es
+          MAX_NEWS_PER_REGION: '5'
+          MAX_DRAFTS_PER_CATEGORY: '2'
+          MAX_DRAFTS_PER_RUN: '16'
         run: python main.py
 
       - name: Publicar automáticamente los borradores que pasan los controles

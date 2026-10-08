@@ -6,7 +6,7 @@ import ipaddress
 import socket
 from urllib.parse import urljoin, urlparse
 from googlenewsdecoder import gnewsdecoder
-from src.editorial import near_duplicate_text
+from src.editorial import near_duplicate_text, social_source, source_host
 
 
 def decode_google_news_url(google_news_url):
@@ -31,7 +31,7 @@ BROWSER_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
     "Accept-Language": "es-PE,es;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Encoding": "gzip, deflate",
     "Sec-Ch-Ua": '"Chromium";v="125", "Not=A?Brand";v="8", "Google Chrome";v="125"',
     "Sec-Ch-Ua-Mobile": "?0",
     "Sec-Ch-Ua-Platform": '"Windows"',
@@ -48,7 +48,7 @@ ALT_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "es-PE,es;q=0.9",
-    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Encoding": "gzip, deflate",
 }
 
 
@@ -150,14 +150,14 @@ def _extract_text_sync(url, headers=None):
         if article:
             paragraphs = article.find_all("p")
             if paragraphs:
-                text = " ".join(p.get_text(strip=True) for p in paragraphs)
+                text = " ".join(p.get_text(separator=" ", strip=True) for p in paragraphs)
             else:
                 text = article.get_text(separator=" ", strip=True)
         else:
             # Fallback: extraer todos los parrafos de la pagina
             paragraphs = soup.find_all("p")
             if paragraphs:
-                text = " ".join(p.get_text(strip=True) for p in paragraphs)
+                text = " ".join(p.get_text(separator=" ", strip=True) for p in paragraphs)
             else:
                 text = soup.get_text(separator=" ", strip=True)
 
@@ -182,8 +182,6 @@ def _extract_text_sync(url, headers=None):
         # Re-parsear el HTML original para buscar imagenes (no el soup limpio)
         raw_soup = BeautifulSoup(html_content, "html.parser")
         article_el = raw_soup.find("article") or raw_soup.find("main") or raw_soup
-        
-        from urllib.parse import urljoin
         
         for img_tag in article_el.find_all(["img", "source"]):
             # Buscar en todos los atributos comunes de lazy-loading
@@ -279,7 +277,16 @@ def extract_text_from_url(url):
     return "", "", [], ""
 
 
-async def investigate_news(noticias, return_sources=False):
+def readable_article_text(text):
+    """Do not count compressed or otherwise corrupted bytes as reporting."""
+    if len(text or "") < 300:
+        return False
+    bad = sum(char == "\ufffd" or (ord(char) < 32 and char not in "\n\r\t") for char in text)
+    words = re.findall(r"[A-Za-zÀ-ÿ]{3,}", text)
+    return bad / len(text) < 0.005 and len(words) >= 45
+
+
+async def investigate_news(noticias, return_sources=False, required_sources=None):
     """
     Recibe una lista de noticias (con titulo y URL) y extrae el contexto real.
     Ejecuta las peticiones HTTP en threads separados para no bloquear el event loop.
@@ -312,14 +319,26 @@ async def investigate_news(noticias, return_sources=False):
                 real_url = decoded
                 print(f"    URL real: {real_url[:80]}")
             else:
-                context_parts.append(
-                    f"--- Fuente: {titulo} ---\n{base_context}(Solo titulo disponible)"
-                )
+                if not return_sources:
+                    context_parts.append(
+                        f"--- Fuente: {titulo} ---\n{base_context}(Solo titulo disponible)"
+                    )
                 print(f"    URL no decodificable, usando titulo/snippet")
                 continue
 
+        if return_sources and social_source(real_url, noticia.get("fuente")):
+            print("    Red social; no cuenta como fuente periodística independiente")
+            continue
+
+        if return_sources and any(source_host(source["url"]) == source_host(real_url) for source in verified_sources):
+            print("    Medio ya verificado; buscando otra fuente independiente")
+            continue
+
         # Extraer texto, imagen, imagenes extra y video del articulo
         text, image, extras, video = await asyncio.to_thread(extract_text_from_url, real_url)
+        if text and not readable_article_text(text):
+            print("    Texto ilegible o insuficiente; buscando otro medio")
+            text = ""
 
         if image and not main_image_url:
             main_image_url = image
@@ -344,6 +363,9 @@ async def investigate_news(noticias, return_sources=False):
                     "medio": noticia.get("fuente", ""),
                     "fecha": noticia.get("fecha", ""),
                 })
+                if return_sources and required_sources and len(verified_sources) >= required_sources:
+                    print(f"    Cobertura confirmada en {required_sources} medios independientes")
+                    break
             img_count = 1 + len(extras) if image else len(extras)
             print(f"    OK ({len(text)} chars, imgs: {img_count}, video: {'Si' if video else 'No'})")
         elif base_context:

@@ -1,11 +1,12 @@
 import os
 import re
 import unicodedata
-from urllib.parse import quote, unquote
+from html import unescape
+from urllib.parse import quote, unquote, parse_qs, urlparse
 import feedparser
 import requests
 from dotenv import load_dotenv
-from src.editorial import normalized_headline, rank_news
+from src.editorial import keywords, normalized_headline, rank_news, social_source, source_host
 
 load_dotenv()
 
@@ -49,11 +50,69 @@ CATEGORIAS_CURRENTS = {
     "Salud, Bienestar y Estilo de Vida": "health",
 }
 
-# RSS Directos de Periódicos Peruanos
+# Feeds de secciones comprobados; un feed general mezcla demasiados temas.
 FUENTES_LOCALES_PERU = {
-    "Deportes en Vivo": "https://depor.com/arc/outboundfeeds/rss/?outputType=xml",
-    "Noticias de Ultima Hora y Politica": "https://elcomercio.pe/arc/outboundfeeds/rss/?outputType=xml",
-    "Finanzas, Negocios y Criptomonedas": "https://gestion.pe/arc/outboundfeeds/rss/?outputType=xml",
+    "Deportes en Vivo": [
+        "https://depor.com/arc/outboundfeeds/rss/?outputType=xml",
+        "https://elcomercio.pe/arc/outboundfeeds/rss/category/deporte-total/?outputType=xml",
+    ],
+    "Entretenimiento, Farandula y Cine": [
+        "https://elcomercio.pe/arc/outboundfeeds/rss/category/luces/?outputType=xml",
+        "https://elcomercio.pe/arc/outboundfeeds/rss/category/tvmas/?outputType=xml",
+    ],
+    "Noticias de Ultima Hora y Politica": [
+        "https://elcomercio.pe/arc/outboundfeeds/rss/category/politica/?outputType=xml",
+    ],
+    "Tecnologia, Gadgets e Inteligencia Artificial": [
+        "https://elcomercio.pe/arc/outboundfeeds/rss/category/tecnologia/?outputType=xml",
+    ],
+    "Finanzas, Negocios y Criptomonedas": [
+        "https://gestion.pe/arc/outboundfeeds/rss/category/economia/?outputType=xml",
+        "https://elcomercio.pe/arc/outboundfeeds/rss/category/economia/?outputType=xml",
+    ],
+    "Tendencias": [
+        "https://elcomercio.pe/arc/outboundfeeds/rss/category/somos/?outputType=xml",
+    ],
+}
+
+FUENTES_INTERNACIONALES = {
+    "Tecnologia, Gadgets e Inteligencia Artificial": ["https://www.xataka.com/feedburner.xml"],
+    "Gaming y Esports": ["https://www.vidaextra.com/feedburner.xml"],
+    "Salud, Bienestar y Estilo de Vida": ["https://www.sciencedaily.com/rss/health_medicine.xml"],
+}
+
+CATEGORY_CUES = {
+    "Deportes en Vivo": {"deporte", "deportes", "futbol", "tenis", "voley", "voleibol", "baloncesto", "basket", "basquet", "nba", "liga", "copa", "seleccion", "gol", "partido", "atleta", "deportista", "sporting", "alianza", "universitario", "entrenador", "fichaje"},
+    "Entretenimiento, Farandula y Cine": {"cine", "pelicula", "peliculas", "serie", "series", "musica", "concierto", "conciertos", "artista", "actor", "actriz", "festival", "estreno", "television", "streaming", "famoso", "famosos"},
+    "Noticias de Ultima Hora y Politica": {"gobierno", "congreso", "presidente", "presidencia", "elecciones", "electoral", "ministro", "senado", "parlamento", "alcalde", "cancilleria", "politica", "votacion", "tribunal"},
+    "Tecnologia, Gadgets e Inteligencia Artificial": {"tecnologia", "tecnologico", "inteligencia", "artificial", "openai", "chatgpt", "gemini", "software", "hardware", "robot", "robots", "digital", "chip", "chips", "smartphone", "computadora", "aplicacion", "internet", "ciberseguridad"},
+    "Finanzas, Negocios y Criptomonedas": {"economia", "economico", "finanzas", "financiero", "mercado", "bolsa", "empresa", "empresas", "negocio", "negocios", "inversion", "inversiones", "banco", "bancos", "bitcoin", "criptomonedas", "dolares", "millones", "logistico", "logistica", "ventas", "capital", "inflacion"},
+    "Gaming y Esports": {"gaming", "esports", "videojuego", "videojuegos", "juego", "juegos", "consola", "nintendo", "playstation", "xbox", "steam", "twitch", "torneo", "2k"},
+    "Salud, Bienestar y Estilo de Vida": {"salud", "medicina", "medico", "medicos", "hospital", "clinica", "paciente", "pacientes", "vacuna", "vacunas", "enfermedad", "tratamiento", "bienestar", "nutricion", "ejercicio", "terapia", "investigacion", "health", "medicine", "medical", "disease", "hospital", "patient", "vaccine", "cancer", "diet", "nutrition", "clinical", "trial", "brain", "bacteria"},
+}
+
+TREND_CUES = {"viral", "virales", "tendencia", "tendencias", "moda", "redes", "tiktok", "streamer", "streamers", "creador", "creadores", "bts", "army", "fenomeno", "cultura", "consumo", "reto", "memes", "influencer", "influencers"}
+TREND_EXCLUSIONS = {"elecciones", "electoral", "escrutinio", "presidente", "gobierno", "parlamento"}
+
+
+def matches_category(item, categoria):
+    """Require a visible topic signal unless the publisher feed is section-specific."""
+    terms = keywords(" ".join((item.get("titulo", ""), item.get("snippet", ""))))
+    if categoria == "Tendencias":
+        return bool(terms & TREND_CUES) and not bool(terms & TREND_EXCLUSIONS)
+    if item.get("origen") == "local_rss" and "/tvmas/" not in item.get("url", ""):
+        return True
+    return bool(terms & CATEGORY_CUES.get(categoria, set()))
+
+CATEGORY_SEARCH_QUERIES = {
+    "Deportes en Vivo": ("selección fútbol liga clubes", "fútbol tenis baloncesto"),
+    "Entretenimiento, Farandula y Cine": ("conciertos cine estrenos artistas", "cine música artistas estrenos"),
+    "Noticias de Ultima Hora y Politica": ("congreso gobierno elecciones", "gobierno parlamento elecciones"),
+    "Tecnologia, Gadgets e Inteligencia Artificial": ("tecnología inteligencia artificial empresas", "tecnología inteligencia artificial lanzamiento"),
+    "Finanzas, Negocios y Criptomonedas": ("economía bancos empresas inversión", "economía empresas mercados"),
+    "Gaming y Esports": ("videojuegos esports lanzamientos", "videojuegos esports torneos"),
+    "Salud, Bienestar y Estilo de Vida": ("salud hospitales investigación médica", "salud investigación medicina"),
+    "Tendencias": ("tendencias cultura sociedad", "tendencias cultura sociedad"),
 }
 
 PERU_TERMS = (
@@ -75,38 +134,42 @@ def is_peru_story(item):
     return any(re.search(r"\b" + re.escape(term) + r"\b", value) for term in PERU_TERMS)
 
 
-def extract_news_local_rss(categoria, max_items=3):
-    """
-    Extrae noticias directamente de los feeds RSS de periodicos peruanos.
-    """
-    url = FUENTES_LOCALES_PERU.get(categoria)
-    if not url:
+def _extract_direct_rss(urls, max_items, origin):
+    if not urls:
         return []
-
-    try:
-        response = requests.get(url, timeout=15)
-        response.raise_for_status()
-        feed = feedparser.parse(response.content)
-    except Exception as e:
-        print(f"  [Local RSS] Error de conexion: {e}")
-        return []
-
     noticias = []
-    for entry in feed.entries[:max_items]:
-        # Extraer dominio de la URL para usarlo como fuente (ej. elcomercio.pe)
-        fuente_match = re.search(r"https?://(?:www\.)?([^/]+)", entry.link)
-        fuente = fuente_match.group(1) if fuente_match else "Periódico Local"
-
-        noticias.append({
-            "titulo": entry.title,
-            "url": entry.link,
-            "fecha": entry.get("published", ""),
-            "fuente": fuente,
-            "snippet": entry.get("description", ""),
-            "origen": "local_rss",
-        })
+    for url in urls:
+        try:
+            response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=12)
+            response.raise_for_status()
+            feed = feedparser.parse(response.content)
+        except requests.RequestException as exc:
+            print(f"  [Local RSS] {source_host(url)}: {type(exc).__name__}")
+            continue
+        for entry in feed.entries[:max_items]:
+            link = entry.get("link", "")
+            if not link:
+                continue
+            noticias.append({
+                "titulo": entry.get("title", ""),
+                "url": link,
+                "fecha": entry.get("published", ""),
+                "fuente": source_host(link),
+                "snippet": unescape(re.sub(r"<[^>]+>", " ", entry.get("description", "")))[:500],
+                "origen": origin,
+            })
 
     return noticias
+
+
+def extract_news_local_rss(categoria, max_items=3):
+    """Read verified Peruvian section feeds."""
+    return _extract_direct_rss(FUENTES_LOCALES_PERU.get(categoria, []), max_items, "local_rss")
+
+
+def extract_news_world_rss(categoria, max_items=3):
+    """Read verified Spanish-language specialist feeds for international stories."""
+    return _extract_direct_rss(FUENTES_INTERNACIONALES.get(categoria, []), max_items, "direct_rss")
 
 def extract_google_trends(geo="PE", max_items=3):
     """
@@ -260,6 +323,34 @@ def extract_custom_topic_google_rss(topic, lang=None, geo=None, max_items=1):
     return noticias
 
 
+def extract_bing_news_rss(topic, max_items=20):
+    """Independent news index for finding additional publisher URLs."""
+    url = "https://www.bing.com/news/search?q=" + quote(topic) + "&format=rss&setlang=es"
+    try:
+        response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=12)
+        response.raise_for_status()
+        feed = feedparser.parse(response.content)
+    except Exception as exc:
+        print(f"  [Bing News RSS] No disponible: {type(exc).__name__}")
+        return []
+    results = []
+    for entry in feed.entries[:max_items]:
+        redirect = urlparse(entry.get("link", ""))
+        destination = parse_qs(redirect.query).get("url", [entry.get("link", "")])[0]
+        parsed = urlparse(destination)
+        if parsed.scheme != "https" or not parsed.hostname or social_source(destination):
+            continue
+        results.append({
+            "titulo": entry.get("title", ""),
+            "url": destination,
+            "fecha": entry.get("published", ""),
+            "fuente": source_host(destination),
+            "snippet": unescape(re.sub(r"<[^>]+>", " ", entry.get("description", "")))[:500],
+            "origen": "bing_rss",
+        })
+    return results
+
+
 def extract_news_gnews(categoria, lang=None, country=None, max_items=3):
     """
     Extrae noticias de GNews API (gnews.io).
@@ -386,7 +477,7 @@ def extract_news_currents(categoria, lang=None, country=None, max_items=3):
 def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
     """
     Combina fuentes hasta llenar el cupo con titulares y medios distintos.
-    Orden: RSS local (solo PE) -> Google News RSS -> GNews API -> Currents API.
+    Orden: RSS de secciones (PE) -> Google general y específico -> Bing -> API opcionales.
     :param categoria: Nombre exacto de una de las 7 categorias.
     :param max_items: Cantidad de noticias a extraer.
     :param lang: Idioma (ej: es)
@@ -406,7 +497,9 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
             title = normalized_headline(item.get("titulo", ""))
             url = item.get("url", "")
             outlet = (item.get("fuente") or "Desconocida").strip().lower()
-            if outlet in {"facebook.com", "instagram.com", "tiktok.com", "x.com", "youtube.com", "wordpress.com"}:
+            if social_source(url, outlet) or outlet == "wordpress.com":
+                continue
+            if not matches_category(item, categoria):
                 continue
             if is_peru_story(item) != (geo == "PE"):
                 continue
@@ -424,12 +517,17 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
 
     # Google Trends indica dónde se busca un tema, no dónde ocurrió el hecho.
     if categoria == "Tendencias":
+        if geo == "PE":
+            print("    Intentando RSS cultural peruano para Tendencias...")
+            add_candidates(extract_news_local_rss(categoria, max_items=max_items * 2), limit=1)
         topic = "noticias virales Perú" if geo == "PE" else "noticias virales mundo"
         candidates = extract_custom_topic_google_rss(topic + " when:4d", lang=lang, geo=geo, max_items=max_items * 6)
         add_candidates(candidates)
         if len(selected) < max_items:
             topic = "tendencias Perú" if geo == "PE" else "tendencias internacionales"
             add_candidates(extract_custom_topic_google_rss(topic + " when:4d", lang=lang, geo=geo, max_items=max_items * 6))
+        if len(selected) < max_items:
+            add_candidates(extract_bing_news_rss(topic, max_items=max_items * 8))
         print(f"    -> {len(selected)}/{max_items} candidatas de {len(outlet_counts)} medios")
         return selected
 
@@ -437,10 +535,23 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
     if geo == "PE" and categoria in FUENTES_LOCALES_PERU:
         print(f"    Intentando Fuente Local Directa (Perú) para {categoria}...")
         add_candidates(extract_news_local_rss(categoria, max_items=max_items * 2), limit=1)
+    elif geo != "PE" and categoria in FUENTES_INTERNACIONALES:
+        print(f"    Intentando RSS especializado internacional para {categoria}...")
+        add_candidates(extract_news_world_rss(categoria, max_items=max_items * 2), limit=1)
 
     if len(selected) < max_items:
         print(f"    Intentando Google News RSS (geo={geo})...")
-        add_candidates(extract_news_google_rss(categoria, max_items=max_items * 6, lang=lang, geo=geo))
+        add_candidates(extract_news_google_rss(categoria, max_items=max_items * 6, lang=lang, geo=geo), limit=max(1, max_items - 2))
+
+    if len(selected) < max_items:
+        base_topic = CATEGORY_SEARCH_QUERIES.get(categoria, (categoria, categoria))[0 if geo == "PE" else 1]
+        topic = f"{base_topic} Perú when:4d" if geo == "PE" else f"{base_topic} when:4d"
+        print("    Ampliando con búsqueda temática de Google News...")
+        add_candidates(extract_custom_topic_google_rss(topic, lang=lang, geo=geo, max_items=max_items * 6))
+
+    if len(selected) < max_items:
+        print("    Ampliando con Bing News RSS...")
+        add_candidates(extract_bing_news_rss(topic, max_items=max_items * 8))
 
     if len(selected) < max_items and GNEWS_API_KEY:
         print("    Completando con GNews API...")

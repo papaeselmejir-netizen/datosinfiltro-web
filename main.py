@@ -5,6 +5,8 @@ import sys
 import argparse
 import glob
 import uuid
+from collections import Counter
+from itertools import zip_longest
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
@@ -13,17 +15,25 @@ from dotenv import load_dotenv
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, CATEGORIAS
+from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, extract_bing_news_rss, CATEGORIAS
 from src.crawler import investigate_news
-from src.writer import generate_multi_channel_content, verify_article_against_sources
+from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_sources_are_independent
 from src.multimedia import search_licensed_images, search_relevant_video
-from src.editorial import query_terms, select_corrob_sources, source_host, publication_errors, rank_news, matches_story_aspect
+from src.editorial import query_terms, corroboration_queries, select_corrob_sources, source_host, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
 
 load_dotenv()
 
 # Categorias a procesar en esta ejecucion.
 # Todas las 8 categorias activas por defecto.
 CATEGORIAS_ACTIVAS = list(CATEGORIAS.keys())
+PIPELINE_METRICS = Counter()
+RUN_TITLES = []
+
+
+def reject_news(reason, message):
+    PIPELINE_METRICS[reason] += 1
+    print(message)
+    return None
 
 # Directorio donde se guardan los articulos generados
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "drafts")
@@ -55,6 +65,26 @@ def save_history(history):
         json.dump(list(history), f, ensure_ascii=False, indent=2)
 
 
+def recent_published_titles(hours=336):
+    """Use published facts, not the large legacy draft archive, for event deduplication."""
+    from datetime import timedelta
+    cutoff = datetime.now(ZoneInfo("America/Lima")) - timedelta(hours=hours)
+    titles = []
+    for path in glob.glob(os.path.join(os.path.dirname(__file__), "published", "**", "*.json"), recursive=True):
+        try:
+            with open(path, encoding="utf-8") as file:
+                article = json.load(file)
+            raw = article.get("fecha_publicacion") or article.get("fecha_creacion")
+            published = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+            if published.tzinfo is None:
+                published = published.replace(tzinfo=ZoneInfo("America/Lima"))
+            if published >= cutoff:
+                titles.extend(filter(None, (article.get("titulo_fuente"), article.get("titulo_articulo"))))
+        except (OSError, ValueError, TypeError, AttributeError):
+            continue
+    return titles
+
+
 async def process_single_news(noticia, categoria, distributor=None):
     """
     Procesa UNA sola noticia: investiga, redacta y distribuye.
@@ -62,30 +92,43 @@ async def process_single_news(noticia, categoria, distributor=None):
     Solo crea un borrador cuando hay fuentes y multimedia verificables.
     """
     titulo = noticia["titulo"]
+    PIPELINE_METRICS["candidatas_investigadas"] += 1
     print(f"\n    --- Procesando: {titulo[:70]}... ---")
 
     # FASE 2: Investigacion (leer el contenido real de la URL)
     print(f"    [Investigando] Leyendo contenido de la fuente...")
-    topic = query_terms(titulo)
-    candidates = await asyncio.to_thread(
-        extract_custom_topic_google_rss, topic, geo="PE" if noticia.get("region") == "Perú" else "US", max_items=12
-    )
-    corroborating = select_corrob_sources(noticia, candidates, limit=3)
+    candidates = []
+    corroborating = []
+    topics = corroboration_queries(titulo)
+    for topic in topics:
+        candidates.extend(await asyncio.to_thread(
+            extract_custom_topic_google_rss, topic,
+            geo="PE" if noticia.get("region") == "Perú" else "US", max_items=20,
+        ))
+        corroborating = select_corrob_sources(noticia, candidates, limit=10)
+        if len(corroborating) >= 5:
+            break
+    if topics:
+        candidates.extend(await asyncio.to_thread(extract_bing_news_rss, topics[0], max_items=20))
+        corroborating = select_corrob_sources(noticia, candidates, limit=10)
+    print(f"    {len(corroborating)} medios con titulares relacionados para comprobar")
+    if not corroborating:
+        return reject_news("sin_cobertura", "    Sin cobertura independiente del mismo hecho. Saltando.")
     contexto, _, _, _, sources = await investigate_news(
-        [noticia, *corroborating], return_sources=True
+        [noticia, *corroborating], return_sources=True, required_sources=2,
     )
     if len({source_host(source["url"]) for source in sources}) < 2:
-        print("    Faltan dos medios independientes con texto suficiente. Saltando.")
-        return None
+        return reject_news("sin_dos_fuentes_legibles", "    Faltan dos medios independientes con texto suficiente. Saltando.")
+    if not await asyncio.to_thread(verify_sources_are_independent, contexto):
+        return reject_news("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
 
     print("    [Multimedia] Buscando imágenes con licencia y un video relacionado...")
     images, video = await asyncio.gather(
-        asyncio.to_thread(search_licensed_images, titulo, 2),
-        asyncio.to_thread(search_relevant_video, titulo),
+        asyncio.to_thread(search_licensed_images, titulo, 2, categoria),
+        asyncio.to_thread(search_relevant_video, titulo, categoria),
     )
     if len(images) < 2 or not video:
-        print("    Multimedia insuficiente o no verificable. Saltando.")
-        return None
+        return reject_news("multimedia_insuficiente", "    Multimedia insuficiente o no verificable. Saltando.")
 
     # FASE 3: Redaccion con IA
     print(f"    [Redactando] Generando contenido multi-canal...")
@@ -93,23 +136,36 @@ async def process_single_news(noticia, categoria, distributor=None):
     content = generate_multi_channel_content(titulo, contexto, categoria, region=region)
 
     if not content:
-        print(f"    Error en la generacion de contenido. Saltando.")
-        return None
+        return reject_news("redaccion_fallida", "    Error en la generacion de contenido. Saltando.")
     if not all(matches_story_aspect(titulo, content.get(field, "")) for field in ("titulo_articulo", "resumen")):
-        print("    El texto redactado cambió el producto o la función central. Saltando.")
-        return None
-    if not await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto):
-        print("    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
-        return None
+        return reject_news("tema_desviado", "    El texto redactado cambió el producto o la función central. Saltando.")
+    def evidence_errors(draft):
+        return claim_evidence_errors(" ".join(str(draft.get(field, "")) for field in ("titulo_articulo", "resumen", "articulo_web")), contexto)
+
+    deterministic_errors = evidence_errors(content)
+    if deterministic_errors:
+        print("    " + "; ".join(deterministic_errors))
+    verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto)
+    if not verified:
+        print("    La primera revisión detectó afirmaciones sin sustento; intentando una corrección.")
+        revision = await asyncio.to_thread(revise_article_against_sources, content, contexto)
+        if revision and all(matches_story_aspect(titulo, revision.get(field, "")) for field in ("titulo_articulo", "resumen")):
+            content.update(revision)
+            deterministic_errors = evidence_errors(content)
+            if deterministic_errors:
+                print("    " + "; ".join(deterministic_errors))
+            verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto)
+    if not verified:
+        return reject_news("afirmaciones_sin_sustento", "    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
 
     # Check if the LLM generated an error message instead of an article
     if content.get("titulo_articulo", "").lower().startswith("error"):
-        print(f"    Error: El LLM devolvió un contenido ilegible/error. Saltando.")
-        return None
+        return reject_news("redaccion_fallida", "    Error: El LLM devolvió un contenido ilegible/error. Saltando.")
 
     # Agregar region, imagen principal, imagenes extra y video al contenido generado
     content["region"] = noticia.get("region", "General")
     content["schema_version"] = 2
+    content["media_review_version"] = 1
     content["titulo_fuente"] = titulo
     content["autor"] = "Equipo editorial DatoSinFiltro"
     content["fecha_creacion"] = datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds")
@@ -129,8 +185,7 @@ async def process_single_news(noticia, categoria, distributor=None):
     content["fuente_url"] = noticia.get("url", "")
     errors = publication_errors(content)
     if errors:
-        print(f"    Borrador rechazado: {', '.join(errors)}")
-        return None
+        return reject_news("validacion_final", f"    Borrador rechazado: {', '.join(errors)}")
     
     print(f"    Contenido generado exitosamente.")
 
@@ -151,6 +206,7 @@ async def process_single_news(noticia, categoria, distributor=None):
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(content, f, indent=4, ensure_ascii=False)
     print(f"    Guardado en: {filepath}")
+    PIPELINE_METRICS["borradores_verificados"] += 1
 
     return content
 
@@ -221,14 +277,19 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
     for n in noticias_peru:
         n["region"] = "Perú"
         
-    noticias = rank_news(noticias_mundial + noticias_peru)
+    # Alternar hechos de Perú y del extranjero para no agotar el cupo en una región.
+    noticias = []
+    for local, world in zip_longest(rank_news(noticias_peru), rank_news(noticias_mundial)):
+        noticias.extend(item for item in (local, world) if item)
 
     if not noticias:
+        PIPELINE_METRICS["sin_candidatas"] += 1
         print(f"  No se encontraron noticias para '{categoria}'. Saltando.")
         return []
 
     # Cargar historial para deduplicar
     history = load_history()
+    recent_titles = recent_published_titles() + RUN_TITLES
     noticias_filtradas = []
     
     for n in noticias:
@@ -237,9 +298,13 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
         if (url_key and url_key in history) or (titulo_key and titulo_key in history):
             # Ya procesada, la ignoramos
             continue
+        if any(same_recent_event(n.get("titulo", ""), old) for old in recent_titles):
+            PIPELINE_METRICS["hechos_ya_publicados"] += 1
+            continue
         noticias_filtradas.append(n)
 
     if not noticias_filtradas:
+        PIPELINE_METRICS["ya_procesadas"] += 1
         print(f"  Todas las noticias encontradas para '{categoria}' ya fueron procesadas antes. Saltando.")
         return []
 
@@ -251,6 +316,9 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
     for noticia in noticias_filtradas:
         if max_drafts is not None and len(resultados) >= max_drafts:
             break
+        if any(same_recent_event(noticia.get("titulo", ""), old) for old in recent_titles):
+            PIPELINE_METRICS["hechos_ya_publicados"] += 1
+            continue
         try:
             result = await process_single_news(noticia, categoria, distributor=None) # Ya no enviamos 1 por 1
             if result:
@@ -258,7 +326,10 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
                 # Los borradores y publicados se consultan en load_history.
                 history.add(noticia.get("url", ""))
                 history.add(noticia["titulo"].lower())
+                recent_titles.extend(filter(None, (result.get("titulo_fuente"), result.get("titulo_articulo"))))
+                RUN_TITLES.extend(filter(None, (result.get("titulo_fuente"), result.get("titulo_articulo"))))
         except Exception as e:
+            PIPELINE_METRICS["errores_procesamiento"] += 1
             print(f"    ERROR procesando noticia: {e}")
             continue
 
@@ -282,6 +353,9 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
 
 
 async def main(topic=None):
+    PIPELINE_METRICS.clear()
+    RUN_TITLES.clear()
+    started_at = datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds")
     print("=" * 60)
     if topic:
         print(f"  PIPELINE AUTONOMO: BÚSQUEDA MANUAL DE TEMA")
@@ -319,6 +393,7 @@ async def main(topic=None):
         return
 
     todos_los_resultados = {}
+    category_results = {}
     max_per_run = max(1, int(os.getenv("MAX_DRAFTS_PER_RUN", "8")))
     max_per_region = max(1, int(os.getenv("MAX_NEWS_PER_REGION", "3")))
     max_drafts_per_category = max(1, int(os.getenv("MAX_DRAFTS_PER_CATEGORY", "1")))
@@ -327,6 +402,7 @@ async def main(topic=None):
         remaining = max_per_run - sum(len(group) for group in todos_los_resultados.values())
         if remaining <= 0:
             break
+        before = Counter(PIPELINE_METRICS)
         try:
             resultados = await process_category(
                 categoria, distributor, max_noticias=max_per_region,
@@ -336,7 +412,12 @@ async def main(topic=None):
                 todos_los_resultados[categoria] = resultados
         except Exception as e:
             print(f"\n  ERROR procesando '{categoria}': {e}")
-            continue
+            resultados = []
+            PIPELINE_METRICS["errores_categoria"] += 1
+        category_results[categoria] = {
+            "investigadas": PIPELINE_METRICS["candidatas_investigadas"] - before["candidatas_investigadas"],
+            "borradores_verificados": len(resultados),
+        }
 
     # Resumen final
     total_articulos = sum(len(v) for v in todos_los_resultados.values())
@@ -350,6 +431,36 @@ async def main(topic=None):
             titulo = content.get("titulo_articulo", "Sin titulo")
             print(f"    - [{cat[:25]}] {titulo[:60]}")
     print(f"\n  Articulos guardados en (Borradores): {os.path.abspath(OUTPUT_DIR)}")
+    if PIPELINE_METRICS:
+        print("  Motivos y resultados de esta ejecución:")
+        for reason, count in sorted(PIPELINE_METRICS.items()):
+            print(f"    {reason}: {count}")
+        summary_file = os.getenv("GITHUB_STEP_SUMMARY")
+        if summary_file:
+            try:
+                with open(summary_file, "a", encoding="utf-8") as file:
+                    file.write("\n### Investigación editorial\n\n")
+                    for reason, count in sorted(PIPELINE_METRICS.items()):
+                        file.write(f"- {reason}: {count}\n")
+                    file.write("\n**Cobertura por categoría**\n\n")
+                    for category, result in category_results.items():
+                        file.write(f"- {category}: {result['borradores_verificados']} aprobadas de {result['investigadas']} investigadas\n")
+            except OSError as exc:
+                print(f"    No se pudo escribir el resumen de GitHub: {type(exc).__name__}")
+    report_file = os.getenv("PIPELINE_REPORT_FILE")
+    if report_file:
+        report = {
+            "started_at": started_at,
+            "finished_at": datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds"),
+            "categories": category_results,
+            "metrics": dict(PIPELINE_METRICS),
+            "total_drafts": total_articulos,
+        }
+        try:
+            with open(report_file, "w", encoding="utf-8") as file:
+                json.dump(report, file, ensure_ascii=False, indent=2)
+        except OSError as exc:
+            print(f"    No se pudo guardar el informe local: {type(exc).__name__}")
     print("  Pipeline finalizado.")
 
 

@@ -16,10 +16,11 @@ import os
 import re
 import json
 import requests
+from html import unescape
 from urllib.parse import quote_plus, urljoin, urlparse, parse_qs
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from src.editorial import keywords, query_terms, relevance
+from src.editorial import event_terms, keywords, media_alignment_errors, place_terms, query_terms, relevance
 
 load_dotenv()
 
@@ -477,20 +478,45 @@ def search_pexels_images(titulo, count=3):
         return []
 
 
-def search_licensed_images(titulo, count=2):
+def search_licensed_images(titulo, count=2, categoria=None):
     """Return topic-matched images with recorded reuse terms."""
     matches = []
     if PEXELS_API_KEY:
-        matches = _search_pexels_licensed(titulo, count)
+        matches = _search_pexels_licensed(titulo, count, categoria)
     if len(matches) < count:
         commons = search_commons_images(titulo, count - len(matches))
         matches.extend(item for item in commons if item["url"] not in {match["url"] for match in matches})
     return matches[:count]
 
 
-def _stock_topic(titulo):
+def _stock_topic(titulo, categoria=None):
     """Translate a few unambiguous Spanish news topics into stock-media searches."""
     terms = keywords(titulo)
+    if "usdc" in terms or "stablecoin" in terms:
+        return "digital wallet smartphone payment", {"wallet", "payment", "payments", "smartphone", "phone", "mobile"}
+    if {"inteligencia", "artificial"} <= terms and terms & {"salud", "hospital", "medicina", "medico", "medicos", "sanitario"}:
+        return "doctor hospital medical technology", {"health", "healthcare", "medical", "medicine", "hospital", "doctor", "doctors", "patient", "clinic"}
+    if "xbox" in terms:
+        return "xbox video game console", {"xbox", "gaming", "gamer", "videogame", "videogames", "console", "game"}
+    if "atletico" in terms:
+        return "football soccer club", {"football", "soccer", "stadium", "match"}
+    if categoria == "Deportes en Vivo":
+        if terms & {"nba", "raptors", "heat", "baloncesto", "basket", "basquet"}:
+            return "basketball court game", {"basketball", "hoop", "baloncesto"}
+        if terms & {"tenis", "tenista", "wimbledon", "alcaraz"}:
+            return "tennis court match", {"tennis", "racket", "tenis"}
+        if terms & {"voley", "voleibol", "volibol", "zinger"}:
+            return "volleyball match court", {"volleyball", "volley", "voleibol", "voley"}
+        if terms & {"futbol", "futbolista", "goles", "liga", "menezes", "alianza", "universitario", "cristal", "seleccion"}:
+            return "football stadium match", {"football", "footballer", "footballers", "soccer", "futbol"}
+    if categoria == "Tecnologia, Gadgets e Inteligencia Artificial" and terms & {"satelite", "satelites", "espacio", "orbita", "orbital", "cohete"}:
+        return "satellite space orbit", {"satellite", "satellites", "space", "orbit", "orbital", "rocket", "spacecraft"}
+    if categoria == "Tecnologia, Gadgets e Inteligencia Artificial" and terms & {"inteligencia", "artificial", "openai", "chatgpt", "gemini"}:
+        return "artificial intelligence technology", {"artificial", "intelligence", "ai", "robot", "digital", "computer", "technology"}
+    if categoria == "Gaming y Esports" and {"epic", "games"} <= terms and terms & {"regala", "gratis", "gratuitos"}:
+        return "desktop gaming computer setup", {"gaming", "gamer", "computer", "pc", "desktop", "videogame", "videogames"}
+    if categoria == "Finanzas, Negocios y Criptomonedas" and terms & {"empresa", "empresas", "empresarial", "negocios"} and terms & {"congreso", "foro", "encuentro", "reunion"}:
+        return "business conference executives", {"business", "conference", "meeting", "executive", "corporate", "company"}
     topics = (
         ({"premios", "ariel", "galardones", "alfombra"},
          "film awards red carpet", {"award", "awards", "carpet", "trophy", "ceremony", "prize"}),
@@ -503,6 +529,20 @@ def _stock_topic(titulo):
          {"smartphone", "phone", "mobile", "social", "media", "app", "screen", "device", "chat", "messaging"}),
         ({"desvios", "viales", "cierres", "carreteras", "trafico", "transito", "vehicular", "movilidad", "transporte", "metropolitano"},
          "traffic jam city", {"traffic", "road", "street", "car", "cars", "vehicle", "vehicles", "bus", "transport", "transit", "train"}),
+        ({"hospital", "hospitales", "medicos", "medico", "clinica", "clinicas", "pacientes", "vacunas", "vacunacion"},
+         "hospital healthcare", {"hospital", "doctor", "doctors", "nurse", "nurses", "medical", "healthcare", "clinic", "patient", "patients", "vaccine"}),
+        ({"bitcoin", "criptomonedas", "criptomoneda", "cripto"},
+         "bitcoin cryptocurrency", {"bitcoin", "crypto", "cryptocurrency", "digital", "currency", "trading"}),
+        ({"bolsa", "mercados", "inversiones"},
+         "stock market trading", {"stock", "stocks", "market", "trading", "finance", "financial", "investing"}),
+        ({"futbol", "futbolista", "goles", "liga"},
+         "football stadium match", {"football", "soccer", "stadium", "match", "players", "player", "ball"}),
+        ({"esports", "videojuegos", "videojuego", "gaming", "consolas"},
+         "esports gaming tournament", {"esports", "gaming", "gamer", "game", "games", "console", "tournament"}),
+        ({"concierto", "conciertos", "cantante", "musica", "festival"},
+         "concert live music", {"concert", "music", "stage", "singer", "musician", "festival", "crowd"}),
+        ({"elecciones", "electoral", "votacion", "votar", "candidatos", "candidaturas"},
+         "voting ballot election", {"vote", "voting", "voter", "voters", "ballot", "election", "polling"}),
         ({"escuela", "universidad", "estudiantes", "campus"},
          "artificial intelligence university", {"robot", "robotic", "technology", "computer", "computers", "digital", "intelligence", "laboratory", "school", "students"}),
     )
@@ -512,11 +552,11 @@ def _stock_topic(titulo):
     return None
 
 
-def _search_pexels_licensed(titulo, count):
-    topic = _stock_topic(titulo)
+def _search_pexels_licensed(titulo, count, categoria=None):
+    topic = _stock_topic(titulo, categoria)
     queries = [query_terms(titulo, 5)]
     if topic:
-        prioritize_stock = bool(keywords(titulo) & {"premios", "ariel", "galardones", "alfombra", "cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas", "gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"}) or {"instagram", "whatsapp"} <= keywords(titulo)
+        prioritize_stock = categoria in ("Deportes en Vivo", "Tecnologia, Gadgets e Inteligencia Artificial", "Finanzas, Negocios y Criptomonedas", "Gaming y Esports") or bool(keywords(titulo) & {"premios", "ariel", "galardones", "alfombra", "cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas", "gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"}) or {"instagram", "whatsapp"} <= keywords(titulo)
         queries = [topic[0], queries[0]] if prioritize_stock else [queries[0], topic[0]]
     if not queries[0]:
         return []
@@ -540,14 +580,19 @@ def _search_pexels_licensed(titulo, count):
             description = photo.get("alt") or ""
             description_terms = keywords(description)
             if not description or not (
-                (topic and query == topic[0] and description_terms & topic[1])
-                or keywords(titulo) & description_terms
+                (topic and description_terms & topic[1])
+                or (not topic and len(keywords(titulo) & description_terms) >= 2)
             ):
                 continue
             lowered = description.lower()
             if "lima" in keywords(titulo) and any(place in lowered for place in ("buenos aires", "argentina", "madrid")):
                 continue
+            headline_places, photo_places = place_terms(titulo), place_terms(description)
+            if headline_places and photo_places and not photo_places <= headline_places:
+                continue
             if topic and not (description_terms & topic[1]):
+                continue
+            if media_alignment_errors({"titulo_articulo": titulo, "imagenes": [{"descripcion": description}]}):
                 continue
             url = photo.get("src", {}).get("large2x") or photo.get("src", {}).get("large")
             if not url or url in seen:
@@ -603,7 +648,12 @@ def search_commons_images(titulo, count=2):
             license_url = metadata.get("LicenseUrl", {}).get("value", "") or "https://commons.wikimedia.org/wiki/Commons:Licensing"
             author = BeautifulSoup(metadata.get("Artist", {}).get("value", ""), "html.parser").get_text(" ", strip=True)
             description = BeautifulSoup(metadata.get("ImageDescription", {}).get("value", ""), "html.parser").get_text(" ", strip=True) or title
-            if not (keywords(titulo) & keywords(f"{title} {description}")):
+            if len(keywords(titulo) & keywords(f"{title} {description}")) < 2:
+                continue
+            headline_places, image_places = place_terms(titulo), place_terms(f"{title} {description}")
+            if headline_places and image_places and not image_places <= headline_places:
+                continue
+            if media_alignment_errors({"titulo_articulo": titulo, "imagenes": [{"descripcion": description}]}):
                 continue
             url = info.get("thumburl") or info.get("url", "")
             if not url.startswith("https://"):
@@ -625,7 +675,7 @@ def search_commons_images(titulo, count=2):
         return []
 
 
-def search_relevant_youtube_video(titulo):
+def search_relevant_youtube_video(titulo, categoria=None):
     """Choose a recent embeddable video whose title shares the story's terms."""
     if not YOUTUBE_API_KEY:
         return None
@@ -650,12 +700,21 @@ def search_relevant_youtube_video(titulo):
         for item in response.json().get("items", []):
             video_id = item.get("id", {}).get("videoId", "")
             snippet = item.get("snippet", {})
-            score = relevance(titulo, snippet.get("title", ""))
-            video_terms = keywords(snippet.get("title", ""))
+            video_title = unescape(snippet.get("title", ""))
+            score = relevance(titulo, video_title)
+            video_terms = keywords(video_title)
+            headline_places = place_terms(titulo)
+            if headline_places and not headline_places <= place_terms(video_title):
+                continue
+            headline_events = event_terms(titulo)
+            if headline_events and not headline_events <= event_terms(video_title):
+                continue
+            if categoria == "Deportes en Vivo" and headline_events and event_terms(video_title) - headline_events:
+                continue
             if len(video_id) == 11 and score >= 0.4 and len(keywords(titulo) & video_terms) >= 2 and anchor_terms & video_terms:
                 matches.append((score, {
                     "url": f"https://www.youtube.com/embed/{video_id}",
-                    "titulo": snippet.get("title", ""),
+                    "titulo": video_title,
                     "canal": snippet.get("channelTitle", ""),
                     "fecha": snippet.get("publishedAt", ""),
                 }))
@@ -666,12 +725,12 @@ def search_relevant_youtube_video(titulo):
         return None
 
 
-def search_licensed_stock_video(titulo):
+def search_licensed_stock_video(titulo, categoria=None):
     """Find clearly labelled illustrative footage when no event-specific video exists."""
     if not PEXELS_API_KEY:
         return None
     title_terms = keywords(titulo)
-    topic = _stock_topic(titulo)
+    topic = _stock_topic(titulo, categoria)
     query = topic[0] if topic else query_terms(titulo, 4)
     if not query:
         return None
@@ -686,10 +745,15 @@ def search_licensed_stock_video(titulo):
             origin = video.get("url", "")
             slug = origin.rsplit("/video/", 1)[-1].rsplit("/", 1)[0].replace("-", " ")
             slug_terms = keywords(slug)
+            headline_places, video_places = place_terms(titulo), place_terms(slug)
+            if headline_places and video_places and not video_places <= headline_places:
+                continue
             if topic:
                 if not (slug_terms & topic[1]):
                     continue
             elif len(title_terms & slug_terms) < 2:
+                continue
+            if media_alignment_errors({"titulo_articulo": titulo, "imagenes": [], "video_source": "pexels", "video_titulo": slug}):
                 continue
             files = [item for item in video.get("video_files", []) if item.get("file_type") == "video/mp4" and item.get("width") and item.get("width") <= 1920]
             if not files:
@@ -711,13 +775,15 @@ def search_licensed_stock_video(titulo):
     return None
 
 
-def search_relevant_video(titulo):
-    video = search_relevant_youtube_video(titulo)
+def search_relevant_video(titulo, categoria=None):
+    if categoria == "Noticias de Ultima Hora y Politica" and keywords(titulo) & {"elecciones", "electoral", "encuestas", "votacion", "escrutinio"}:
+        return search_licensed_stock_video(titulo, categoria)
+    video = search_relevant_youtube_video(titulo, categoria)
     if video:
         video["source"] = "youtube"
         video["tipo"] = "Video relacionado del canal original"
         return video
-    return search_licensed_stock_video(titulo)
+    return search_licensed_stock_video(titulo, categoria)
 
 
 if __name__ == "__main__":

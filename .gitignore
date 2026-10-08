@@ -21,6 +21,8 @@ Thumbs.db
 
 # Exclude scratch directory
 scratch/
+logs/
+website/public/diagnostico-local.html
 website/.publish-next-*/
 website/.publish-backup-*/
 
