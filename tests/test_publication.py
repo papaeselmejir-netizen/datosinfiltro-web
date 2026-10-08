@@ -58,6 +58,10 @@ class PublicationTests(unittest.TestCase):
             "BTS en Lima plan de desvíos y cierres viales para concierto",
             "Fans de BTS ingresan a San Marcos en Lima antes del concierto",
         ))
+        self.assertTrue(same_recent_event(
+            "Pedro Sánchez convoca elecciones anticipadas en España tras el rechazo a su plan de vivienda",
+            "Pedro Sánchez convoca elecciones generales anticipadas en España para el 29 de noviembre",
+        ))
 
     def test_volleyball_article_rejects_football_photos(self):
         candidate = article()

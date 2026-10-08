@@ -158,6 +158,13 @@ async def process_single_news(noticia, categoria, distributor=None):
     if not verified:
         return reject_news("afirmaciones_sin_sustento", "    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
 
+    # The source headline may look different from the final, rewritten headline.
+    # Check both before saving so a renamed version of an already published
+    # event cannot slip through the candidate-stage deduplication.
+    recent_titles = recent_published_titles() + RUN_TITLES
+    if any(same_recent_event(content.get("titulo_articulo", ""), old) for old in recent_titles):
+        return reject_news("hechos_ya_publicados", "    La nota redactada repite un hecho publicado recientemente. Saltando.")
+
     # Check if the LLM generated an error message instead of an article
     if content.get("titulo_articulo", "").lower().startswith("error"):
         return reject_news("redaccion_fallida", "    Error: El LLM devolvió un contenido ilegible/error. Saltando.")
