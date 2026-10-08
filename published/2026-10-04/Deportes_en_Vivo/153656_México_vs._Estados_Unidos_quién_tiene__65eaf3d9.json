@@ -34,38 +34,39 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/20624924/pexels-photo-20624924.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A vintage-style globe showing Mexico and parts of North America. Ideal for geography themes.",
-      "credito": "Amar  Preciado",
-      "origen": "https://www.pexels.com/photo/globe-in-close-up-20624924/",
+      "url": "https://images.pexels.com/photos/32285250/pexels-photo-32285250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A dynamic football match with players in motion on a sunny day, witnessed by a packed stadium.",
+      "credito": "Franco Monsalvo",
+      "origen": "https://www.pexels.com/photo/action-packed-football-match-with-crowds-32285250/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/37107418/pexels-photo-37107418.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Exciting youth flag football game on a sunny day in Toluca, Mexico, featuring active players.",
-      "credito": "Erick Ortega",
-      "origen": "https://www.pexels.com/photo/youth-flag-football-game-in-sunny-toluca-37107418/",
+      "url": "https://images.pexels.com/photos/32190714/pexels-photo-32190714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Intense football match capture with two players battling for the ball amid a cheering crowd.",
+      "credito": "Franco Monsalvo",
+      "origen": "https://www.pexels.com/photo/action-packed-football-match-under-stadium-lights-32190714/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/20624924/pexels-photo-20624924.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/32285250/pexels-photo-32285250.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/37107418/pexels-photo-37107418.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/32190714/pexels-photo-32190714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/zN6DXSq_wXk",
-  "video_titulo": "México vs Estados Unidos ¿Quién Tiene el Aguila MAS PODEROSA?",
-  "video_canal": "Mundo de las Aves",
-  "video_source": "youtube",
-  "video_tipo": "Video relacionado del canal original",
-  "video_origen": "",
-  "video_licencia": "",
-  "video_licencia_url": "",
-  "video_poster": "",
+  "video_url": "https://videos.pexels.com/video-files/11918917/11918917-hd_1920_1080_60fps.mp4",
+  "video_titulo": "Football match on stadium 11918917",
+  "video_canal": "Tio Nazih",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/football-match-on-stadium-11918917/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/11918917/pexels-photo-11918917.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOMFNDbUNUS3JtNEpvc1VrbVJfOW5sY0g5N0R5RnpmemV0Q01pYVN6ZV9zRHg1dGd1aGJudEhicGVfaTBveXVXM2hQblB5XzV2b0lKVHRYS2hEM2lMaG5kMThJYmprOGlPd0stY0VlellPcHNaNHo1ZDBPY3BvQVJlcXlWakxlRndRQktSdVN1V3ROSy13R0lLZ0JVd1Y?oc=5",
   "fecha_publicacion": "2026-10-04T15:42:21+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

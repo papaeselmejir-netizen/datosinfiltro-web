@@ -50,6 +50,14 @@ class PublicationTests(unittest.TestCase):
         followup = "Mano Menezes confirma cambios para enfrentar a Colombia en el próximo partido"
         self.assertTrue(same_recent_event(published, duplicate))
         self.assertFalse(same_recent_event(published, followup))
+        self.assertFalse(same_recent_event(
+            "Elecciones Lima 2026 Rafael López Aliaga lidera boca de urna",
+            "Elecciones Junín 2026 Fernando Orihuela lidera boca de urna",
+        ))
+        self.assertFalse(same_recent_event(
+            "BTS en Lima plan de desvíos y cierres viales para concierto",
+            "Fans de BTS ingresan a San Marcos en Lima antes del concierto",
+        ))
 
     def test_volleyball_article_rejects_football_photos(self):
         candidate = article()
@@ -79,6 +87,7 @@ class PublicationTests(unittest.TestCase):
         candidate["imagenes"][1]["descripcion"] = "Musicians on stage at a concert"
         self.assertIn("El material multimedia no representa el asunto central de la noticia", publication_errors(candidate))
         candidate["imagenes"][0]["descripcion"] = "A crowd enjoying a music concert in Lima"
+        candidate["video_titulo"] = "Conciertos de BTS en Lima y su impacto económico"
         self.assertNotIn("El material multimedia no representa el asunto central de la noticia", publication_errors(candidate))
 
     def test_usdc_is_not_illustrated_as_bitcoin(self):
@@ -171,18 +180,17 @@ class PublicationTests(unittest.TestCase):
         self.assertFalse(extractor.matches_category(election, "Finanzas, Negocios y Criptomonedas"))
         self.assertTrue(extractor.matches_category(logistics, "Finanzas, Negocios y Criptomonedas"))
 
-    def test_election_uses_licensed_stock_video(self):
+    def test_election_uses_an_event_video_when_available(self):
         candidate = article()
         candidate["categoria"] = "Noticias de Ultima Hora y Politica"
         candidate["titulo_articulo"] = "Encuestas de elecciones en Lima"
-        self.assertIn("El video electoral requiere material de archivo con licencia verificada", publication_errors(candidate))
-        with patch.object(multimedia, "search_licensed_stock_video", return_value={"source": "pexels"}) as stock, patch.object(
-            multimedia, "search_relevant_youtube_video"
+        with patch.object(multimedia, "search_licensed_stock_video") as stock, patch.object(
+            multimedia, "search_relevant_youtube_video", return_value={"source": "youtube", "titulo": "Encuestas de elecciones en Lima"}
         ) as youtube:
             video = multimedia.search_relevant_video(candidate["titulo_articulo"], candidate["categoria"])
-        self.assertEqual(video["source"], "pexels")
-        stock.assert_called_once()
-        youtube.assert_not_called()
+        self.assertEqual(video["source"], "youtube")
+        youtube.assert_called_once()
+        stock.assert_not_called()
 
     def test_bing_rss_uses_original_publisher_url(self):
         original = "https://medio.example/noticia/arequipa"

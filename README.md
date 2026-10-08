@@ -10,6 +10,8 @@ GitHub Actions investiga las ocho categorías cuatro veces al día y publica los
 
 La web de producción se genera con `SITE_URL=https://datosinfiltro-web.vercel.app`; una compilación para localhost bloquea deliberadamente la indexación. El servidor local se usa para pruebas y no debe ejecutar un segundo proceso de publicación junto al flujo de GitHub.
 
+Las 24 noticias existentes se revisaron de nuevo con el filtro multimedia y se sustituyeron imágenes o clips que correspondían a otro tema o lugar. Todas las páginas conservan dos imágenes con licencia registrada y un video relacionado; los recursos de archivo se señalan como ilustrativos. La presencia de multimedia y dos fuentes no garantiza por sí sola que una afirmación periodística sea correcta: la política editorial permite corregir o retirar una nota cuando aparezca evidencia nueva.
+
 ## Flujo
 
 1. GitHub Actions ejecuta `main.py` cuatro veces al día. Una búsqueda manual también se puede lanzar desde el CMS.

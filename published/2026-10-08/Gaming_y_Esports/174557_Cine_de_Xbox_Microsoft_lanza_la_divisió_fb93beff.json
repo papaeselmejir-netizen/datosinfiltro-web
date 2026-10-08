@@ -40,38 +40,39 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/67654/pexels-photo-67654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "High-quality broadcast camera set outdoors, ideal for media and videography projects.",
-      "credito": "Knelstrom ltd",
-      "origen": "https://www.pexels.com/photo/black-video-camera-on-brown-wooden-table-67654/",
+      "url": "https://images.pexels.com/photos/8782574/pexels-photo-8782574.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of a white gaming console with a black controller on a dark background.",
+      "credito": "Bryce Carithers",
+      "origen": "https://www.pexels.com/photo/a-white-video-game-console-8782574/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/10395639/pexels-photo-10395639.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of a professional filmmaking camera setup on an outdoor set with blurred background.",
-      "credito": "Syed Qaarif Andrabi",
-      "origen": "https://www.pexels.com/photo/close-up-photo-of-black-camera-10395639/",
+      "url": "https://images.pexels.com/photos/34067678/pexels-photo-34067678.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of a white gaming controller with black buttons against a vivid red backdrop.",
+      "credito": "Chris L",
+      "origen": "https://www.pexels.com/photo/white-gaming-controller-on-a-red-background-34067678/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/67654/pexels-photo-67654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/8782574/pexels-photo-8782574.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/10395639/pexels-photo-10395639.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/34067678/pexels-photo-34067678.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://videos.pexels.com/video-files/39402053/16776792_1920_1080_60fps.mp4",
-  "video_titulo": "Professional video cameras in studio setup 39402053",
-  "video_canal": "Kuiyibo Campos",
+  "video_url": "https://videos.pexels.com/video-files/4061343/4061343-hd_1920_1080_30fps.mp4",
+  "video_titulo": "An xbox one console blinking light 4061343",
+  "video_canal": "thiago japyassu",
   "video_source": "pexels",
   "video_tipo": "Video ilustrativo de archivo",
-  "video_origen": "https://www.pexels.com/video/professional-video-cameras-in-studio-setup-39402053/",
+  "video_origen": "https://www.pexels.com/video/an-xbox-one-console-blinking-light-4061343/",
   "video_licencia": "Pexels License",
   "video_licencia_url": "https://www.pexels.com/license/",
-  "video_poster": "https://images.pexels.com/videos/39402053/pexels-photo-39402053.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+  "video_poster": "https://images.pexels.com/videos/4061343/fun-fun-activity-game-game-console-4061343.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxPbzdVWVlCb1QyRmg0Rm5NUktSNk5ET0REUzh2LXBydXpONngtM2ZjckM3RlFQWWNyV0JuVjN4V3FNX1AyVW9zWVZ1em9DeGZZYW9qdUxNRHlIUUhYcWl4NkgzcXVXczlobDVkRU53RThoR1BoYXhnUUJiQ1RQNllOMFY5SFg3RUNRSHFKVzRiZkNtQWNDdlEyQ1hVMXZDM1VLNmR6YUFONmE3dzNhbjNISk1PTExlQTh3ZFNjV09zSzE4TnV5Ynhib0h0TW5wR2wtcDVUaUNoRnplVWVoSkM4RtIB5gFBVV95cUxQZVJUSERnWnRza3ktc1hCNWFudDZvNXg1YXB2ckVnRTN3SVdBR0JuRU55alIxZHNqa2s4ZVNfZVJaMFc0RHhhTUlIeUE1b1RkVHA2aEoyUGNOdnJueFlfaUxFTGhzM0R6dmNNRXlwT1paTnBHclE3eUpfUTJhVlVfTXVoOU5vM2NfOUxjVFNRMkdKZUFzUWJ2NWxpZ2lIQy02c0hQM1VuNmZHb0ZwVDh4MUtuZE1zTzZVVU5WQmpXRURPZmkweUpLTm1vNmlTNFpOSXU0MGJBNnpPZlhXMmFTaXhVcTM1Zw?oc=5",
   "fecha_publicacion": "2026-10-08T17:48:22+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

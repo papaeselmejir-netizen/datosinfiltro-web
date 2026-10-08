@@ -492,6 +492,22 @@ def search_licensed_images(titulo, count=2, categoria=None):
 def _stock_topic(titulo, categoria=None):
     """Translate a few unambiguous Spanish news topics into stock-media searches."""
     terms = keywords(titulo)
+    if terms & {"desvios", "viales", "cierres", "trafico", "transito"}:
+        return "urban traffic road cars", {"traffic", "road", "roads", "street", "cars", "vehicles", "bus", "transport"}
+    if terms & {"concierto", "conciertos", "gira", "cantante"}:
+        return "live music concert stage", {"concert", "concerts", "music", "musician", "stage", "singer", "band", "performance"}
+    if terms & {"elecciones", "electoral", "votacion", "urna", "escrutinio", "balotaje", "bolsonaro"}:
+        return "voting ballot election", {"vote", "voting", "voter", "voters", "ballot", "election", "polling"}
+    if terms & {"papa", "pontifice"} and terms & {"salud", "mental", "pastoral"}:
+        return "pope vatican church", {"pope", "papal", "vatican", "church", "catholic", "religious"}
+    if "nobel" in terms:
+        return "neuroscience brain research laboratory", {"neuron", "neurons", "brain", "neuroscience", "research", "laboratory", "science"}
+    if terms & {"vivienda", "desahucio", "desalojos"}:
+        return "housing residential apartment homes", {"housing", "home", "house", "apartment", "residential"}
+    if terms & {"asus", "rtx"}:
+        return "gaming laptop computer", {"asus", "laptop", "computer", "pc", "gaming", "notebook"}
+    if "aston" in terms:
+        return "aston martin suv car", {"aston", "martin", "car", "cars", "suv", "vehicle", "automotive"}
     if "usdc" in terms or "stablecoin" in terms:
         return "digital wallet smartphone payment", {"wallet", "payment", "payments", "smartphone", "phone", "mobile"}
     if {"inteligencia", "artificial"} <= terms and terms & {"salud", "hospital", "medicina", "medico", "medicos", "sanitario"}:
@@ -501,6 +517,8 @@ def _stock_topic(titulo, categoria=None):
     if "atletico" in terms:
         return "football soccer club", {"football", "soccer", "stadium", "match"}
     if categoria == "Deportes en Vivo":
+        if terms & {"concacaf", "fifa", "mundial"}:
+            return "soccer football match stadium", {"soccer", "football", "footballer", "footballers", "stadium", "match"}
         if terms & {"nba", "raptors", "heat", "baloncesto", "basket", "basquet"}:
             return "basketball court game", {"basketball", "hoop", "baloncesto"}
         if terms & {"tenis", "tenista", "wimbledon", "alcaraz"}:
@@ -588,7 +606,7 @@ def _search_pexels_licensed(titulo, count, categoria=None):
             if "lima" in keywords(titulo) and any(place in lowered for place in ("buenos aires", "argentina", "madrid")):
                 continue
             headline_places, photo_places = place_terms(titulo), place_terms(description)
-            if headline_places and photo_places and not photo_places <= headline_places:
+            if photo_places and not photo_places <= headline_places:
                 continue
             if topic and not (description_terms & topic[1]):
                 continue
@@ -651,7 +669,7 @@ def search_commons_images(titulo, count=2):
             if len(keywords(titulo) & keywords(f"{title} {description}")) < 2:
                 continue
             headline_places, image_places = place_terms(titulo), place_terms(f"{title} {description}")
-            if headline_places and image_places and not image_places <= headline_places:
+            if image_places and not image_places <= headline_places:
                 continue
             if media_alignment_errors({"titulo_articulo": titulo, "imagenes": [{"descripcion": description}]}):
                 continue
@@ -776,8 +794,6 @@ def search_licensed_stock_video(titulo, categoria=None):
 
 
 def search_relevant_video(titulo, categoria=None):
-    if categoria == "Noticias de Ultima Hora y Politica" and keywords(titulo) & {"elecciones", "electoral", "encuestas", "votacion", "escrutinio"}:
-        return search_licensed_stock_video(titulo, categoria)
     video = search_relevant_youtube_video(titulo, categoria)
     if video:
         video["source"] = "youtube"

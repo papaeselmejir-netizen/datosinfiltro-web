@@ -34,38 +34,39 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/7411/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Woman holding a pink smartphone with both hands in a casual outdoor setting.",
-      "credito": "JÉSHOOTS",
-      "origen": "https://www.pexels.com/photo/smartphone-technology-typing-woman-7411/",
+      "url": "https://images.pexels.com/photos/32190714/pexels-photo-32190714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Intense football match capture with two players battling for the ball amid a cheering crowd.",
+      "credito": "Franco Monsalvo",
+      "origen": "https://www.pexels.com/photo/action-packed-football-match-under-stadium-lights-32190714/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/16229745/pexels-photo-16229745.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A close-up shot of smartphone displaying social media apps icons on screen.",
-      "credito": "Sanket  Mishra",
-      "origen": "https://www.pexels.com/photo/social-media-apps-on-smartphone-16229745/",
+      "url": "https://images.pexels.com/photos/33827014/pexels-photo-33827014.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Players in action on the soccer field during an outdoor match under the bright sun.",
+      "credito": "Franco Monsalvo",
+      "origen": "https://www.pexels.com/photo/intense-soccer-match-action-shot-in-daylight-33827014/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/7411/pexels-photo.jpg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/32190714/pexels-photo-32190714.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/16229745/pexels-photo-16229745.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/33827014/pexels-photo-33827014.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://videos.pexels.com/video-files/10374917/10374917-hd_1920_1080_24fps.mp4",
-  "video_titulo": "Close up on man scrolling pictures on phone 10374917",
-  "video_canal": "RDNE Stock project",
+  "video_url": "https://videos.pexels.com/video-files/11918917/11918917-hd_1920_1080_60fps.mp4",
+  "video_titulo": "Football match on stadium 11918917",
+  "video_canal": "Tio Nazih",
   "video_source": "pexels",
   "video_tipo": "Video ilustrativo de archivo",
-  "video_origen": "https://www.pexels.com/video/close-up-on-man-scrolling-pictures-on-phone-10374917/",
+  "video_origen": "https://www.pexels.com/video/football-match-on-stadium-11918917/",
   "video_licencia": "Pexels License",
   "video_licencia_url": "https://www.pexels.com/license/",
-  "video_poster": "https://images.pexels.com/videos/10374917/pexels-photo-10374917.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+  "video_poster": "https://images.pexels.com/videos/11918917/pexels-photo-11918917.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxOZ2tXN3A0YWZPdWtQZWN2eVNHa3FYZkFidGhqUHdkOE9PMW1zSVljbFI0Z0FRV3g5WXNpZXZZeUQ1VmRuT3JQVEN1Zjg2SVRzNmk0UXQzWlpHT25LVXllMl9sakRYdUpubldPMk1IbTE5Ykh0Qmh0Sk43aXc3a2p6ejE5YmVrbkQ0LTY4ZndXSXA3QV9mM05FU2pySU5LeTcxcHc5a0pnQkZYV3picXBGMWdESEs4bTRJOWpCdEpfQmpNdmJFb0VSNkU4dTBlRTRqVmQzZ1NSVFIxdlUtN1JVX0VHN2hma1RrRnpUN2kzaVM?oc=5",
   "fecha_publicacion": "2026-10-08T17:48:22+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

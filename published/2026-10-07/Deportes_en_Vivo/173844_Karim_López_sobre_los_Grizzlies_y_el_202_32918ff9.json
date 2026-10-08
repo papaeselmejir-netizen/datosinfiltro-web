@@ -40,38 +40,39 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/41433/pexels-photo-41433.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up view of a basketball hoop and net against a clear sky, ideal for sports and leisure themes.",
-      "credito": "Wopke",
-      "origen": "https://www.pexels.com/photo/low-angle-photography-of-brown-and-black-basketball-hoop-41433/",
+      "url": "https://images.pexels.com/photos/33696837/pexels-photo-33696837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Energetic group of teenagers playing basketball outdoors on a sunny day.",
+      "credito": "AINNNEK",
+      "origen": "https://www.pexels.com/photo/teenagers-playing-basketball-on-outdoor-court-33696837/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/13613518/pexels-photo-13613518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Man walking past Edificio Pedro A. Lopez in Bogotá, Colombia.",
-      "credito": "Parcerografo",
-      "origen": "https://www.pexels.com/photo/a-person-man-in-green-long-sleeve-shirt-walking-near-edificio-a-lopez-building-13613518/",
+      "url": "https://images.pexels.com/photos/16599399/pexels-photo-16599399.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Top-down aerial view of two men playing basketball on an outdoor court.",
+      "credito": "Rockwell branding agency",
+      "origen": "https://www.pexels.com/photo/men-plying-basketball-on-urban-open-air-court-16599399/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/41433/pexels-photo-41433.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/33696837/pexels-photo-33696837.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/13613518/pexels-photo-13613518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/16599399/pexels-photo-16599399.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/_zBEoOGjtvA",
-  "video_titulo": "¡Se viene la primera temporada de Karim López en la NBA! 🔥",
-  "video_canal": "NBA En Español",
-  "video_source": "youtube",
-  "video_tipo": "Video relacionado del canal original",
-  "video_origen": "",
-  "video_licencia": "",
-  "video_licencia_url": "",
-  "video_poster": "",
+  "video_url": "https://videos.pexels.com/video-files/6077077/6077077-hd_1366_720_50fps.mp4",
+  "video_titulo": "Balls bouncing on a basketball court 6077077",
+  "video_canal": "KoolShooters",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/balls-bouncing-on-a-basketball-court-6077077/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/6077077/ball-balls-basketball-competing-6077077.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPbUxmMVJ5aldieW1feHlwUFVIM3ZqUEZHVk5PLXkxTjVsSnhmaU5BYW1YbTk0ZlBKdDVKdkc1TEloNERJUC1JRUNrWXQ2dk53ZDZoeDdTNEJoZGVVUkZjZE5WeVNHa3NVVUlTRWwxbFRySllnbktMamxrYkpJRTR4enRIbU95TmhBY19meFkzd3NLNlpGbl9OX0l0NFVJbkJoaEIxcFNR?oc=5",
   "fecha_publicacion": "2026-10-07T17:47:41+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

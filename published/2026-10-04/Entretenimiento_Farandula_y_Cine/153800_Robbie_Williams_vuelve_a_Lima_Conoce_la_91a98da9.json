@@ -34,31 +34,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/33373080/pexels-photo-33373080.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Classic Buicks displayed on Route 66 in Williams, Arizona. Nostalgic automotive history.",
-      "credito": "Abhishek  Navlakha",
-      "origen": "https://www.pexels.com/photo/vintage-buick-cars-on-historic-route-66-33373080/",
+      "url": "https://images.pexels.com/photos/1494665/pexels-photo-1494665.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Energetic concert scene featuring a packed audience, vibrant lights, and a live performance on stage.",
+      "credito": "Wendy Wei",
+      "origen": "https://www.pexels.com/photo/people-inside-building-while-light-turned-off-1494665/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/16957983/pexels-photo-16957983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A lively crowd cheering with flags in Lima, Peru, showcasing cultural celebration and community spirit.",
-      "credito": "Alvaro Palacios",
-      "origen": "https://www.pexels.com/photo/crowd-in-world-cup-celebration-in-argentina-16957983/",
+      "url": "https://images.pexels.com/photos/8186275/pexels-photo-8186275.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Anonymous male musician performing melody with guitar on stage near microphone and DJ in dark club with spotlights",
+      "credito": "Brett Sayles",
+      "origen": "https://www.pexels.com/photo/unrecognizable-guitarist-playing-on-stage-near-microphone-and-dj-8186275/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/33373080/pexels-photo-33373080.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/1494665/pexels-photo-1494665.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/16957983/pexels-photo-16957983.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/8186275/pexels-photo-8186275.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/d3yLaN4w20k",
-  "video_titulo": "(4K) Robbie Williams - Concierto Completo || (En Vivo) || Lima, Perú 🇵🇪|| 23 septiembre, 2026",
-  "video_canal": "Tio Selección",
+  "video_url": "https://www.youtube.com/embed/sf1c7rx1HV4",
+  "video_titulo": "ROBBIE WILLIAMS: Nueva fecha y lugar de 2do concierto en Lima, Perú 🇵🇪",
+  "video_canal": "Leizer Dunayevich",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -67,5 +67,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMihAJBVV95cUxNVnk4aUR1N253bGpIU0Q1bC1TUVNobzhNRnRyQVgwZVVCWnM3SEw4cGc1SmlNdlhUOXZjSWxEa3VpUUo0aW8tdEV3dFJBVVI1LUxSY0wyc2l1Z296LTQzeEg1cVYyUXI0ZXdkZWN4STBzWkczNU9sSVE5dGI5MjFQY19Yb3hXSk04cWNZeC1qZlZYX3h0clFGalpxWmcxRzN5ckdmRXVoeE82V0ZFOUhBcURaZkJyUVdWekpYMWJiRlAwZnFJQzZQb2ZHaHhpdGVqZERVYXRTNVhYVEUtWFF6Z0pvUWF5ckVfRXNzSVotei1tOVNqYURXYmx0enhhWFA4dERBRNIBmAJBVV95cUxORkJ5UDE4LU40QnBIQVZUVFRCWWU1SU5nWFROb0hSNUNxQ1NJWnZ6Ri1aLTBjS0Q5cVdMd05mUGtxSi02S2lKbGYwd1Z1aU1GbHE5MVJWcDAxTHhCd1ZqRmdzVG1BMGdCMmNSWUg2Z1cwSko3Ukd1RDR2NVByd0tOWXZiZWJhVS1RV0cxOHdlOXRDa1JxY0M3T3ByWWZSclBkbG1BSHlHNndLWW9tejEzZ1o0VWNURlgxcU1LeTBBdUswbTJkMGdhY3BaRDNzTU9wTnRHQ2ZDbG55aVVsblhoaGlGbjlHdy13RmJXTTlGYmFSZ1BkT1RueGx4TGxMR0MzUjNPYzdQNWlQeTBpcS03blR4THBkU1BT?oc=5",
   "fecha_publicacion": "2026-10-04T15:42:21+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

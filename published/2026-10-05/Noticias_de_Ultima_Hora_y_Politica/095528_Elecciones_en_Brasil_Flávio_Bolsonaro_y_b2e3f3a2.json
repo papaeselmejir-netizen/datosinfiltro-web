@@ -34,31 +34,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/11412963/pexels-photo-11412963.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Demonstrators protesting against Bolsonaro, holding signs on a city street.",
-      "credito": "Mario  Schafer",
-      "origen": "https://www.pexels.com/photo/woman-holding-a-protest-sign-11412963/",
+      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/8633687/pexels-photo-8633687.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Protesters rallying against Bolsonaro in Rio de Janeiro, showing signs and wearing masks amidst the crowd.",
-      "credito": "michelle guimarães",
-      "origen": "https://www.pexels.com/photo/group-of-people-wearing-red-and-black-crew-neck-t-shirts-protesting-in-the-street-8633687/",
+      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/11412963/pexels-photo-11412963.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/8633687/pexels-photo-8633687.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/QEXcfAAZ6Sg",
-  "video_titulo": "Elecciones en Brasil 2026: Flávio Bolsonaro y Lula da Silva van a segunda vuelta",
-  "video_canal": "NMás",
+  "video_url": "https://www.youtube.com/embed/CTD-ZfOlgAs",
+  "video_titulo": "Flavio Bolsonaro lidera en primera vuelta en elecciones en Brasil",
+  "video_canal": "Teletrece",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -67,5 +67,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE54MkhzcEJpeGVHWF80YWRyYmhjc2lmdzJsaElOcGJjUG1JajF6SkRpZjhWWkwzS0o5QUhHMl9PeWRKZFFFbzdqRV9EZWxtdWozNnh5TGN5ZWF3b1BC0gFiQVVfeXFMTUgyY095R1dlYkhyb0VlWDVTamhRRzBPajNWYzB2dUJwMFBrcDNVU0tCXzhieC1JNXdJVG1PVmZnZ0JWT0UxdEtidDVvZXZWUDZUSGI3OGVyYS0yOGlsTjRHX1E?oc=5",
   "fecha_publicacion": "2026-10-05T09:59:06+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

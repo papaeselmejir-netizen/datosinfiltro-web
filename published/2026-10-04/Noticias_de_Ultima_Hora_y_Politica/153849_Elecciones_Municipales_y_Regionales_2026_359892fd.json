@@ -28,31 +28,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/33261309/pexels-photo-33261309.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Municipal Police SUV parked in a quaint Italian town square, showcasing local architecture.",
-      "credito": "kay de vries",
-      "origen": "https://www.pexels.com/photo/italian-municipal-police-suv-in-urban-setting-33261309/",
+      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/35030615/pexels-photo-35030615.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Beautiful rock formations in Guia, Faro, Portugal under a clear blue sky.",
-      "credito": "Jeffrey Eisen",
-      "origen": "https://www.pexels.com/photo/scenic-rock-formations-in-guia-faro-portugal-35030615/",
+      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/33261309/pexels-photo-33261309.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/35030615/pexels-photo-35030615.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/vlrWYBhFBDw",
-  "video_titulo": "Elecciones Regionales y Municipales 2026: Tipos de votos",
-  "video_canal": "Oficina Nacional de Procesos Electorales",
+  "video_url": "https://www.youtube.com/embed/1kR1_VLncrU",
+  "video_titulo": "ELECCIONES REGIONALES Y MUNICIPALES PERÚ 2026 | POR LATINA",
+  "video_canal": "Latina Noticias",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -61,5 +61,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxQdjJtMzA4elMySmQ3WWJTVW9SRnlldU1kcWYxOEpmaHBiNFAzaVR1T3dHWVd2b3QtRTRkc3RPR3EwaThsa0xKU0MxbnM5WlBKQnJNdWNra3ZqVTNwdDJHM1ZQbEtfbXZxZnFBQ04tZURrZ05HVkRnWnVSZ3VqR2FxbHJIdm81Z1Y5M1I3MjhfMWVBXzBRbmpGaUd1b2ZzeHlDc1V5RDlwWnJ4U1I4MEg2NDMtX0t2UmlPYmw5R1I1Q1dKMVR1YlM1ZEI0TkVOcERYQnlBSy1mTkUxRTd2ai0wVHJtMmFWNlZTZnfSAYQCQVVfeXFMUEFRWTBWVktTN0NHVGJDek5SZWlxbW12ZGdoN1VnRjljQjRqMDBIV3RzeFRwUGN4X3k2TnpuQlB2NkpUdVlqeW0zUVFpZlJDYmlPV3Q3Y0pkQmZrQkxFa3hEV04wdHp4M0d6Rko2Ty15bWtXc0p2MzBkZFBoZGxJNHRDR256NU5VN0ptNVRtaktNUUZEWmV3M0phRmM0dnJnOXl2ZjNYVVRqVERBTjViaWZESUx5S1ltbi1HWFpRSUtuQVF2TzNsSFRtLVM4N1ZHNmpLT3l5TlFfWkNOaXBvM3RzMEFFZktNOU5fOWZpSnRQVWgzcEE0U2x4T2w1cW4wTFJ4ZkI?oc=5",
   "fecha_publicacion": "2026-10-04T15:42:21+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

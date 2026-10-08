@@ -28,31 +28,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/13708160/pexels-photo-13708160.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Aerial view of the historic urban landscape in Lima, Peru, showcasing classic architectural styles.",
-      "credito": "Qingju Wen",
-      "origen": "https://www.pexels.com/photo/concrete-buildings-in-the-city-13708160/",
+      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/16666388/pexels-photo-16666388.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Stylish interior in Lima featuring ornate furniture and the Peruvian flag.",
-      "credito": "Gilmer Diaz Estela",
-      "origen": "https://www.pexels.com/photo/flag-of-peru-in-ornamented-room-16666388/",
+      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/13708160/pexels-photo-13708160.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/16666388/pexels-photo-16666388.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/NmD-evFYJ7o",
-  "video_titulo": "Resultados Lima 2026: ¿Quién ganó según boca de urna en cada distrito? | Gestión Perú",
-  "video_canal": "Diario Gestión Perú",
+  "video_url": "https://www.youtube.com/embed/Ik-NT6lL8JY",
+  "video_titulo": "🗳️ ¿Nuevo alcalde de Lima? Lista de Rafael López Aliaga lidera resultados de elección",
+  "video_canal": "Panorama",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -61,5 +61,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxNZ0VPYXZveWV6emFMemI2emVJYVFwbnFTa3R0Y2tOdzZJZkRQMDV1QzBIdUVDZkNZOUt4NXdnNVZjOWJRSlpvVDdwRlVwcWEyWlI4UThUM09EcGtUNHVLblJZV2pvVjB2SkNqSldSNzN5ZDE2OE1iN25zNEhMRlA4R21kSTdsckdiX0J0RTc3UXdnTXRIZ2lFZ1FVSmQ1d21mUmNNanV2WTFnLUplN19sbzM2Vl9LT3RHemZCNnRNLXZIcWtLbUprLWNLbGJsdWZzMjAzcmdqc3ZkYUF0LUhrTkFEeTNjQnM3aV9XNw?oc=5",
   "fecha_publicacion": "2026-10-05T01:33:09+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

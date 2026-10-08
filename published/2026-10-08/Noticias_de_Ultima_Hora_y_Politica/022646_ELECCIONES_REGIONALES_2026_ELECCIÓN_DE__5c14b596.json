@@ -28,31 +28,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/35524213/pexels-photo-35524213.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A person holds a sign reading 'VZLA Libre 2026' in a peaceful protest with a city backdrop.",
-      "credito": "Renan Braz",
-      "origen": "https://www.pexels.com/photo/peaceful-protest-for-venezuela-freedom-2026-35524213/",
+      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/36348436/pexels-photo-36348436.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Free stock photo of apung lourdes festival 2026, candaba, pampanga",
-      "credito": "Mark Gil Pineda",
-      "origen": "https://www.pexels.com/photo/36348436/",
+      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/35524213/pexels-photo-35524213.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/36348436/pexels-photo-36348436.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/66eOr1jxY-0",
-  "video_titulo": "🔴🔵 Elecciones regionales y municipales: Verónika Mendoza se posiciona como virtual gobernadora",
-  "video_canal": "Exitosa Noticias",
+  "video_url": "https://www.youtube.com/embed/7OosVXewmN0",
+  "video_titulo": "Verónika Mendoza gana elecciones en Cusco, según boca de urna: \"No habría segunda vuelta\"",
+  "video_canal": "Latina Noticias",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -61,5 +61,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxPbllPZllhWVlTUDdfdUhYWENjdzNiT1dIdlAySXpObG9jV003VlF2VUxzR0VNQ29qSl91OWpHOTJLSlhORDl1MzBBUXlDaWg0elZRbUR3SS0xQUV2bFhBZGpQVGNaR1VwSkYxMkhaSWNQaVBOb3UzRUNFMm94TzBWbUNKcFMya3ZGRWlBM0lVTk5oQ0Z3Ry1yOTFJY2s3RmlpMkwyWF95blpJLTlydV9BdmJrQUpYSkZwcjR6dzNtNTRWbFgza1UyVUxwaTZYUjhBUEx1dEhrYU92bGk5dkJoSnl3TW9PdjM3SUhPNl9zZnFhN25sSUJMb1FsTnd6blBn?oc=5",
   "fecha_publicacion": "2026-10-08T02:31:24+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

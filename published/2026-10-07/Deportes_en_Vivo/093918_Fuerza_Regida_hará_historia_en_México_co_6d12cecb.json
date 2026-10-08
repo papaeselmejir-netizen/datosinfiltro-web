@@ -40,31 +40,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/13780557/pexels-photo-13780557.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Military personnel in camouflage on a tank during a parade in Mexico City.",
-      "credito": "Fernando  Paleta",
-      "origen": "https://www.pexels.com/photo/soldier-in-tank-13780557/",
+      "url": "https://images.pexels.com/photos/8186275/pexels-photo-8186275.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Anonymous male musician performing melody with guitar on stage near microphone and DJ in dark club with spotlights",
+      "credito": "Brett Sayles",
+      "origen": "https://www.pexels.com/photo/unrecognizable-guitarist-playing-on-stage-near-microphone-and-dj-8186275/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/22890717/pexels-photo-22890717.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Monochrome portrait of a man in steampunk attire with face paint in a Mexico City park.",
-      "credito": "Vintage Lenses",
-      "origen": "https://www.pexels.com/photo/portrait-of-man-wearing-costume-in-park-in-black-and-white-22890717/",
+      "url": "https://images.pexels.com/photos/13230484/pexels-photo-13230484.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Night concert scene with audience, stage, and colorful lighting effects.",
+      "credito": "Lisa Fotios",
+      "origen": "https://www.pexels.com/photo/crowd-of-people-at-a-concert-13230484/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/13780557/pexels-photo-13780557.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/8186275/pexels-photo-8186275.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/22890717/pexels-photo-22890717.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/13230484/pexels-photo-13230484.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/FFFppdQ2O-0",
-  "video_titulo": "Fuerza Regida Proximas Fechas Mexicanas 🎁😲🇲🇽 #jop #mexico",
-  "video_canal": "J10 MUSiC",
+  "video_url": "https://www.youtube.com/embed/cUgcUfCI-7E",
+  "video_titulo": "Fuerza Regida en la CDMX - Palacio de los Deportes",
+  "video_canal": "Zona C",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -73,5 +73,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQYmduanNpX0xzdWZCd3N0MWp4WXJ3STFuQ0RWb0dUWHNMNE5jX0ZjLUViSGpGNm9Kby1xSC1DZk04QmJlWUJPTXRMM203dkpmZlQzbVJ5ZmZOaHktWE5BYzZtUEZrR19nYS1ldGhWVUFSYTdFMnhHLUNuZ01KX09zY0lMT1pFTTdZUVhobEtoWEhSazRybWhQc2t5ZVg3U0RkYTM0d1VMQ3NrbldTUFRqbA?oc=5",
   "fecha_publicacion": "2026-10-07T09:45:59+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

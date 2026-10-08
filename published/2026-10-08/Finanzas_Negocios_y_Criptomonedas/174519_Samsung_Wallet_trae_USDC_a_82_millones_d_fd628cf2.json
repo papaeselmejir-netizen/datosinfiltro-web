@@ -37,10 +37,10 @@
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/12198535/pexels-photo-12198535.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Bright 3D illustration of a purple wallet with cash and gold coins on a purple background.",
-      "credito": "crazy motions",
-      "origen": "https://www.pexels.com/photo/3d-render-of-paper-bills-and-coins-12198535/",
+      "url": "https://images.pexels.com/photos/6684796/pexels-photo-6684796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A customer makes a contactless payment using a smartphone at a café, showcasing modern digital transactions.",
+      "credito": "Kampus Production",
+      "origen": "https://www.pexels.com/photo/cashless-transaction-in-a-coffee-shop-6684796/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
@@ -48,18 +48,19 @@
   ],
   "imagen_url": "https://images.pexels.com/photos/6406691/pexels-photo-6406691.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/12198535/pexels-photo-12198535.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/6684796/pexels-photo-6684796.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/uDMN0fgHAgY",
-  "video_titulo": "毎日の移動を、Galaxy で | クレジットカード | Samsung Wallet | Samsung",
-  "video_canal": "Samsung Japan公式",
-  "video_source": "youtube",
-  "video_tipo": "Video relacionado del canal original",
-  "video_origen": "",
-  "video_licencia": "",
-  "video_licencia_url": "",
-  "video_poster": "",
+  "video_url": "https://videos.pexels.com/video-files/4109600/4109600-hd_1920_1080_25fps.mp4",
+  "video_titulo": "Woman smartphone technology shop 4109600",
+  "video_canal": "Marcus Aurelius",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/woman-smartphone-technology-shop-4109600/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/4109600/pexels-photo-4109600.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPWFhTY1RreV9kQXE2QndvbE56ZWNmcGhKYmZVOVRGRUlYa1BaTzJ2ZWlMLTl5TldDTm1RVW1nYUk0b1VzS1AwS1JOQWI3NE8tUE9LZ2tsakVqXzJyRW1BVHc1VGtDLUZydG5UdmJzTEptU1ZsZExJQktZVFhpRzk5WEV4M2V6dzg?oc=5",
   "fecha_publicacion": "2026-10-08T17:48:22+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

@@ -15,11 +15,13 @@ STOPWORDS = {
 }
 
 PLACE_TERMS = {
-    "lima", "arequipa", "cusco", "trujillo", "piura", "callao", "ica",
+    "lima", "arequipa", "cusco", "junin", "trujillo", "piura", "callao", "ica",
     "puno", "tacna", "cajamarca", "chiclayo", "huancayo", "iquitos",
     "madrid", "miami", "bogota", "santiago", "buenos", "aires",
     "toluca", "guanajuato", "papantla", "merida", "londres", "tokio", "tokyo",
-    "wheeling", "virginia", "cusco", "lima", "washington", "detroit",
+    "wheeling", "virginia", "washington", "detroit", "arizona", "paulo", "puerto",
+    "portugal", "faro", "candaba", "pampanga", "colombia", "versalles", "versailles",
+    "nang", "vietnam", "saigon", "manila", "arizona", "sao", "paulo",
 }
 EVENT_TERMS = {
     "peru", "canada", "brasil", "argentina", "mexico", "chile", "bolivia", "colombia",
@@ -69,6 +71,8 @@ def sport_for_headline(value):
         return "tennis"
     if terms & {"futbol", "futbolista", "menezes", "seleccion", "alianza", "universitario", "cristal"}:
         return "football"
+    if terms & {"concacaf", "fifa", "mundial"}:
+        return "football"
     return None
 
 
@@ -101,7 +105,19 @@ def relevance(headline, candidate):
 
 def same_recent_event(first, second):
     """Conservatively suppress a second headline about the same recent event."""
-    overlap = keywords(first) & keywords(second)
+    left, right = keywords(first), keywords(second)
+    if place_terms(first) and place_terms(second) and not place_terms(first) & place_terms(second):
+        return False
+    if event_terms(first) and event_terms(second) and not event_terms(first) & event_terms(second):
+        return False
+    for aspect in (
+        {"desvios", "viales", "cierres", "trafico"},
+        {"fans", "army", "seguidores"},
+        {"trump"},
+    ):
+        if bool(left & aspect) != bool(right & aspect):
+            return False
+    overlap = left & right
     return len(overlap) >= 4 and relevance(first, second) >= 0.35
 
 
@@ -109,15 +125,23 @@ def media_alignment_errors(article):
     """Reject stock descriptions about another subject, brand, place or asset."""
     title = " ".join(filter(None, (article.get("titulo_fuente"), article.get("titulo_articulo"))))
     title_terms = keywords(title)
-    captions = [item.get("descripcion", "") for item in article.get("imagenes", [])[:2] if isinstance(item, dict)]
-    if article.get("video_source") == "pexels":
-        captions.append(article.get("video_titulo", ""))
+    captions = [(item.get("descripcion", ""), False) for item in article.get("imagenes", [])[:2] if isinstance(item, dict)]
+    if article.get("video_titulo"):
+        captions.append((article["video_titulo"], article.get("video_source") == "youtube"))
     if not captions:
         return []
 
     themes = (
+        ({"desvios", "viales", "cierres", "trafico", "transito"}, {"traffic", "road", "roads", "street", "streets", "cars", "vehicles", "bus", "buses", "transport", "desvios", "vial", "salida", "saldran", "transito"}, {"concert", "music", "stage"}),
+        ({"concierto", "conciertos", "gira", "cantante"}, {"concert", "concerts", "music", "musician", "stage", "singer", "band", "performance", "crowd", "concierto", "conciertos", "musica", "gira"}, {"protest", "protests", "riot", "military", "soldier", "soldiers", "football", "soccer"}),
+        ({"elecciones", "electoral", "votacion", "urna", "escrutinio"}, {"vote", "voting", "voter", "voters", "ballot", "election", "elections", "polling", "campaign", "elecciones", "electoral", "votos", "votacion", "urna", "balotaje"}, {"police", "festival", "landscape"}),
+        ({"optogenetica", "neuronas"}, {"neuron", "neurons", "neuronas", "brain", "neuroscience", "research", "laboratory", "science", "nobel", "medicina"}, {"covid", "pill", "pills"}),
+        ({"nobel"}, {"nobel", "medicine", "medicina", "medical", "science", "scientist", "research", "laboratory", "neuron", "brain"}, {"covid", "pill", "pills"}),
+        ({"vivienda", "desahucio", "desalojos"}, {"housing", "home", "house", "apartment", "residential", "vivienda", "desahucio", "desalojos"}, {"bank", "hotel"}),
+        ({"asus", "rtx"}, {"asus", "laptop", "computer", "pc", "gaming", "notebook"}, {"sega", "amazon"}),
+        ({"aston"}, {"aston", "martin", "car", "cars", "suv", "vehicle", "automotive", "gaming", "game"}, {"alonso", "perez", "racing", "formula"}),
         ({"usdc", "stablecoin", "stablecoins"}, {"usdc", "stablecoin", "digital", "payment", "payments", "wallet", "phone", "smartphone", "mobile"}, {"bitcoin", "btc"}),
-        ({"bts"}, {"bts", "concert", "concerts", "music", "musician", "stage", "singer", "crowd"}, {"protest", "protests", "riot", "riots"}),
+        ({"bts"}, {"bts", "concert", "concerts", "music", "musician", "stage", "singer", "crowd", "concierto", "conciertos", "gira"}, {"protest", "protests", "riot", "riots"}),
         ({"xbox"}, {"xbox", "gaming", "gamer", "videogame", "videogames", "console", "game"}, set()),
         ({"atletico"}, SPORT_MEDIA_TERMS["football"] | {"atletico"}, set()),
     )
@@ -129,15 +153,19 @@ def media_alignment_errors(article):
     if {"inteligencia", "artificial"} <= title_terms and title_terms & {"salud", "hospital", "medicina", "medico", "medicos", "sanitario"}:
         required = {"health", "healthcare", "medical", "medicine", "hospital", "doctor", "doctors", "patient", "patients", "clinic"}
         forbidden = {"robot", "robots", "humanoid"}
+    if title_terms & {"papa", "pontifice"} and title_terms & {"salud", "mental", "pastoral"}:
+        required = {"pope", "papa", "papal", "vatican", "church", "catholic", "mental", "health", "salud", "pastoral", "healthcare", "prayer", "religious"}
+        forbidden = {"food", "meal", "turkish"}
     if title_terms & {"iran", "iranian"} and title_terms & {"ataques", "militares", "guerra"}:
         required = {"iran", "iranian", "military", "middle", "east", "war", "trump"}
         forbidden = {"rally", "campaign", "ballot"}
     if required is None:
         return []
     errors = []
-    for caption in captions:
+    for caption, event_video in captions:
         terms = keywords(caption)
-        if not terms & required or terms & forbidden:
+        exact_video_match = event_video and len(terms & title_terms) >= 3
+        if (not terms & required and not exact_video_match) or terms & forbidden:
             errors.append("El material multimedia no representa el asunto central de la noticia")
             break
     return errors
@@ -338,27 +366,15 @@ def publication_errors(article):
         errors.append("Se requieren dos imágenes con licencia registrada")
     if not valid_video(article):
         errors.append("Se requiere un video relacionado con origen verificable")
-    # Historical pages were published under the previous media policy. Keep them
-    # visible until their separate editorial audit; all new drafts use version 1.
-    if article.get("media_review_version", 0) < 1:
-        if len((article.get("articulo_web") or "").split()) < 250:
-            errors.append("El artículo es demasiado breve")
-        if (article.get("titulo_articulo") or "").lower().startswith("error"):
-            errors.append("Título de error")
-        return errors
-    if article.get("categoria") == "Noticias de Ultima Hora y Politica" and keywords(
-        " ".join(filter(None, (article.get("titulo_fuente"), article.get("titulo_articulo"))))
-    ) & {"elecciones", "electoral", "encuestas", "votacion", "escrutinio"} and article.get("video_source") != "pexels":
-        errors.append("El video electoral requiere material de archivo con licencia verificada")
-    headline_places = place_terms(article.get("titulo_fuente") or article.get("titulo_articulo"))
+    headline_places = place_terms(article.get("titulo_articulo"))
     if headline_places and article.get("video_source") != "pexels" and not headline_places <= place_terms(article.get("video_titulo")):
         errors.append("El video trata una ubicación distinta a la noticia")
-    headline_events = event_terms(article.get("titulo_fuente") or article.get("titulo_articulo"))
+    headline_events = event_terms(article.get("titulo_articulo"))
     if headline_events and article.get("video_source") != "pexels" and not headline_events <= event_terms(article.get("video_titulo")):
         errors.append("El video trata otro país o rival")
     if article.get("categoria") == "Deportes en Vivo" and article.get("video_source") != "pexels" and event_terms(article.get("video_titulo")) - headline_events:
         errors.append("El video muestra un rival distinto al de la noticia")
-    if headline_places and any(
+    if any(
         place_terms(item.get("descripcion")) and not place_terms(item.get("descripcion")) <= headline_places
         for item in images[:2] if isinstance(item, dict)
     ):

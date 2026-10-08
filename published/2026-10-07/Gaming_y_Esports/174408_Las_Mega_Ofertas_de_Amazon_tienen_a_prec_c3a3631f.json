@@ -40,31 +40,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/4560039/pexels-photo-4560039.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of the Amazon shopping app icon on a smartphone screen. Ideal for online shopping and technology themes.",
-      "credito": "Sagar Soneji",
-      "origen": "https://www.pexels.com/photo/close-up-of-smartphone-screen-with-icons-4560039/",
+      "url": "https://images.pexels.com/photos/3951449/pexels-photo-3951449.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Person holds a gaming controller while interacting with a laptop, emphasizing modern gaming technology.",
+      "credito": "Castorly Stock",
+      "origen": "https://www.pexels.com/photo/person-holding-black-game-controller-3951449/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/28920048/pexels-photo-28920048.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of hands holding vintage Sony controller with Sega Mega Drive in background.",
-      "credito": "Mahmoud Yahyaoui",
-      "origen": "https://www.pexels.com/photo/hands-holding-retro-sony-controller-playing-console-28920048/",
+      "url": "https://images.pexels.com/photos/7727496/pexels-photo-7727496.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of illuminated WASD keys on a gaming keyboard with red LED lights.",
+      "credito": "Anthony Gideon",
+      "origen": "https://www.pexels.com/photo/black-laptop-keyboard-with-a-few-keys-illuminated-by-red-light-7727496/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/4560039/pexels-photo-4560039.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/3951449/pexels-photo-3951449.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/28920048/pexels-photo-28920048.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7727496/pexels-photo-7727496.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/eZjlhirIFYo",
-  "video_titulo": "¡37 Ofertas Anticipadas Del Amazon Prime Day 2026 Con Enormes Bajadas de Precio!",
-  "video_canal": "Gear Geek ESP",
+  "video_url": "https://www.youtube.com/embed/mc1So2zDqYk",
+  "video_titulo": "ASUS TUF Gaming F16 RTX 5050 #shorts #viral #trending",
+  "video_canal": "My Tech Spot",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -73,5 +73,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPVVhZQ283cU1pM1FDem9OWXNGc0luTEl6WE5iMnZpT1FuU19JNTl6Y192UWJ0WjJoZXI5R1Z6b1RQSlNrdVNLc19GOXd3ZmxnM3FvV2lfeDNXZkpUZkJQNXFJS1VYc2ZpNlIwSUllbXlraE04R3o3ZGNST2c5M2pibzYyeWZ3MU8wLXhxblk1b05naW5oRllUSFZJWnpkTXRvQ2h2Sm9ZOFB2N1JxSE1wdzE1Y3pqaFFoS20yOHI4ZDRNQWQzWEhOZ0thSm12UkXSAdQBQVVfeXFMUDBWdGN2NmVkQkJQbFZlVHlITGNhZDhVWnFEOVRnRXZ4M0V2eUk5ZlFkbGlvU0p1Y3BXLWl0ZnhJUkluM3lZeUdmRzc2cURLRTNVdTZGcjMxN01HNUYwV245WlNlZWlRNDBVOUZiamdYYzlYOE1weXJDczZjYmFjTFMtRnJ6dHFZSlFHdDdRVEw0b2F6RDlMWHlORU5HaHBuYTQtNzZLdllxWXZobVJTMzEydFBiV3JNSVBHT3NFSUp2eFo1dTg1QW9KenplTlZEMDNiUHQ?oc=5",
   "fecha_publicacion": "2026-10-07T17:47:41+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

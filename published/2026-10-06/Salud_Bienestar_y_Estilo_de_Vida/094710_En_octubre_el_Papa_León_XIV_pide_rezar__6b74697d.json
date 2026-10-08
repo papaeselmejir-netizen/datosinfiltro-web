@@ -34,27 +34,27 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/37514308/pexels-photo-37514308.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "The impressive facade of the University of Valladolid, a prime example of Spanish Baroque architecture.",
-      "credito": "Ana Rubio",
-      "origen": "https://www.pexels.com/photo/historic-facade-of-the-university-of-valladolid-37514308/",
+      "url": "https://images.pexels.com/photos/17857272/pexels-photo-17857272.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A detailed marble sculpture inside a church, captured in ambient candlelight, showcasing religious art.",
+      "credito": "Harper Swan",
+      "origen": "https://www.pexels.com/photo/figure-in-church-17857272/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/39958306/pexels-photo-39958306.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Visitors enjoy a sunny day at the ornate Palace of Versailles in France.",
-      "credito": "Lajos Kristóf Kántor",
-      "origen": "https://www.pexels.com/photo/stunning-facade-of-the-palace-of-versailles-39958306/",
+      "url": "https://images.pexels.com/photos/15764856/pexels-photo-15764856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Detailed marble sculpture of a religious figure at rest, symbolizing spirituality and devotion.",
+      "credito": "Alex Quezada",
+      "origen": "https://www.pexels.com/photo/tombstone-of-pope-15764856/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/37514308/pexels-photo-37514308.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/17857272/pexels-photo-17857272.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/39958306/pexels-photo-39958306.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/15764856/pexels-photo-15764856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
   "video_url": "https://www.youtube.com/embed/YWLi2q24Of8",
   "video_titulo": "Video Noticia: El Papa pide rezar en octubre por la pastoral de la salud mental",
@@ -67,5 +67,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNcTdtQ2RuVlBDa2VvcllqdW9TbUVnYndhWko3Wmtta016eEp4Q0dfRWpUd0s5R2tlamNqT21CQ2syQmxmcjJudWREa1ZpSEpwSUd1LVlTN2gweVpzMURvWGwzdTktOFNvc3JIUlFUVnZRd2JHX1F6Q2VxWXVDb3lZcS1DSkVmT3J2US1TUUxVYndEbGVlN2JlQzdzREdkamZUUWNmN0NXMUk?oc=5",
   "fecha_publicacion": "2026-10-06T09:47:47+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

@@ -34,31 +34,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/16936540/pexels-photo-16936540.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Drone view of a monumental statue and surroundings in Concepción, Junín, Peru.",
-      "credito": "Luigie Guissepe Marin Astete",
-      "origen": "https://www.pexels.com/photo/monumental-statue-in-concepcion-in-peru-16936540/",
+      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/19911213/pexels-photo-19911213.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Explore the historic Convento de Ocopa, a cultural landmark in Junín, Peru, surrounded by serene nature.",
-      "credito": "Nicole Campos",
-      "origen": "https://www.pexels.com/photo/convent-of-ocopa-in-peru-19911213/",
+      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/16936540/pexels-photo-16936540.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/19911213/pexels-photo-19911213.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/VYkldzR6dgY",
-  "video_titulo": "DEBATE REGIONAL JUNIN 2026",
-  "video_canal": "Cadena Soporte",
+  "video_url": "https://www.youtube.com/embed/CKqvzGnigjg",
+  "video_titulo": "🔴🔵 Podemos Perú lidera boca de urna en Junín: Fernando Orihuela volvería a ser gobernador regional",
+  "video_canal": "Exitosa Noticias",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -67,5 +67,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxQRU1ZNFItVjV3OGhyZzR4dy1SQ2QyYkJGZkE3T25ia2twbkhGZUM2TEZDdlcySGYwdURwSWxqaGxyU1dxdnBPMmN2eGtQdE5jeW9hMUdUNEFxOWQ4TlZZeEFIWDE1czNVcFM0R19HbHpVY1J5NU9SYnBhYzltbW1RWVRkazhiUmd1NUFMdU9rMlNWX1ZMR1pGc1FBN1hsQ2lsaG5tUnRrQ0htejhINGJjUGJUTEhWZm01R3VnRlpjeHpUQXhxa19HbDBScjdIenNJNVBQVW1tQ0I4SVZ6WDVvaHg1dTVtd9IBgAJBVV95cUxQVEV1UWJfaGd3ZG5Kcmg5bTBqVTVvRmp4cEtLZThEY1QzQXVjcHlkYXVxaDJKQjF3cVJmeUVnTW9qOU51cldtVW5PLXdyX2l1Rlg0bXUtQkJydWpRMDRYaTFfRVFRWVdycUlhcnNTcVV5WE1LSFliR1hydFQyOFFzMkpibm5fUHloME4yaFZ2OC1BOG13c2F4ZTFWaGNidG9qQU9aOTZQMjJaa1Q2RVFtQUh6aTZNX3hiOE04M2JaN2ZRYko0ZDA4OUstNHNxVGdsMDhxbFlRVk9tQ3pvR2l6RXlBYXIzX0hqQmhLOEJMY09PNFF2MG4yVHk2YTVfWHct?oc=5",
   "fecha_publicacion": "2026-10-05T09:59:06+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

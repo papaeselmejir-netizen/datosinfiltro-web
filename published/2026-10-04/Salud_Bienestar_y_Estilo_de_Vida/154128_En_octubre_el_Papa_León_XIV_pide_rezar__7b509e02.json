@@ -40,38 +40,39 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/32703554/pexels-photo-32703554.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A marble statue in Vatican City with an ornamental archway and gold accents.",
-      "credito": "Mousse K",
-      "origen": "https://www.pexels.com/photo/intricate-vatican-statue-with-detailed-ceiling-32703554/",
+      "url": "https://images.pexels.com/photos/15764856/pexels-photo-15764856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Detailed marble sculpture of a religious figure at rest, symbolizing spirituality and devotion.",
+      "credito": "Alex Quezada",
+      "origen": "https://www.pexels.com/photo/tombstone-of-pope-15764856/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/5639365/pexels-photo-5639365.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Delicious Turkish pide with savory minced meat and fresh greens on a wooden board.",
-      "credito": "Shameel mukkath",
-      "origen": "https://www.pexels.com/photo/close-up-of-italian-pizza-on-board-5639365/",
+      "url": "https://images.pexels.com/photos/17857272/pexels-photo-17857272.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A detailed marble sculpture inside a church, captured in ambient candlelight, showcasing religious art.",
+      "credito": "Harper Swan",
+      "origen": "https://www.pexels.com/photo/figure-in-church-17857272/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/32703554/pexels-photo-32703554.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/15764856/pexels-photo-15764856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/5639365/pexels-photo-5639365.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/17857272/pexels-photo-17857272.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/xJRJcIu0U0c",
-  "video_titulo": "Reza con el Papa León XIV por la pastoral de la salud mental",
-  "video_canal": "EWTNespanol",
-  "video_source": "youtube",
-  "video_tipo": "Video relacionado del canal original",
-  "video_origen": "",
-  "video_licencia": "",
-  "video_licencia_url": "",
-  "video_poster": "",
+  "video_url": "https://videos.pexels.com/video-files/31725303/13517145_1920_1080_30fps.mp4",
+  "video_titulo": "Vatican city s st peter s square bustling with tourists 31725303",
+  "video_canal": "In Old News LLC",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/vatican-city-s-st-peter-s-square-bustling-with-tourists-31725303/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/31725303/catholic-catholicism-church-conclave-31725303.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQaVExZVpHWDBVdm1KdWpPdm1mUW1hQjgxamMxcldsZk54b0k2ckVFUGE2Sm83TGRsT3ZjMDlhSklVTlhoVGhSNExsVThjRjY1S0V1MXRhdDRpZVl1Z3pTNjFZTG1iT1VLRmRLZzZReG5SOERmc203RmRXMFhIc1JoUENBRE5pV1JVOV95QnlZMUZHaTF0OG96SE9USm5GQVBQRFFqc1FsNFR5cWVhWDVUdVMtaXA?oc=5",
   "fecha_publicacion": "2026-10-04T15:42:21+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

@@ -34,27 +34,27 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/5650636/pexels-photo-5650636.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of Trump Tower's glass facade with the city skyline reflection in the windows.",
-      "credito": "Tim Gouw",
-      "origen": "https://www.pexels.com/photo/glass-skyscraper-in-close-up-5650636/",
+      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/1622505/pexels-photo-1622505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Chicago cityscape featuring Trump Tower with dramatic reflections against a cloudy sky.",
-      "credito": "Tyler Tornberg",
-      "origen": "https://www.pexels.com/photo/grayscale-photography-of-buildings-1622505/",
+      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/5650636/pexels-photo-5650636.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/1622505/pexels-photo-1622505.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
   "video_url": "https://www.youtube.com/embed/u1REnBTO01U",
   "video_titulo": "Trump califica de “gran victoria” la ventaja de Flávio Bolsonaro sobre Lula en Brasil",
@@ -67,5 +67,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQdnRDOHdqRVR3eW9hNWdXeVVxNnlRYXl4NDNGUzZVQUZCQmV5ZEVuUjB5WENpa1diZFR6UG1Ia2RhQk9Ed3hPSHpDcmhmOWFWUFNBdE1ILUxicjZFZEM0TEoxQnJGNTRMVTRmNUlBdk5RUjBqSnF2bE9VUzdVQ0l2VjJZd0xfMnEyR1haRjU2VkU0TTVsN21HVFFuczhDX2k3ZFZISnZQZ1p6WnU4T3JYaXRCbw?oc=5",
   "fecha_publicacion": "2026-10-06T02:44:21+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

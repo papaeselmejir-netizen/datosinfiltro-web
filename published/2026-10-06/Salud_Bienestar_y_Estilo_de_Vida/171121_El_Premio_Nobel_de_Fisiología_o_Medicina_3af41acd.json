@@ -34,31 +34,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/38478677/pexels-photo-38478677.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Black and white relief artwork honoring Alfred Nobel in Stockholm City Hall, Sweden.",
-      "credito": "Damir K",
-      "origen": "https://www.pexels.com/photo/alfred-nobel-relief-in-stockholm-city-hall-38478677/",
+      "url": "https://images.pexels.com/photos/7722856/pexels-photo-7722856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Minimalistic text 'Medical Research' in colorful letters on a neutral background.",
+      "credito": "Tara Winstead",
+      "origen": "https://www.pexels.com/photo/happy-birthday-to-you-wall-decor-7722856/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/31083265/pexels-photo-31083265.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Monochrome image of a classical building with people walking in the foreground.",
-      "credito": "SHOX ART",
-      "origen": "https://www.pexels.com/photo/classic-building-in-black-and-white-setting-31083265/",
+      "url": "https://images.pexels.com/photos/8770717/pexels-photo-8770717.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up view of a scientist examining a specimen under a microscope in a laboratory.",
+      "credito": "Gustavo Fring",
+      "origen": "https://www.pexels.com/photo/close-up-of-lab-worker-looking-at-specimen-under-microscope-8770717/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/38478677/pexels-photo-38478677.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7722856/pexels-photo-7722856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/31083265/pexels-photo-31083265.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/8770717/pexels-photo-8770717.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/8JNizs8Um1M",
-  "video_titulo": "El Nobel de Medicina premia a los fundadores de una nueva era en la neurociencia",
-  "video_canal": "AGENCIA EFE",
+  "video_url": "https://www.youtube.com/embed/yHoa4heE1WY",
+  "video_titulo": "🧠 Nobel de Medicina 2026: cómo controlar neuronas con luz",
+  "video_canal": "Ciencias de la Ciencia",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -67,5 +67,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOUThCRS1vQ3dtUlhHNmR6YXNjU2UtbVJxbkN1MG1ZSGVVeV9CdFltNmFyZmhBUTl6MWo2UGliZjlhU0prMERFLWFlWnJhZjB5LVpFalZ2NU9TU1lmYXRZTHBFOWwyN2IxblhFM1ZKZ2FaY0NocldTOEw3dmhfai1OZi1pNDBOblIwWFI2UmVXS1FicEVrN2hiSkJLU0dVc2s?oc=5",
   "fecha_publicacion": "2026-10-06T17:12:47+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

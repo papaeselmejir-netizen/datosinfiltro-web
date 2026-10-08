@@ -28,31 +28,31 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/27857269/pexels-photo-27857269.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of a protest sign saying \"Hasta el Final\" against a clear blue sky.",
-      "credito": "Altamart",
-      "origen": "https://www.pexels.com/photo/a-sign-that-says-haistat-final-27857269/",
+      "url": "https://images.pexels.com/photos/8186275/pexels-photo-8186275.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Anonymous male musician performing melody with guitar on stage near microphone and DJ in dark club with spotlights",
+      "credito": "Brett Sayles",
+      "origen": "https://www.pexels.com/photo/unrecognizable-guitarist-playing-on-stage-near-microphone-and-dj-8186275/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/16949041/pexels-photo-16949041.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "People skateboarding and cycling on a scenic coastal road at sunset in Lima, Peru.",
-      "credito": "Alvaro Palacios",
-      "origen": "https://www.pexels.com/photo/men-on-desks-on-an-asphalt-by-the-palms-16949041/",
+      "url": "https://images.pexels.com/photos/13230484/pexels-photo-13230484.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Night concert scene with audience, stage, and colorful lighting effects.",
+      "credito": "Lisa Fotios",
+      "origen": "https://www.pexels.com/photo/crowd-of-people-at-a-concert-13230484/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/27857269/pexels-photo-27857269.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/8186275/pexels-photo-8186275.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/16949041/pexels-photo-16949041.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/13230484/pexels-photo-13230484.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/YRR_z749yfc",
-  "video_titulo": "Sin precedentes: Concierto de BTS en Perú moverá S/200 millones",
-  "video_canal": "Latina Noticias",
+  "video_url": "https://www.youtube.com/embed/oL-5miuLnno",
+  "video_titulo": "💜 BTS en Lima movería S/200 millones y abre oportunidades para emprendedores",
+  "video_canal": "RPP Noticias",
   "video_source": "youtube",
   "video_tipo": "Video relacionado del canal original",
   "video_origen": "",
@@ -61,5 +61,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxQYl9EYzNBSHZhSmI5OGdZR1BqUHYyalNURGNhZ3Bwc04yVUpkWVdjd3NWR0pYLTBDa29lVUlNNUJ5aDRWXy1yRVNJQUFYcFF5VGdIcUFnSmRtM3Q4Ylk4b01hLW1wcGt3ZkU0RUNiZTctdy1CNXRLQm5mVTAzRlY3anNTUjRZaXlVRk5vZTFZNEtEMmRqMVNpQVVHTXRxaHpNZnF2ZTNOTEp2N2lDaF9qV3FUR0hKcHFWbk5sbi1IZWFuRGIxaUw0R0Z1M2VXQ3l5aDdsTE44TXNOQm5hM09CQV9B?oc=5",
   "fecha_publicacion": "2026-10-08T09:54:54+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

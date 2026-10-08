@@ -40,27 +40,27 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/13613518/pexels-photo-13613518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Man walking past Edificio Pedro A. Lopez in Bogotá, Colombia.",
-      "credito": "Parcerografo",
-      "origen": "https://www.pexels.com/photo/a-person-man-in-green-long-sleeve-shirt-walking-near-edificio-a-lopez-building-13613518/",
+      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/16062962/pexels-photo-16062962.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Illuminated aerial cityscape of San Pedro de Atacama, showcasing street lights and urban layout at night.",
-      "credito": "Pablo G",
-      "origen": "https://www.pexels.com/photo/drone-shot-of-illuminated-cityscape-16062962/",
+      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
+      "credito": "Edmond Dantès",
+      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/13613518/pexels-photo-13613518.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/16062962/pexels-photo-16062962.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
   "video_url": "https://www.youtube.com/embed/EQLD7ZgBDyI",
   "video_titulo": "Sánchez convoca elecciones anticipadas en España tras el fracaso de su plan de vivienda",
@@ -73,5 +73,6 @@
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9ia0Z3Z25FQUpObjVLYTlGY003aWlMUmpub29hczY4T2RKMDR4YU9UelpXMlZ2eTNKX0N3Vy1IdmRYT3g2V2dqRV9TcDI0bVBpR196UmtLS2R0S0t10gFiQVVfeXFMUFMzQTdKMTUtRllNQU1ZaHF0cHE4a3BQMVhueW9fTVRBVUVlY29JWXIxSVFYSmlzNzlYRm45THc4a2VWRWFtdHlGVGl2QVU0M211VzEyazB5UnpoMFVyTC1YVmc?oc=5",
   "fecha_publicacion": "2026-10-06T09:47:47+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

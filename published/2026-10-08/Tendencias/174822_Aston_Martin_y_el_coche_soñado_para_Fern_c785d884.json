@@ -62,16 +62,17 @@
   "extra_images": [
     "https://images.pexels.com/photos/39407420/pexels-photo-39407420.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/iLgtHWQutJA",
-  "video_titulo": "ALONSO vs PÉREZ: la telemetría revela dónde pierde Aston Martin",
-  "video_canal": "MOTOR Y GAS",
+  "video_url": "https://www.youtube.com/embed/AdrAaMBDtzs",
+  "video_titulo": "Aston Martin Dreadnought | Built to deliver digital domination in Call of Duty Modern Warfare 4",
+  "video_canal": "Aston Martin",
   "video_source": "youtube",
-  "video_tipo": "Video relacionado del canal original",
-  "video_origen": "",
+  "video_tipo": "Video oficial de Aston Martin",
+  "video_origen": "https://www.youtube.com/watch?v=AdrAaMBDtzs",
   "video_licencia": "",
   "video_licencia_url": "",
   "video_poster": "",
   "fuente_url": "https://news.google.com/rss/articles/CBMikgJBVV95cUxOTDRHRlBFcjg3RFFwLWcxS2V5QmVtenJ2ajN4OTF3OHBfZFhXTmRlWE85ZlB0MTVwV1BLV2JGTHFNaTZpcmtmV1JZZExGTXM0R2VKNW1mVS1BQXB4UXZkbGpta0dXZWlWYlFMSnJKeHdBVlFTVW1CdjEzTnRaVC10TUNsMXRITGVfRkdmOWJjWjFlSEU3eHNxVkVVVndMWUlmNmZyaDBmN1V0U1EybWVyXzBEbl9JZTJWV2luVWlXTG1HZk9nVUZCWWpkWklGakhaUV92OExLaFk3RUYzaHc1eHJ2MU03RzdwTEgwNmNfMkJTYWRLRF90dElrVm1YQVBSWW1KYXFKWVZPNmpmYWljV19R0gGmAkFVX3lxTE5pcWxXMVBzSGRUVjNYeGNaSk9Wemo3WmxzRUNTaHJGTjBic0FPdWl2SFJxeG5zeWlJNmpYOWNUMkVRVTI0NEw4bW1vLWxCYkZHd1VueTViLUhialdzdUhaY3J0NDZYc25EWGZxalRweGU5LURubDB2b290SmdpQnJJbFdxUWVXLTZES0xxazg2WlYxaEw2Vk95S0Z1ZmFxdzJ5RkhPZjZMaHJMVU9zb0FIMmk2enlueHg4VzJFNkxtSUNqZmlGWUVNSklUQU1MRldPZWhIZkMxeFoycWFtcWFLX1M5UVRJOGFQNnFfVEUxeUNKTHRoQWUyS0hQUzhILW1kdGZVejZya1Vqd19oclBidFRXNHI4N2kwbHIwVVVBMHBRSTBUdw?oc=5",
   "fecha_publicacion": "2026-10-08T17:48:22+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

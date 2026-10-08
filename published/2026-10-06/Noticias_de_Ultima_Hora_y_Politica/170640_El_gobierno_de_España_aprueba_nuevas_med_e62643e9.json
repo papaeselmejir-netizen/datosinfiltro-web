@@ -28,38 +28,39 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/16171753/pexels-photo-16171753.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Low angle view of Hotel Riu Plaza Espana's elegant facade under a clear blue sky in Madrid.",
-      "credito": "Sublime 42",
-      "origen": "https://www.pexels.com/photo/low-angle-view-of-hotel-riu-plaza-espana-in-madrid-spain-16171753/",
+      "url": "https://images.pexels.com/photos/9308434/pexels-photo-9308434.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Contemporary apartment building exterior with yellow and grey panels under a clear blue sky.",
+      "credito": "Mia Vargas",
+      "origen": "https://www.pexels.com/photo/apartment-building-against-blue-sky-9308434/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/11105533/pexels-photo-11105533.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Stunning view of Hotel Riu Plaza Espana with vibrant city life in Madrid, Spain.",
-      "credito": "JOSE GALLARDO",
-      "origen": "https://www.pexels.com/photo/hotel-riu-plaza-espana-under-a-blue-sky-11105533/",
+      "url": "https://images.pexels.com/photos/129494/pexels-photo-129494.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Detailed view of a modern apartment building's exterior with balconies and glass windows.",
+      "credito": "George Becker",
+      "origen": "https://www.pexels.com/photo/photography-of-orange-and-gray-building-129494/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/16171753/pexels-photo-16171753.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/9308434/pexels-photo-9308434.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/11105533/pexels-photo-11105533.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/129494/pexels-photo-129494.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/Wlns24dsr3g",
-  "video_titulo": "🏠 Maricarmen vuelve a su casa mientras España aprueba nuevas medidas contra los desalojos",
-  "video_canal": "DNews",
-  "video_source": "youtube",
-  "video_tipo": "Video relacionado del canal original",
-  "video_origen": "",
-  "video_licencia": "",
-  "video_licencia_url": "",
-  "video_poster": "",
+  "video_url": "https://videos.pexels.com/video-files/19630490/19630490-hd_1920_1080_25fps.mp4",
+  "video_titulo": "A large apartment building with cars parked in front of it 19630490",
+  "video_canal": "binary Ego",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/a-large-apartment-building-with-cars-parked-in-front-of-it-19630490/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/19630490/advertisement-backyard-bird-s-eye-view-birdonflight-19630490.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOZ0xWcS1DZEN0cTBiUmFSV0Iwb1ZET2J6d3hQeUtNNmpRdGd3M01BYlB4aUkxUkl4Slgta1FaZG01d05ubU9ZbkRuRy1iLVIybkUxNi1UVVhXTGxLYlEwdkhqMHpUQTV5aks0cDR3NDIybThCdFcwOG41TUt2NGV1ZExJeUxua0RCbnIyNnFvTWgyVHpKOC1Xck9DVW5fenNrTzJfUHFYSQ?oc=5",
   "fecha_publicacion": "2026-10-06T17:12:47+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }

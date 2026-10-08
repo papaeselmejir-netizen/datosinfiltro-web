@@ -34,38 +34,39 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/39368077/pexels-photo-39368077.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Explore the medieval architecture of the Castle of San Marcos in El Puerto de Santa María, Spain.",
-      "credito": "Fotografías de El Puerto  de Santa María",
-      "origen": "https://www.pexels.com/photo/historic-castle-walls-in-el-puerto-de-santa-maria-39368077/",
+      "url": "https://images.pexels.com/photos/3689546/pexels-photo-3689546.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Lively audience enjoying a concert, capturing moments with smartphones in a vibrant atmosphere.",
+      "credito": "Luis Quintero",
+      "origen": "https://www.pexels.com/photo/photo-of-people-using-their-phones-3689546/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/28517695/pexels-photo-28517695.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Soldiers from the Mexican army marching in uniform during a public parade, displaying national pride.",
-      "credito": "Anya  Juárez Tenorio",
-      "origen": "https://www.pexels.com/photo/mexican-army-soldiers-marching-in-parade-28517695/",
+      "url": "https://images.pexels.com/photos/1494665/pexels-photo-1494665.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Energetic concert scene featuring a packed audience, vibrant lights, and a live performance on stage.",
+      "credito": "Wendy Wei",
+      "origen": "https://www.pexels.com/photo/people-inside-building-while-light-turned-off-1494665/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/39368077/pexels-photo-39368077.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/3689546/pexels-photo-3689546.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/28517695/pexels-photo-28517695.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/1494665/pexels-photo-1494665.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://www.youtube.com/embed/z7nAKhld8xU",
-  "video_titulo": "BTS paraliza Lima: fans llegan desde temprano al Estadio San Marcos para el Soundcheck",
-  "video_canal": "TVPerú Noticias",
-  "video_source": "youtube",
-  "video_tipo": "Video relacionado del canal original",
-  "video_origen": "",
-  "video_licencia": "",
-  "video_licencia_url": "",
-  "video_poster": "",
+  "video_url": "https://videos.pexels.com/video-files/8513961/8513961-hd_1920_1080_25fps.mp4",
+  "video_titulo": "A man standing on the stage 8513961",
+  "video_canal": "Big Bag Films",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/a-man-standing-on-the-stage-8513961/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/8513961/adult-art-audience-auto-racing-8513961.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPVnE4UEgxUk9wclFJWlZVSjhndDRfbkd1WUhYaXctbGgwMTY1ZC1TT2NxUEt6SElaaWYyZll0a204OTVsanc0QzRSTWp5dU56cF9PRjVVRmNVYThZdlR6dFRLX25pVlZpdDJtYjRjSlN6NUhEZk5JOGJ5YlhlV0xERGU0ZUFiZWV1TUE2QWZKbVFxQ0RhcklzdHRFMXQxTWlreHgyeTJBMWhhdWNJUGRjemxBbkd5OFh5N21yYl9NeUNxVDBtNzRtVF9MQ0l6Qnk5cmhZQmhIaFM4aHQ4WTRWbEZXd1BMUzMzR01V0gH_AUFVX3lxTFBFOV85TTlTdl9JYi03UWktcC1NdEhXWTF1emY2TERjWmpTdnhtOGwwY0hnVlVfczZMaU9Qbi1PQWxJQlBzcVJRdkFQejBjdVNoWk8weWszXzRfSTYwVnQzb1Q5Z2syNy1pRjQtWTdsZTcxdUdXV2s1Wk5FQ0NwdU5Mc2RuNF9UT2I5TW12T0RDRkNKWm5WOWU5dDlzWmJ0Z3ZIRlM5QWJRTXQ1c04zbUNjSGdfWXdmamNWcDBqbW9YM2txVWt5ZnM3R0JjbkxGLVV0RVRYTmtxM0ZNaHliMUJGaGNnNmQtYTFvSXAxeW9HTmRENmhTOUZERzRJWEQxaw?oc=5",
   "fecha_publicacion": "2026-10-08T09:54:54+00:00",
-  "revision_humana": false
+  "revision_humana": false,
+  "media_review_version": 1
 }
