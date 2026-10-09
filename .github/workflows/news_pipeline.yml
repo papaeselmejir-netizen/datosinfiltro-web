@@ -30,6 +30,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          python -m playwright install --with-deps --only-shell chromium
           
       - name: Investigar y crear borradores verificados
         env:
@@ -43,7 +44,17 @@ jobs:
           MAX_NEWS_PER_REGION: '5'
           MAX_DRAFTS_PER_CATEGORY: '2'
           MAX_DRAFTS_PER_RUN: '16'
+          PIPELINE_REPORT_FILE: research-report.json
         run: python main.py
+
+      - name: Guardar diagnóstico de la investigación
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: investigacion-${{ github.run_id }}
+          path: research-report.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Publicar automáticamente los borradores que pasan los controles
         env:

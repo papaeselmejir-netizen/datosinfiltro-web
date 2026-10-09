@@ -479,13 +479,11 @@ def search_pexels_images(titulo, count=3):
 
 
 def search_licensed_images(titulo, count=2, categoria=None):
-    """Return topic-matched images with recorded reuse terms."""
-    matches = []
-    if PEXELS_API_KEY:
-        matches = _search_pexels_licensed(titulo, count, categoria)
+    """Prefer attributable Commons photos; fill missing slots with stock images."""
+    matches = search_commons_images(titulo, count)
     if len(matches) < count:
-        commons = search_commons_images(titulo, count - len(matches))
-        matches.extend(item for item in commons if item["url"] not in {match["url"] for match in matches})
+        stock = _search_pexels_licensed(titulo, count - len(matches), categoria) if PEXELS_API_KEY else []
+        matches.extend(item for item in stock if item["url"] not in {match["url"] for match in matches})
     return matches[:count]
 
 

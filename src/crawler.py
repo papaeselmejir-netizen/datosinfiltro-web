@@ -4,11 +4,13 @@ import asyncio
 import re
 import ipaddress
 import socket
+from functools import lru_cache
 from urllib.parse import urljoin, urlparse
 from googlenewsdecoder import gnewsdecoder
 from src.editorial import near_duplicate_text, social_source, source_host
 
 
+@lru_cache(maxsize=512)
 def decode_google_news_url(google_news_url):
     """
     Decodifica una URL de Google News RSS para obtener la URL real del articulo.
@@ -253,6 +255,7 @@ def _extract_text_sync(url, headers=None):
         return "", "", [], ""
 
 
+@lru_cache(maxsize=512)
 def extract_text_from_url(url):
     """
     Extrae texto e imagen de una URL con retry automatico usando headers alternativos.
@@ -277,6 +280,54 @@ def extract_text_from_url(url):
     return "", "", [], ""
 
 
+@lru_cache(maxsize=128)
+def extract_text_with_browser(url):
+    """Read a JS-rendered public article when the regular reader found no text.
+
+    Browsing is a bounded fallback. It does not bypass a paywall or reuse the
+    publisher's images; it only provides text for the normal evidence gates.
+    """
+    if not _public_url(url) or not _public_dns(url):
+        return ""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        return ""
+
+    try:
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch(headless=True)
+            context = browser.new_context(user_agent=BROWSER_HEADERS["User-Agent"], locale="es-PE")
+            page = context.new_page()
+
+            def route_request(route):
+                request = route.request
+                if request.resource_type in {"image", "media", "font"}:
+                    route.abort()
+                elif _public_url(request.url) and _public_dns(request.url):
+                    route.continue_()
+                else:
+                    route.abort()
+
+            page.route("**/*", route_request)
+            response = page.goto(url, wait_until="domcontentloaded", timeout=12000)
+            if not response or response.status >= 400 or not _public_url(page.url):
+                browser.close()
+                return ""
+            page.wait_for_timeout(700)
+            soup = BeautifulSoup(page.content(), "html.parser")
+            browser.close()
+        for element in soup(["script", "style", "header", "footer", "nav", "aside", "form", "noscript"]):
+            element.decompose()
+        container = soup.find("article") or soup.find("main") or soup
+        paragraphs = [p.get_text(" ", strip=True) for p in container.find_all("p")]
+        text = re.sub(r"\s+", " ", " ".join(paragraphs)).strip()
+        return _truncate_at_sentence(text) if readable_article_text(text) else ""
+    except Exception as exc:
+        print(f"    Navegador no disponible para {url[:60]}...: {type(exc).__name__}")
+        return ""
+
+
 def readable_article_text(text):
     """Do not count compressed or otherwise corrupted bytes as reporting."""
     if len(text or "") < 300:
@@ -286,7 +337,7 @@ def readable_article_text(text):
     return bad / len(text) < 0.005 and len(words) >= 45
 
 
-async def investigate_news(noticias, return_sources=False, required_sources=None):
+async def investigate_news(noticias, return_sources=False, required_sources=None, browser_budget=0):
     """
     Recibe una lista de noticias (con titulo y URL) y extrae el contexto real.
     Ejecuta las peticiones HTTP en threads separados para no bloquear el event loop.
@@ -299,6 +350,7 @@ async def investigate_news(noticias, return_sources=False, required_sources=None
     main_video_url = ""
     verified_sources = []
     accepted_texts = []
+    browser_tries = 0
 
     for i, noticia in enumerate(noticias):
         titulo = noticia["titulo"]
@@ -339,6 +391,11 @@ async def investigate_news(noticias, return_sources=False, required_sources=None
         if text and not readable_article_text(text):
             print("    Texto ilegible o insuficiente; buscando otro medio")
             text = ""
+        if not text and browser_tries < browser_budget:
+            browser_tries += 1
+            text = await asyncio.to_thread(extract_text_with_browser, real_url)
+            if text:
+                print("    Texto recuperado con navegador")
 
         if image and not main_image_url:
             main_image_url = image

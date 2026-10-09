@@ -11,4 +11,5 @@ httpx
 jinja2==3.1.4
 markdown
 bleach
+playwright==1.63.0
 

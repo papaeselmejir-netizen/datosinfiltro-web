@@ -15,11 +15,11 @@ from dotenv import load_dotenv
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, extract_bing_news_rss, CATEGORIAS
-from src.crawler import investigate_news
+from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, CATEGORIAS
+from src.research import investigate_event
 from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_sources_are_independent
 from src.multimedia import search_licensed_images, search_relevant_video
-from src.editorial import query_terms, corroboration_queries, select_corrob_sources, source_host, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
+from src.editorial import source_host, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
 
 load_dotenv()
 
@@ -27,11 +27,14 @@ load_dotenv()
 # Todas las 8 categorias activas por defecto.
 CATEGORIAS_ACTIVAS = list(CATEGORIAS.keys())
 PIPELINE_METRICS = Counter()
+REJECTION_METRICS = Counter()
 RUN_TITLES = []
 
 
-def reject_news(reason, message):
+def reject_news(reason, message, category=None, region=None):
     PIPELINE_METRICS[reason] += 1
+    if category:
+        REJECTION_METRICS[(category, region or "General", reason)] += 1
     print(message)
     return None
 
@@ -114,32 +117,23 @@ async def process_single_news(noticia, categoria, distributor=None):
     PIPELINE_METRICS["candidatas_investigadas"] += 1
     print(f"\n    --- Procesando: {titulo[:70]}... ---")
 
+    def reject(reason, message):
+        return reject_news(reason, message, categoria, noticia.get("region"))
+
     # FASE 2: Investigacion (leer el contenido real de la URL)
     print(f"    [Investigando] Leyendo contenido de la fuente...")
-    candidates = []
-    corroborating = []
-    topics = corroboration_queries(titulo)
-    for topic in topics:
-        candidates.extend(await asyncio.to_thread(
-            extract_custom_topic_google_rss, topic,
-            geo="PE" if noticia.get("region") == "Perú" else "US", max_items=20,
-        ))
-        corroborating = select_corrob_sources(noticia, candidates, limit=10)
-        if len(corroborating) >= 5:
-            break
-    if topics:
-        candidates.extend(await asyncio.to_thread(extract_bing_news_rss, topics[0], max_items=20))
-        corroborating = select_corrob_sources(noticia, candidates, limit=10)
-    print(f"    {len(corroborating)} medios con titulares relacionados para comprobar")
-    if not corroborating:
-        return reject_news("sin_cobertura", "    Sin cobertura independiente del mismo hecho. Saltando.")
-    contexto, _, _, _, sources = await investigate_news(
-        [noticia, *corroborating], return_sources=True, required_sources=2,
-    )
+    contexto, sources, research_stats = await investigate_event(noticia)
+    PIPELINE_METRICS["busquedas_de_acontecimientos"] += research_stats["queries"]
+    PIPELINE_METRICS["titulares_relacionados"] += research_stats["related_headlines"]
+    print(f"    {research_stats['related_headlines']} medios relacionados; "
+          f"{research_stats['readable_sources']} fuentes legibles; "
+          f"{research_stats['queries']} búsquedas")
+    if not research_stats["related_headlines"]:
+        return reject("sin_cobertura", "    Sin cobertura independiente del mismo hecho. Saltando.")
     if len({source_host(source["url"]) for source in sources}) < 2:
-        return reject_news("sin_dos_fuentes_legibles", "    Faltan dos medios independientes con texto suficiente. Saltando.")
+        return reject("sin_dos_fuentes_legibles", "    Faltan dos medios independientes con texto suficiente. Saltando.")
     if not await asyncio.to_thread(verify_sources_are_independent, contexto):
-        return reject_news("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
+        return reject("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
 
     print("    [Multimedia] Buscando imágenes con licencia y un video relacionado...")
     images, video = await asyncio.gather(
@@ -147,7 +141,7 @@ async def process_single_news(noticia, categoria, distributor=None):
         asyncio.to_thread(search_relevant_video, titulo, categoria),
     )
     if len(images) < 2 or not video:
-        return reject_news("multimedia_insuficiente", "    Multimedia insuficiente o no verificable. Saltando.")
+        return reject("multimedia_insuficiente", "    Multimedia insuficiente o no verificable. Saltando.")
 
     # FASE 3: Redaccion con IA
     print(f"    [Redactando] Generando contenido multi-canal...")
@@ -155,9 +149,9 @@ async def process_single_news(noticia, categoria, distributor=None):
     content = generate_multi_channel_content(titulo, contexto, categoria, region=region)
 
     if not content:
-        return reject_news("redaccion_fallida", "    Error en la generacion de contenido. Saltando.")
+        return reject("redaccion_fallida", "    Error en la generacion de contenido. Saltando.")
     if not all(matches_story_aspect(titulo, content.get(field, "")) for field in ("titulo_articulo", "resumen")):
-        return reject_news("tema_desviado", "    El texto redactado cambió el producto o la función central. Saltando.")
+        return reject("tema_desviado", "    El texto redactado cambió el producto o la función central. Saltando.")
     def evidence_errors(draft):
         return claim_evidence_errors(" ".join(str(draft.get(field, "")) for field in ("titulo_articulo", "resumen", "articulo_web")), contexto)
 
@@ -175,18 +169,18 @@ async def process_single_news(noticia, categoria, distributor=None):
                 print("    " + "; ".join(deterministic_errors))
             verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto)
     if not verified:
-        return reject_news("afirmaciones_sin_sustento", "    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
+        return reject("afirmaciones_sin_sustento", "    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
 
     # The source headline may look different from the final, rewritten headline.
     # Check both before saving so a renamed version of an already published
     # event cannot slip through the candidate-stage deduplication.
     recent_titles = recent_published_titles() + RUN_TITLES
     if any(same_recent_event(content.get("titulo_articulo", ""), old) for old in recent_titles):
-        return reject_news("hechos_ya_publicados", "    La nota redactada repite un hecho publicado recientemente. Saltando.")
+        return reject("hechos_ya_publicados", "    La nota redactada repite un hecho publicado recientemente. Saltando.")
 
     # Check if the LLM generated an error message instead of an article
     if content.get("titulo_articulo", "").lower().startswith("error"):
-        return reject_news("redaccion_fallida", "    Error: El LLM devolvió un contenido ilegible/error. Saltando.")
+        return reject("redaccion_fallida", "    Error: El LLM devolvió un contenido ilegible/error. Saltando.")
 
     # Agregar region, imagen principal, imagenes extra y video al contenido generado
     content["region"] = noticia.get("region", "General")
@@ -211,7 +205,7 @@ async def process_single_news(noticia, categoria, distributor=None):
     content["fuente_url"] = noticia.get("url", "")
     errors = publication_errors(content)
     if errors:
-        return reject_news("validacion_final", f"    Borrador rechazado: {', '.join(errors)}")
+        return reject("validacion_final", f"    Borrador rechazado: {', '.join(errors)}")
     
     print(f"    Contenido generado exitosamente.")
 
@@ -313,6 +307,9 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
         print(f"  No se encontraron noticias para '{categoria}'. Saltando.")
         return []
 
+    PIPELINE_METRICS["candidatas_descubiertas_peru"] += len(noticias_peru)
+    PIPELINE_METRICS["candidatas_descubiertas_mundo"] += len(noticias_mundial)
+
     # Cargar historial para deduplicar
     history = load_history()
     recent_titles = recent_published_titles() + RUN_TITLES
@@ -380,6 +377,7 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
 
 async def main(topic=None):
     PIPELINE_METRICS.clear()
+    REJECTION_METRICS.clear()
     RUN_TITLES.clear()
     started_at = datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds")
     print("=" * 60)
@@ -435,6 +433,7 @@ async def main(topic=None):
         if remaining <= 0:
             break
         before = Counter(PIPELINE_METRICS)
+        before_rejections = Counter(REJECTION_METRICS)
         try:
             resultados = await process_category(
                 categoria, distributor, max_noticias=max_per_region,
@@ -451,6 +450,16 @@ async def main(topic=None):
         category_results[categoria] = {
             "investigadas": PIPELINE_METRICS["candidatas_investigadas"] - before["candidatas_investigadas"],
             "borradores_verificados": len(resultados),
+            "candidatas_peru": PIPELINE_METRICS["candidatas_descubiertas_peru"] - before["candidatas_descubiertas_peru"],
+            "candidatas_mundo": PIPELINE_METRICS["candidatas_descubiertas_mundo"] - before["candidatas_descubiertas_mundo"],
+            "rechazos": {
+                region: {
+                    reason: REJECTION_METRICS[(categoria, region, reason)] - before_rejections[(categoria, region, reason)]
+                    for cat, reg, reason in REJECTION_METRICS
+                    if cat == categoria and reg == region and REJECTION_METRICS[(cat, reg, reason)] > before_rejections[(cat, reg, reason)]
+                }
+                for region in ("Perú", "Mundial", "General")
+            },
         }
 
     # Resumen final
@@ -478,7 +487,11 @@ async def main(topic=None):
                         file.write(f"- {reason}: {count}\n")
                     file.write("\n**Cobertura por categoría**\n\n")
                     for category, result in category_results.items():
-                        file.write(f"- {category}: {result['borradores_verificados']} aprobadas de {result['investigadas']} investigadas\n")
+                        file.write(f"- {category}: {result['borradores_verificados']} aprobadas de {result['investigadas']} investigadas "
+                                   f"({result['candidatas_peru']} candidatas Perú, {result['candidatas_mundo']} mundo)\n")
+                        for region, reasons in result["rechazos"].items():
+                            if reasons:
+                                file.write(f"  - {region}: " + ", ".join(f"{reason} {count}" for reason, count in sorted(reasons.items())) + "\n")
             except OSError as exc:
                 print(f"    No se pudo escribir el resumen de GitHub: {type(exc).__name__}")
     report_file = os.getenv("PIPELINE_REPORT_FILE")

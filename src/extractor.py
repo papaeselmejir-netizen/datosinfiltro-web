@@ -141,6 +141,8 @@ CATEGORY_CUES = {
 
 TREND_CUES = {"viral", "virales", "tendencia", "tendencias", "moda", "redes", "tiktok", "streamer", "streamers", "creador", "creadores", "bts", "army", "fenomeno", "cultura", "consumo", "reto", "memes", "influencer", "influencers", "trend", "trends", "culture"}
 TREND_EXCLUSIONS = {"elecciones", "electoral", "escrutinio", "presidente", "gobierno", "parlamento"}
+GAMBLING_CUES = {"apuestas", "apuesta", "casino", "casinos", "loteria", "tragamonedas", "ludopatia", "clandestino", "clandestinas", "clandestinos", "azar", "betting", "igaming"}
+VIDEO_GAME_CUES = {"videojuego", "videojuegos", "esports", "nintendo", "playstation", "xbox", "steam", "consola", "consolas", "gamer", "epic"}
 
 
 def matches_category(item, categoria):
@@ -148,6 +150,10 @@ def matches_category(item, categoria):
     terms = keywords(" ".join((item.get("titulo", ""), item.get("snippet", ""))))
     if categoria == "Tendencias":
         return bool(terms & TREND_CUES) and not bool(terms & TREND_EXCLUSIONS)
+    if categoria == "Gaming y Esports":
+        gambling_terms = terms | keywords(item.get("url", ""))
+        if ((gambling_terms & GAMBLING_CUES) or "juego online" in item.get("titulo", "").lower()) and not terms & VIDEO_GAME_CUES:
+            return False
     if item.get("origen") == "local_rss" and "/tvmas/" not in item.get("url", ""):
         return True
     return bool(terms & CATEGORY_CUES.get(categoria, set()))
