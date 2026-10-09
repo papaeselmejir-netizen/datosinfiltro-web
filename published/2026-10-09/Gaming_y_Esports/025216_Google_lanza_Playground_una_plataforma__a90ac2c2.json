@@ -1,0 +1,66 @@
+{
+  "titulo_articulo": "Google lanza Playground: la plataforma de IA para crear videojuegos a partir de texto",
+  "articulo_web": "Google presentó oficialmente Playground, una plataforma experimental basada en inteligencia artificial diseñada para desarrollar y modificar videojuegos interactivos a partir de indicaciones en lenguaje natural, sin requerir conocimientos de programación. El sistema funciona mediante un agente conversacional que permite iniciar proyectos desde cero o utilizar plantillas predeterminadas, ajustando mecánicas y reglas por medio de un chat.\n\n## Capacidades técnicas y modo multijugador\nLejos de limitarse a prototipos sencillos, la herramienta está orientada al desarrollo de títulos de navegador y cuenta con un entorno integrado para compartir creaciones con otros jugadores. La plataforma contempla cuatro áreas clave:\n\n- Creación en 2D: Producción de títulos de plataformas, acertijos y juegos de disparos con perspectiva superior, generando mecánicas y niveles completos.\n- Escenarios en 3D simples: Desarrollo de proyectos tridimensionales sujetos a las restricciones geométricas actuales del procesamiento en tiempo real sin renderizado previo.\n- Funciones multijugador: Soporte para compartir partidas mediante enlaces y competir en tiempo real, respaldado por tablas de puntuaciones y clasificaciones en vivo.\n- Transformación de recursos: Posibilidad de subir imágenes personales para convertirlas en personajes interactivos con animaciones básicas, junto con opciones de exportación de activos.\n\nA su vez, la plataforma funciona como un espacio comunitario donde los usuarios pueden probar los juegos de otros creadores e intentar superar sus tiempos o marcas.\n\n## Disponibilidad y consumo de tokens\nEl acceso a Playground se encuentra disponible a través de su sitio web oficial, restringido por ahora a usuarios mayores de 18 años residentes en Estados Unidos. La dinámica operativa se basa en un esquema de consumo de tokens por cada acción o cambio realizado; no obstante, los suscriptores al plan Google One AI Premium reciben una mayor asignación mensual de estos créditos de procesamiento.\n\nHasta el momento, Google no ha hecho público qué modelo específico de inteligencia artificial sustenta esta herramienta, manteniendo en reserva los detalles técnicos de su motor generativo.",
+  "resumen": "Google lanzó Playground, una plataforma que utiliza inteligencia artificial para crear y compartir videojuegos de navegador mediante texto y sin programar.",
+  "hilo_x": "Google lanzó Playground: una plataforma impulsada por IA para crear videojuegos completos solo con descripciones de texto y sin escribir una sola línea de código.\n\nEl sistema permite diseñar juegos 2D, entornos 3D simples de navegador, convertir fotos en personajes jugables e integrar multijugador en tiempo real con tablas de clasificación.\n\nLa herramienta opera mediante consumo de tokens. Actualmente está disponible solo en EE.UU. para mayores de 18 años, con más saldo para suscriptores de Google One AI Premium. Google no aclaró qué modelo de IA utiliza. 🕹️\n\n¿Es este el futuro del desarrollo independiente o un experimento pasajero? Conoce todos los detalles técnicos en nuestro sitio web:",
+  "post_facebook": "Google presentó Playground, una plataforma experimental de inteligencia artificial que permite crear videojuegos completos a partir de instrucciones en texto, sin necesidad de saber programación.\n\nLa herramienta está orientada a juegos de navegador e incluye soporte para títulos 2D, experiencias 3D sencillas, integración multijugador en tiempo real y la capacidad de convertir fotografías propias en personajes jugables. Además, sirve como punto de encuentro comunitario para probar las creaciones de otros usuarios.\n\nPor el momento, Playground opera bajo un sistema de tokens y está disponible exclusivamente en Estados Unidos para mayores de 18 años. Conoce todos los detalles y limitaciones de este anuncio en nuestro artículo completo.",
+  "guion_tiktok": "(0-3s) ¿Crear un videojuego completo escribiendo un solo mensaje de texto? Google acaba de hacerlo realidad.\n\n(3-45s) La compañía lanzó Playground, una plataforma con inteligencia artificial que te permite diseñar juegos sin tocar una sola línea de código. No son solo pruebas simples: puedes crear títulos en 2D como plataformeros o shooters, entornos 3D básicos para navegador y hasta convertir una foto de tu mascota en un personaje jugable con animaciones. Además, incluye modo multijugador en tiempo real con enlaces directos y tablas de clasificación en vivo. El sistema funciona como un chat donde pides cambios y la IA los aplica. Por ahora, funciona con un sistema de tokens, está limitado a Estados Unidos para mayores de 18 años y Google ni siquiera ha revelado qué modelo de IA usa detrás.\n\n(45-60s) ¿Crees que esto cambiará la industria o será solo otro experimento olvidado? Déjamelo en los comentarios. Tienes el link con la noticia completa en mi perfil.",
+  "categoria": "Gaming y Esports",
+  "web_url": "",
+  "region": "Mundial",
+  "schema_version": 2,
+  "media_review_version": 1,
+  "titulo_fuente": "Google lanza Playground: una plataforma para crear videojuegos desde un prompt de texto, sin saber programar - WWWhat's new",
+  "autor": "Equipo editorial DatoSinFiltro",
+  "fecha_creacion": "2026-10-08T21:52:16-05:00",
+  "fuentes": [
+    {
+      "titulo": "Google lanza Playground: una plataforma para crear videojuegos desde un prompt de texto, sin saber programar - WWWhat's new",
+      "url": "https://wwwhatsnew.com/2026/10/09/google-playground-plataforma-gaming-ia-sin-codigo-2026/",
+      "medio": "WWWhat's new",
+      "fecha": "Fri, 09 Oct 2026 02:08:26 GMT"
+    },
+    {
+      "titulo": "Google lanza Playground: crea videojuegos con IA sin saber programar - AVPasión",
+      "url": "https://www.avpasion.com/google-anuncia-playground-ia-pensada-videojuegos/",
+      "medio": "AVPasión",
+      "fecha": "Thu, 08 Oct 2026 09:30:28 GMT"
+    }
+  ],
+  "imagenes": [
+    {
+      "url": "https://images.pexels.com/photos/9072317/pexels-photo-9072317.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "A group of gamers focused on a competitive match in a dimly lit esports arena.",
+      "credito": "Yan Krukau",
+      "origen": "https://www.pexels.com/photo/teenagers-playing-on-computers-9072317/",
+      "licencia": "Pexels License",
+      "licencia_url": "https://www.pexels.com/license/",
+      "tipo": "Ilustración de archivo"
+    },
+    {
+      "url": "https://images.pexels.com/photos/6125330/pexels-photo-6125330.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Black and white view of an active esports gaming studio with players immersed in video games.",
+      "credito": "Nathan b Caldeira",
+      "origen": "https://www.pexels.com/photo/gaming-studio-with-lots-of-computers-6125330/",
+      "licencia": "Pexels License",
+      "licencia_url": "https://www.pexels.com/license/",
+      "tipo": "Ilustración de archivo"
+    }
+  ],
+  "imagen_url": "https://images.pexels.com/photos/9072317/pexels-photo-9072317.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "extra_images": [
+    "https://images.pexels.com/photos/6125330/pexels-photo-6125330.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+  ],
+  "video_url": "https://videos.pexels.com/video-files/7914809/7914809-hd_1920_1080_30fps.mp4",
+  "video_titulo": "Men playing video games 7914809",
+  "video_canal": "RDNE Stock project",
+  "video_source": "pexels",
+  "video_tipo": "Video ilustrativo de archivo",
+  "video_origen": "https://www.pexels.com/video/men-playing-video-games-7914809/",
+  "video_licencia": "Pexels License",
+  "video_licencia_url": "https://www.pexels.com/license/",
+  "video_poster": "https://images.pexels.com/videos/7914809/pexels-photo-7914809.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+  "fuente_url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOUjQ0SjNuQ0dJcUV1Q0JCMTBDOFFXanBFZWFUb3NMQmNhZUZsUHdsWlpyem1PTGVxTjhIdkp0dFdWWjZDbDQ4dDdHc1ZNdjVnMEczVWFDeFMzMmtLX19LLXc1bjdpaGdIY3VEZ2p1TENfRWlMM0MydWVKTGNpQXFyd3JEV19yX3dLOFVkZC0ySWNLaGM?oc=5",
+  "fecha_publicacion": "2026-10-09T03:05:13+00:00",
+  "revision_humana": false
+}
