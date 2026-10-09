@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import asyncio
+import json
 import re
 import ipaddress
 import socket
@@ -81,6 +82,30 @@ def _truncate_at_sentence(text, max_length=2500):
         if last_space > 0:
             return truncated[:last_space].strip() + "..."
     return truncated.strip() + "..."
+
+
+def _jsonld_article_body(soup):
+    """Recover publisher-provided article text embedded in structured data."""
+    def bodies(node):
+        if isinstance(node, dict):
+            body = node.get("articleBody")
+            if isinstance(body, str):
+                yield body
+            for value in node.values():
+                if isinstance(value, (dict, list)):
+                    yield from bodies(value)
+        elif isinstance(node, list):
+            for value in node:
+                yield from bodies(value)
+
+    found = []
+    for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
+        try:
+            found.extend(bodies(json.loads(script.string or script.get_text())))
+        except (ValueError, TypeError):
+            continue
+    candidate = max(found, key=len, default="")
+    return BeautifulSoup(candidate, "html.parser").get_text(" ", strip=True)
 
 
 def _public_url(url):
@@ -166,6 +191,10 @@ def _extract_text_sync(url, headers=None):
         # Limpiar espacios multiples y caracteres problematicos (BOM, etc)
         text = re.sub(r"\s+", " ", text).strip()
         text = text.replace("\ufeff", "").replace("\u200b", "")
+        if not readable_article_text(text):
+            structured = _jsonld_article_body(BeautifulSoup(html_content, "html.parser"))
+            if readable_article_text(structured):
+                text = structured
 
         # Extraer imagen principal (og:image o twitter:image)
         image_url = ""
@@ -297,7 +326,7 @@ def extract_text_with_browser(url):
     try:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
-            context = browser.new_context(user_agent=BROWSER_HEADERS["User-Agent"], locale="es-PE")
+            context = browser.new_context(user_agent=BROWSER_HEADERS["User-Agent"], locale="es-PE", service_workers="block")
             page = context.new_page()
 
             def route_request(route):
@@ -312,10 +341,12 @@ def extract_text_with_browser(url):
             page.route("**/*", route_request)
             response = page.goto(url, wait_until="domcontentloaded", timeout=12000)
             if not response or response.status >= 400 or not _public_url(page.url):
+                page.unroute_all(behavior="wait")
                 browser.close()
                 return ""
             page.wait_for_timeout(700)
             soup = BeautifulSoup(page.content(), "html.parser")
+            page.unroute_all(behavior="wait")
             browser.close()
         for element in soup(["script", "style", "header", "footer", "nav", "aside", "form", "noscript"]):
             element.decompose()
@@ -365,7 +396,7 @@ async def investigate_news(noticias, return_sources=False, required_sources=None
 
         # Para Google RSS, necesitamos decodificar la URL
         real_url = noticia_url
-        if origen in ("google_rss", "google_rss_custom"):
+        if origen in ("google_rss", "google_rss_custom") or source_host(noticia_url) == "news.google.com":
             decoded = await asyncio.to_thread(decode_google_news_url, noticia_url)
             if decoded:
                 real_url = decoded

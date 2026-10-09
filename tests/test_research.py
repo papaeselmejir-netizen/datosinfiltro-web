@@ -3,7 +3,8 @@ import unittest
 from unittest.mock import AsyncMock, patch
 
 from src.research import event_search_queries, investigate_event
-from src.crawler import investigate_news
+from bs4 import BeautifulSoup
+from src.crawler import _jsonld_article_body, investigate_news
 from src import multimedia
 from src import extractor
 
@@ -73,6 +74,21 @@ class ResearchTests(unittest.TestCase):
             {"titulo": "Nintendo anuncia nuevo videojuego para consola"},
             "Gaming y Esports",
         ))
+
+    def test_structured_article_body_recovers_text_from_dynamic_page(self):
+        html = '<script type="application/ld+json">{"@type":"NewsArticle","articleBody":"La noticia confirma los hechos con detalle."}</script>'
+        self.assertEqual(_jsonld_article_body(BeautifulSoup(html, "html.parser")), "La noticia confirma los hechos con detalle.")
+
+    def test_google_news_link_is_decoded_even_without_origin_label(self):
+        story = {"titulo": "Comunicado sobre salud en Lima", "url": "https://news.google.com/rss/articles/example", "fuente": "Medio"}
+        body = "El comunicado describe los hechos y aporta detalles verificables en Lima. " * 20
+        with patch("src.crawler.decode_google_news_url", return_value="https://publisher.example/health") as decoder, patch(
+            "src.crawler.extract_text_from_url", return_value=(body, "", [], "")
+        ) as reader, patch("src.crawler.asyncio.sleep", new_callable=AsyncMock):
+            _, _, _, _, sources = asyncio.run(investigate_news([story], return_sources=True, required_sources=1))
+        decoder.assert_called_once_with(story["url"])
+        reader.assert_called_once_with("https://publisher.example/health")
+        self.assertEqual(len(sources), 1)
 
 
 if __name__ == "__main__":
