@@ -60,6 +60,12 @@ SPORT_MEDIA_TERMS = {
     "football": {"football", "footballer", "footballers", "soccer", "futbol"},
 }
 
+HOUSING_EVICTION_CUES = {
+    "desahucio", "desahuciada", "desahuciado", "desahuciadas", "desahuciados",
+    "desalojo", "desalojada", "desalojado", "desalojos", "inquilina", "inquilino",
+    "eviction", "evicted", "tenant",
+}
+
 
 def sport_for_headline(value):
     terms = keywords(value)
@@ -135,10 +141,11 @@ def media_alignment_errors(article):
     themes = (
         ({"desvios", "viales", "cierres", "trafico", "transito"}, {"traffic", "road", "roads", "street", "streets", "cars", "vehicles", "bus", "buses", "transport", "desvios", "vial", "salida", "saldran", "transito"}, {"concert", "music", "stage"}),
         ({"concierto", "conciertos", "gira", "cantante"}, {"concert", "concerts", "music", "musician", "stage", "singer", "band", "performance", "crowd", "concierto", "conciertos", "musica", "gira"}, {"protest", "protests", "riot", "military", "soldier", "soldiers", "football", "soccer"}),
+        (HOUSING_EVICTION_CUES, {"housing", "home", "house", "apartment", "residential", "building", "tenant", "eviction", "vivienda", "desahucio", "desalojo"}, {"ballot", "voting", "election", "campaign"}),
         ({"elecciones", "electoral", "votacion", "urna", "escrutinio"}, {"vote", "voting", "voter", "voters", "ballot", "election", "elections", "polling", "campaign", "elecciones", "electoral", "votos", "votacion", "urna", "balotaje"}, {"police", "festival", "landscape"}),
         ({"optogenetica", "neuronas"}, {"neuron", "neurons", "neuronas", "brain", "neuroscience", "research", "laboratory", "science", "nobel", "medicina"}, {"covid", "pill", "pills"}),
         ({"nobel"}, {"nobel", "medicine", "medicina", "medical", "science", "scientist", "research", "laboratory", "neuron", "brain"}, {"covid", "pill", "pills"}),
-        ({"vivienda", "desahucio", "desalojos"}, {"housing", "home", "house", "apartment", "residential", "vivienda", "desahucio", "desalojos"}, {"bank", "hotel"}),
+        ({"vivienda"}, {"housing", "home", "house", "apartment", "residential", "building", "vivienda"}, {"bank", "hotel"}),
         ({"asus", "rtx"}, {"asus", "laptop", "computer", "pc", "gaming", "notebook"}, {"sega", "amazon"}),
         ({"aston"}, {"aston", "martin", "car", "cars", "suv", "vehicle", "automotive", "gaming", "game"}, {"alonso", "perez", "racing", "formula"}),
         ({"usdc", "stablecoin", "stablecoins"}, {"usdc", "stablecoin", "digital", "payment", "payments", "wallet", "phone", "smartphone", "mobile"}, {"bitcoin", "btc"}),

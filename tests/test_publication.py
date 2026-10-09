@@ -137,6 +137,20 @@ class PublicationTests(unittest.TestCase):
         candidate["video_titulo"] = "Conciertos de BTS en Lima y su impacto económico"
         self.assertNotIn("El material multimedia no representa el asunto central de la noticia", publication_errors(candidate))
 
+    def test_eviction_story_is_not_illustrated_with_ballot_boxes(self):
+        title = "Muere una mujer desahuciada en Madrid tras protestas y elecciones"
+        candidate = article()
+        candidate["media_review_version"] = 1
+        candidate["titulo_articulo"] = title
+        candidate["titulo_fuente"] = title
+        for image in candidate["imagenes"]:
+            image["descripcion"] = "A person casting a ballot in an election"
+        candidate["video_source"] = "pexels"
+        candidate["video_titulo"] = "Man putting paper on ballot box"
+        self.assertIn("El material multimedia no representa el asunto central de la noticia", publication_errors(candidate))
+        self.assertEqual(multimedia._stock_topic(title)[0], "housing residential apartment building")
+        self.assertEqual(multimedia._stock_topic("Pedro Sánchez convoca elecciones por su plan de vivienda")[0], "voting ballot election")
+
     def test_usdc_is_not_illustrated_as_bitcoin(self):
         candidate = article()
         candidate["media_review_version"] = 1

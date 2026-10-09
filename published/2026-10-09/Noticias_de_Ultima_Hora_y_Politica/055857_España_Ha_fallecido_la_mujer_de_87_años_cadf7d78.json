@@ -29,37 +29,37 @@
   ],
   "imagenes": [
     {
-      "url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of hands holding a vote ballot, symbolizing election participation.",
-      "credito": "Edmond Dantès",
-      "origen": "https://www.pexels.com/photo/a-woman-dropping-her-vote-in-a-box-7103185/",
+      "url": "https://images.pexels.com/photos/9308434/pexels-photo-9308434.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Contemporary apartment building exterior with yellow and grey panels under a clear blue sky.",
+      "credito": "Mia Vargas",
+      "origen": "https://www.pexels.com/photo/apartment-building-against-blue-sky-9308434/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     },
     {
-      "url": "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A person casting a vote by placing a ballot into a ballot box, symbolizing democratic participation.",
-      "credito": "Edmond Dantès",
-      "origen": "https://www.pexels.com/photo/person-putting-a-ballot-in-the-box-7103187/",
+      "url": "https://images.pexels.com/photos/129494/pexels-photo-129494.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "descripcion": "Detailed view of a modern apartment building's exterior with balconies and glass windows.",
+      "credito": "George Becker",
+      "origen": "https://www.pexels.com/photo/photography-of-orange-and-gray-building-129494/",
       "licencia": "Pexels License",
       "licencia_url": "https://www.pexels.com/license/",
       "tipo": "Ilustración de archivo"
     }
   ],
-  "imagen_url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "imagen_url": "https://images.pexels.com/photos/9308434/pexels-photo-9308434.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   "extra_images": [
-    "https://images.pexels.com/photos/7103187/pexels-photo-7103187.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    "https://images.pexels.com/photos/129494/pexels-photo-129494.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
   ],
-  "video_url": "https://videos.pexels.com/video-files/8847511/8847511-hd_1920_1080_25fps.mp4",
-  "video_titulo": "Man putting paper on ballot box 8847511",
-  "video_canal": "Mikhail Nilov",
+  "video_url": "https://videos.pexels.com/video-files/19630490/19630490-hd_1920_1080_25fps.mp4",
+  "video_titulo": "A large apartment building with cars parked in front of it 19630490",
+  "video_canal": "binary Ego",
   "video_source": "pexels",
   "video_tipo": "Video ilustrativo de archivo",
-  "video_origen": "https://www.pexels.com/video/man-putting-paper-on-ballot-box-8847511/",
+  "video_origen": "https://www.pexels.com/video/a-large-apartment-building-with-cars-parked-in-front-of-it-19630490/",
   "video_licencia": "Pexels License",
   "video_licencia_url": "https://www.pexels.com/license/",
-  "video_poster": "https://images.pexels.com/videos/8847511/pexels-photo-8847511.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+  "video_poster": "https://images.pexels.com/videos/19630490/advertisement-backyard-bird-s-eye-view-birdonflight-19630490.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
   "fuente_url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxNZHc3RFdxN084REdaUWkwX0F0ZWoyRjdRTGFYSmpacTRBVEdEQ01DUFlwTzlkNVZYclFkbnptNUs3QVlXSWl3NHRNZDhkWEVBQU9iUHM1b2NIQUZQZGYtU2UzUHV1UVlkb2ZlY3pSZG8xWEhWVEVmTEhMYXkxVUVVTF92Q1pDV1UxQ19WS0JwbUpsSEFNVjN2SUlsSmZ3V29ESEhramFHdFBNMXBPa3FRMXFKVUY2MEl6N3dQbTd6ME82djBpZ3dvN1c4b204M05KZXVVdmtGY1dYVjhibTdHd3VWOWw2d1E?oc=5",
   "fecha_publicacion": "2026-10-09T06:18:16+00:00",
   "revision_humana": false

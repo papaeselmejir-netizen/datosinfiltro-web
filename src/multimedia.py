@@ -20,7 +20,7 @@ from html import unescape
 from urllib.parse import quote_plus, urljoin, urlparse, parse_qs
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from src.editorial import event_terms, keywords, media_alignment_errors, place_terms, query_terms, relevance
+from src.editorial import HOUSING_EVICTION_CUES, event_terms, keywords, media_alignment_errors, place_terms, query_terms, relevance
 
 load_dotenv()
 
@@ -494,13 +494,15 @@ def _stock_topic(titulo, categoria=None):
         return "urban traffic road cars", {"traffic", "road", "roads", "street", "cars", "vehicles", "bus", "transport"}
     if terms & {"concierto", "conciertos", "gira", "cantante"}:
         return "live music concert stage", {"concert", "concerts", "music", "musician", "stage", "singer", "band", "performance"}
+    if terms & HOUSING_EVICTION_CUES:
+        return "housing residential apartment building", {"housing", "home", "house", "apartment", "residential", "building", "tenant", "eviction"}
     if terms & {"elecciones", "electoral", "votacion", "urna", "escrutinio", "balotaje", "bolsonaro"}:
         return "voting ballot election", {"vote", "voting", "voter", "voters", "ballot", "election", "polling"}
     if terms & {"papa", "pontifice"} and terms & {"salud", "mental", "pastoral"}:
         return "pope vatican church", {"pope", "papal", "vatican", "church", "catholic", "religious"}
     if "nobel" in terms:
         return "neuroscience brain research laboratory", {"neuron", "neurons", "brain", "neuroscience", "research", "laboratory", "science"}
-    if terms & {"vivienda", "desahucio", "desalojos"}:
+    if terms & {"vivienda"}:
         return "housing residential apartment homes", {"housing", "home", "house", "apartment", "residential"}
     if terms & {"asus", "rtx"}:
         return "gaming laptop computer", {"asus", "laptop", "computer", "pc", "gaming", "notebook"}
@@ -572,7 +574,7 @@ def _search_pexels_licensed(titulo, count, categoria=None):
     topic = _stock_topic(titulo, categoria)
     queries = [query_terms(titulo, 5)]
     if topic:
-        prioritize_stock = categoria in ("Deportes en Vivo", "Tecnologia, Gadgets e Inteligencia Artificial", "Finanzas, Negocios y Criptomonedas", "Gaming y Esports") or bool(keywords(titulo) & {"premios", "ariel", "galardones", "alfombra", "cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas", "gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"}) or {"instagram", "whatsapp"} <= keywords(titulo)
+        prioritize_stock = categoria in ("Deportes en Vivo", "Tecnologia, Gadgets e Inteligencia Artificial", "Finanzas, Negocios y Criptomonedas", "Gaming y Esports") or bool(keywords(titulo) & (HOUSING_EVICTION_CUES | {"premios", "ariel", "galardones", "alfombra", "cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas", "gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"})) or {"instagram", "whatsapp"} <= keywords(titulo)
         queries = [topic[0], queries[0]] if prioritize_stock else [queries[0], topic[0]]
     if not queries[0]:
         return []
