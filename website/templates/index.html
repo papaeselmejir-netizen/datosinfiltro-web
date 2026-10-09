@@ -2,15 +2,37 @@
 {% block title %}DatoSinFiltro | Noticias verificadas{% endblock %}
 {% block head %}<meta name="description" content="Noticias de Perú y el mundo con fuentes visibles y contexto útil.">{% if site_url %}<link rel="canonical" href="{{ site_url }}/index.html">{% endif %}{% endblock %}
 {% block content %}
+{% set peru_articles = articles | selectattr('region', 'equalto', 'Perú') | list %}
+{% set world_articles = articles | selectattr('region', 'equalto', 'Mundial') | list %}
 <div class="news-container">
-  <div class="section-heading"><p class="eyebrow">Actualidad con contexto</p><h1>Noticias que importan</h1><p>Información contrastada, fuentes a la vista y contenido multimedia pertinente.</p></div>
+  <div class="section-heading"><p class="eyebrow">Actualidad con contexto</p><h1>Noticias que importan</h1><p>Hechos de Perú y el mundo, con fuentes a la vista.</p></div>
   {% if articles %}
-  <div class="bbc-grid">
-    <div class="left-col">{% for article in articles[1:3] %}<article class="news-card medium"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="600" height="400"></a><a href="{{ article.slug }}.html" class="news-link"><h2>{{ article.titulo_articulo }}</h2></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }} · {{ article.region }} · {{ article.categoria }}</span></article>{% endfor %}</div>
-    <div class="center-col"><article class="hero-card"><a href="{{ articles[0].slug }}.html" class="img-link"><img src="{{ articles[0].imagen_url }}" alt="{{ articles[0].imagenes[0].descripcion }}" width="900" height="600" fetchpriority="high"></a><a href="{{ articles[0].slug }}.html" class="news-link"><h2>{{ articles[0].titulo_articulo }}</h2></a><p>{{ articles[0].resumen }}</p><span class="news-meta">{{ articles[0].fecha }} · {{ articles[0].region }} · {{ articles[0].categoria }}</span></article></div>
-    <div class="right-col">{% for article in articles[3:7] %}<article class="news-card text-only"><a href="{{ article.slug }}.html" class="news-link"><h2>{{ article.titulo_articulo }}</h2></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }} · {{ article.region }} · {{ article.categoria }}</span></article>{% endfor %}</div>
+  <section class="bbc-grid" aria-label="Noticias principales">
+    <div class="center-col"><article class="hero-card">
+      <a href="{{ articles[0].slug }}.html" class="img-link"><img src="{{ articles[0].imagen_url }}" alt="{{ articles[0].imagenes[0].descripcion }}" width="900" height="600" fetchpriority="high"><span class="image-label">{{ articles[0].imagenes[0].tipo }}</span></a>
+      <div class="card-kicker">{{ articles[0].region }} <span>·</span> {{ articles[0].section_short }}</div>
+      <a href="{{ articles[0].slug }}.html" class="news-link"><h2>{{ articles[0].titulo_articulo }}</h2></a>
+      <p>{{ articles[0].resumen }}</p><span class="news-meta">{{ articles[0].fecha_local }} · Hora de Perú</span>
+    </article></div>
+    <div class="left-col">{% for article in articles[1:3] %}<article class="news-card medium">
+      <a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="600" height="400"><span class="image-label">{{ article.imagenes[0].tipo }}</span></a>
+      <div class="card-kicker">{{ article.region }} <span>·</span> {{ article.section_short }}</div>
+      <a href="{{ article.slug }}.html" class="news-link"><h2>{{ article.titulo_articulo }}</h2></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }}</span>
+    </article>{% endfor %}</div>
+    <div class="right-col">{% for article in articles[3:7] %}<article class="news-card text-only">
+      <div class="card-kicker">{{ article.region }} <span>·</span> {{ article.section_short }}</div>
+      <a href="{{ article.slug }}.html" class="news-link"><h2>{{ article.titulo_articulo }}</h2></a><span class="news-meta">{{ article.fecha }}</span>
+    </article>{% endfor %}</div>
+  </section>
+  <div class="regional-grid">
+    <section class="regional-section"><div class="section-bar"><h2>Perú</h2><span>Hechos ocurridos en el país</span></div>
+      {% if peru_articles %}<div class="regional-list">{% for article in peru_articles[:3] %}<article><span class="card-kicker">{{ article.section_short }}</span><a href="{{ article.slug }}.html">{{ article.titulo_articulo }}</a><time datetime="{{ article.fecha_publicacion }}">{{ article.fecha }}</time></article>{% endfor %}</div>{% else %}<p class="regional-empty">Estamos verificando nuevas noticias de Perú.</p>{% endif %}
+    </section>
+    <section class="regional-section"><div class="section-bar"><h2>Mundo</h2><span>Noticias internacionales</span></div>
+      {% if world_articles %}<div class="regional-list">{% for article in world_articles[:3] %}<article><span class="card-kicker">{{ article.section_short }}</span><a href="{{ article.slug }}.html">{{ article.titulo_articulo }}</a><time datetime="{{ article.fecha_publicacion }}">{{ article.fecha }}</time></article>{% endfor %}</div>{% else %}<p class="regional-empty">Estamos verificando nuevas noticias internacionales.</p>{% endif %}
+    </section>
   </div>
-  {% for item in categories if item.articles %}<section class="category-section"><h2 class="section-title"><a href="categoria-{{ item.slug }}.html">{{ item.name }}</a></h2><div class="more-news-grid">{% for article in item.articles[:4] %}<article class="news-card small"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="420" height="280"></a><a href="{{ article.slug }}.html" class="news-link"><h3>{{ article.titulo_articulo }}</h3></a><span class="news-meta">{{ article.fecha }} · {{ article.region }}</span></article>{% endfor %}</div></section>{% endfor %}
+  {% for item in categories if item.articles %}<section class="category-section"><div class="section-bar"><h2 class="section-title">{{ item.short }}</h2><a class="section-more" href="categoria-{{ item.slug }}.html" aria-label="Ver todas las noticias de {{ item.name }}">Ver sección →</a></div><div class="more-news-grid">{% for article in item.articles[:4] %}<article class="news-card small"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="420" height="280"><span class="image-label">{{ article.imagenes[0].tipo }}</span></a><div class="card-kicker">{{ article.region }}</div><a href="{{ article.slug }}.html" class="news-link"><h3>{{ article.titulo_articulo }}</h3></a><span class="news-meta">{{ article.fecha }}</span></article>{% endfor %}</div></section>{% endfor %}
   {% else %}<p class="empty-state">El equipo editorial está preparando nuevas noticias verificadas.</p>{% endif %}
 </div>
 {% endblock %}

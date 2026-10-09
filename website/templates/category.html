@@ -1,4 +1,17 @@
 {% extends "base.html" %}
 {% block title %}{{ categoria }} | DatoSinFiltro{% endblock %}
-{% block head %}<meta name="description" content="Noticias de {{ categoria }} con fuentes visibles y contexto útil.">{% if site_url %}<link rel="canonical" href="{{ site_url }}/categoria-{{ categoria | lower | replace(' ', '-') | replace(',', '') }}.html">{% endif %}{% endblock %}
-{% block content %}<div class="category-page-container"><div class="category-header"><p class="eyebrow">Sección</p><h1 class="page-title">{{ categoria }}</h1><p class="page-subtitle">Noticias verificadas con fuentes y contexto.</p></div>{% if articles %}<div class="more-news-grid">{% for article in articles %}<article class="news-card small"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="600" height="400"></a><a href="{{ article.slug }}.html" class="news-link"><h2>{{ article.titulo_articulo }}</h2></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }} · {{ article.region }}</span></article>{% endfor %}</div>{% else %}<p class="empty-state">No hay noticias verificadas en esta sección por ahora.</p>{% endif %}</div>{% endblock %}
+{% block head %}<meta name="description" content="Noticias de {{ categoria }} con fuentes visibles y contexto útil.">{% if site_url %}<link rel="canonical" href="{{ site_url }}/categoria-{{ category_slug }}.html">{% endif %}{% endblock %}
+{% block content %}
+{% set peru_articles = articles | selectattr('region', 'equalto', 'Perú') | list %}
+{% set world_articles = articles | selectattr('region', 'equalto', 'Mundial') | list %}
+<div class="category-page-container">
+  <header class="category-header"><p class="eyebrow">Sección</p><h1 class="page-title">{{ category_short }}</h1><p class="page-subtitle">Noticias verificadas de Perú y el mundo.</p></header>
+  <nav class="region-tabs" aria-label="Regiones de esta sección"><a href="#peru">Perú <span>{{ peru_articles | length }}</span></a><a href="#mundo">Mundo <span>{{ world_articles | length }}</span></a></nav>
+  <section id="peru" class="category-region"><div class="section-bar"><h2>Perú</h2><span>Hechos ocurridos en el país</span></div>
+    {% if peru_articles %}<div class="more-news-grid">{% for article in peru_articles %}<article class="news-card small"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="600" height="400"><span class="image-label">{{ article.imagenes[0].tipo }}</span></a><a href="{{ article.slug }}.html" class="news-link"><h3>{{ article.titulo_articulo }}</h3></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }}</span></article>{% endfor %}</div>{% else %}<p class="regional-empty">Aún no hay noticias de Perú verificadas en esta sección.</p>{% endif %}
+  </section>
+  <section id="mundo" class="category-region"><div class="section-bar"><h2>Mundo</h2><span>Hechos internacionales</span></div>
+    {% if world_articles %}<div class="more-news-grid">{% for article in world_articles %}<article class="news-card small"><a href="{{ article.slug }}.html" class="img-link"><img src="{{ article.imagen_url }}" alt="{{ article.imagenes[0].descripcion }}" loading="lazy" width="600" height="400"><span class="image-label">{{ article.imagenes[0].tipo }}</span></a><a href="{{ article.slug }}.html" class="news-link"><h3>{{ article.titulo_articulo }}</h3></a><p>{{ article.resumen }}</p><span class="news-meta">{{ article.fecha }}</span></article>{% endfor %}</div>{% else %}<p class="regional-empty">Aún no hay noticias internacionales verificadas en esta sección.</p>{% endif %}
+  </section>
+</div>
+{% endblock %}

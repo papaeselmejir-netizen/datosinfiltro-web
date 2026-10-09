@@ -81,6 +81,7 @@ def load_articles():
             article["fecha"] = local_time.strftime("%Y-%m-%d")
             article["fecha_local"] = local_time.strftime("%d/%m/%Y %H:%M")
             article["fecha_publicacion"] = published
+            article["section_short"] = NAV_LABELS.get(article.get("categoria"), article.get("categoria", "Noticias"))
             article["html_content"] = render_markdown(article.get("articulo_web", ""))
             article["resumen"] = article.get("resumen") or re.sub(r"<[^>]+>", "", article["html_content"])[:155]
             article["canonical"] = f"{SITE_URL}/{article['slug']}.html" if SITE_URL else ""
@@ -100,7 +101,8 @@ def load_articles():
             articles.append(article)
         except (OSError, ValueError, KeyError, TypeError) as exc:
             print(f"Artículo omitido {path}: {exc}")
-    return sorted(articles, key=lambda article: article["fecha_publicacion"], reverse=True)
+    # Several articles from one run share a timestamp; keep output stable across OSes.
+    return sorted(articles, key=lambda article: (article["fecha_publicacion"], article["slug"]), reverse=True)
 
 
 def write_sitemap(articles, category_pages):
@@ -160,7 +162,7 @@ def build_site():
     category_pages = []
     for category in categories:
         name = f"categoria-{category['slug']}.html"
-        write(name, env.get_template("category.html").render(categoria=category["name"], articles=category["articles"], **common))
+        write(name, env.get_template("category.html").render(categoria=category["name"], category_short=category["short"], category_slug=category["slug"], articles=category["articles"], **common))
         generated.append(name)
         category_pages.append(name)
     search_index = [{
