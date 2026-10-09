@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from src.research import event_search_queries, investigate_event
+from src.research import event_search_queries, investigate_event, rank_event_candidates
 from bs4 import BeautifulSoup
 from src.crawler import _jsonld_article_body, investigate_news
 from src import multimedia
@@ -18,6 +18,15 @@ class ResearchTests(unittest.TestCase):
         self.assertGreaterEqual(len(queries), 3)
         self.assertTrue(any("pucusana" in query for query in queries))
         self.assertTrue(all("medio" not in query for query in queries))
+
+    def test_events_with_multiple_outlets_are_investigated_first(self):
+        pool = [
+            {"titulo": "Empresa presenta nueva batería en Lima", "url": "https://one.example/battery", "fuente": "Uno"},
+            {"titulo": "Perú aprueba nueva ley de salud pública", "url": "https://two.example/health", "fuente": "Dos"},
+            {"titulo": "Nueva ley de salud pública aprobada en Perú", "url": "https://three.example/health", "fuente": "Tres"},
+        ]
+        chosen = rank_event_candidates(pool, limit=2)
+        self.assertEqual({item["url"] for item in chosen}, {pool[1]["url"], pool[2]["url"]})
 
     def test_second_round_runs_when_first_pages_are_unreadable(self):
         story = {"titulo": "Perú presenta satélite de telecomunicaciones en Lima", "url": "https://first.example/a", "fuente": "Uno", "region": "Perú"}
@@ -73,6 +82,12 @@ class ResearchTests(unittest.TestCase):
         self.assertTrue(extractor.matches_category(
             {"titulo": "Nintendo anuncia nuevo videojuego para consola"},
             "Gaming y Esports",
+        ))
+
+    def test_sports_score_prediction_is_not_technology_news(self):
+        self.assertFalse(extractor.matches_category(
+            {"titulo": "Colombia vs Perú: inteligencia artificial predice marcador final"},
+            "Tecnologia, Gadgets e Inteligencia Artificial",
         ))
 
     def test_structured_article_body_recovers_text_from_dynamic_page(self):

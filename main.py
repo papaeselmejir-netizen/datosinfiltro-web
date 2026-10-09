@@ -16,7 +16,7 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, CATEGORIAS
-from src.research import investigate_event
+from src.research import investigate_event, rank_event_candidates
 from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_sources_are_independent
 from src.multimedia import search_licensed_images, search_relevant_video
 from src.editorial import source_host, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
@@ -287,22 +287,19 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
     
     # 1.1 Obtener noticias MUNDIALES (geo=US, lang=es)
     print(f"  -> Buscando noticias MUNDIALES...")
-    noticias_mundial = extract_news_multi_source(categoria, max_items=max_world or max_noticias, lang="es", geo="US")
+    world_limit = max_world or max_noticias
+    peru_limit = max_peru or max_noticias
+    noticias_mundial = extract_news_multi_source(categoria, max_items=max(12, world_limit * 3), lang="es", geo="US")
     for n in noticias_mundial:
         n["region"] = "Mundial"
         
     # 1.2 Obtener noticias LOCALES (geo=PE, lang=es)
     print(f"  -> Buscando noticias EXCLUSIVAS PERU...")
-    noticias_peru = extract_news_multi_source(categoria, max_items=max_peru or max_noticias, lang="es", geo="PE")
+    noticias_peru = extract_news_multi_source(categoria, max_items=max(12, peru_limit * 3), lang="es", geo="PE")
     for n in noticias_peru:
         n["region"] = "Perú"
         
-    # Alternar hechos de Perú y del extranjero para no agotar el cupo en una región.
-    noticias = []
-    for local, world in zip_longest(rank_news(noticias_peru), rank_news(noticias_mundial)):
-        noticias.extend(item for item in (local, world) if item)
-
-    if not noticias:
+    if not noticias_peru and not noticias_mundial:
         PIPELINE_METRICS["sin_candidatas"] += 1
         print(f"  No se encontraron noticias para '{categoria}'. Saltando.")
         return []
@@ -313,18 +310,24 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
     # Cargar historial para deduplicar
     history = load_history()
     recent_titles = recent_published_titles() + RUN_TITLES
+    def unpublished(pool):
+        available = []
+        for item in pool:
+            title = item.get("titulo", "")
+            if item.get("url") in history or title.lower() in history:
+                continue
+            if any(same_recent_event(title, old) for old in recent_titles):
+                PIPELINE_METRICS["hechos_ya_publicados"] += 1
+                continue
+            available.append(item)
+        return available
+
+    selected_peru = rank_event_candidates(unpublished(noticias_peru), peru_limit)
+    selected_world = rank_event_candidates(unpublished(noticias_mundial), world_limit)
+    PIPELINE_METRICS["candidatas_priorizadas"] += len(selected_peru) + len(selected_world)
     noticias_filtradas = []
-    
-    for n in noticias:
-        url_key = n.get("url", "")
-        titulo_key = n.get("titulo", "").lower()
-        if (url_key and url_key in history) or (titulo_key and titulo_key in history):
-            # Ya procesada, la ignoramos
-            continue
-        if any(same_recent_event(n.get("titulo", ""), old) for old in recent_titles):
-            PIPELINE_METRICS["hechos_ya_publicados"] += 1
-            continue
-        noticias_filtradas.append(n)
+    for local, world in zip_longest(selected_peru, selected_world):
+        noticias_filtradas.extend(item for item in (local, world) if item)
 
     if not noticias_filtradas:
         PIPELINE_METRICS["ya_procesadas"] += 1

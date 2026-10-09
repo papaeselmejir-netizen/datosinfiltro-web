@@ -154,6 +154,8 @@ def matches_category(item, categoria):
         gambling_terms = terms | keywords(item.get("url", ""))
         if ((gambling_terms & GAMBLING_CUES) or "juego online" in item.get("titulo", "").lower()) and not terms & VIDEO_GAME_CUES:
             return False
+    if categoria == "Tecnologia, Gadgets e Inteligencia Artificial" and terms & {"marcador", "goles", "partido"} and terms & {"predice", "pronostica", "pronostico"}:
+        return False
     if item.get("origen") == "local_rss" and "/tvmas/" not in item.get("url", ""):
         return True
     return bool(terms & CATEGORY_CUES.get(categoria, set()))

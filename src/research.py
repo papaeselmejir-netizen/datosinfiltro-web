@@ -4,7 +4,10 @@ import asyncio
 import re
 
 from src.crawler import investigate_news
-from src.editorial import corroboration_queries, query_terms, select_corrob_sources
+from src.editorial import (
+    corroboration_queries, keywords, matches_story_aspect, normalized_headline,
+    query_terms, rank_news, select_corrob_sources,
+)
 from src.extractor import extract_bing_news_rss, extract_custom_topic_google_rss
 
 
@@ -26,6 +29,35 @@ def event_search_queries(story):
         detail = named[:1] or additions[:1]
         queries.insert(min(3, len(queries)), " ".join(dict.fromkeys(title_words[:2] + title_words[-2:] + detail)))
     return list(dict.fromkeys(queries))[:4]
+
+
+GENERIC_NEWS_TERMS = {
+    "inteligencia", "artificial", "tecnologia", "tecnologico", "salud", "medicina",
+    "politica", "elecciones", "gobierno", "deportes", "futbol", "liga", "copa",
+    "partido", "equipo", "economia", "mercado", "empresa", "empresas",
+    "negocios", "finanzas", "gaming", "juegos", "videojuegos", "esports",
+    "cine", "musica", "concierto", "conciertos", "viral", "tendencias",
+    "nueva", "nuevo", "ultimas", "noticia", "noticias",
+}
+
+
+def rank_event_candidates(candidates, limit):
+    """Prefer events corroborated by headlines sharing distinctive details."""
+    ranked = rank_news(candidates)
+
+    def related(first, second):
+        if first.get("url") == second.get("url") or first.get("fuente") == second.get("fuente"):
+            return False
+        if normalized_headline(first.get("titulo")) == normalized_headline(second.get("titulo")):
+            return False
+        if not matches_story_aspect(first.get("titulo"), second.get("titulo")):
+            return False
+        specific_first = keywords(first.get("titulo")) - GENERIC_NEWS_TERMS
+        specific_second = keywords(second.get("titulo")) - GENERIC_NEWS_TERMS
+        return len(specific_first & specific_second) >= 2
+
+    coverage = {item["url"]: sum(related(item, other) for other in ranked) for item in ranked}
+    return sorted(ranked, key=lambda item: coverage[item["url"]], reverse=True)[:limit]
 
 
 async def investigate_event(story, browser_budget=2):
