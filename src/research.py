@@ -1,6 +1,7 @@
 """Bounded, event-focused research before drafting a news article."""
 
 import asyncio
+from itertools import combinations
 import re
 
 from src.crawler import investigate_news
@@ -60,7 +61,22 @@ def rank_event_candidates(candidates, limit):
     return sorted(ranked, key=lambda item: coverage[item["url"]], reverse=True)[:limit]
 
 
-async def investigate_event(story, browser_budget=2):
+def alternative_source_pairs(sources, max_pairs=4):
+    """Offer different article pairs after the first two fail editorial review."""
+    candidates = []
+    for first, second in combinations(sources[:4], 2):
+        if first is sources[0] and second is sources[1]:
+            continue
+        if not first.get("_context") or not second.get("_context"):
+            continue
+        candidates.append((f'{first["_context"]}\n\n{second["_context"]}', [first, second]))
+        if len(candidates) >= max_pairs:
+            break
+    return candidates
+
+
+async def investigate_event(story, browser_budget=2, required_sources=2,
+                            candidate_cache=None, searched_rounds=0):
     """Expand coverage only when earlier searches cannot supply two readable sources.
 
     The browser fallback, page count and search rounds have explicit caps. The
@@ -68,16 +84,35 @@ async def investigate_event(story, browser_budget=2):
     the article can be published.
     """
     queries = event_search_queries(story)
-    candidates = []
-    seen_urls = set()
-    stats = {"queries": 0, "related_headlines": 0, "readable_sources": 0}
+    candidates = list(candidate_cache or [])
+    seen_urls = {item.get("url") for item in candidates}
+    stats = {"queries": 0, "related_headlines": 0, "readable_sources": 0,
+             "_candidates": candidates, "_searched_rounds": searched_rounds}
     context, sources = "", []
     if not queries:
         return context, sources, stats
 
-    # Two rounds: the second is only needed when the first lacks readable
-    # corroboration. Bing is queried with a second formulation in that case.
-    for round_queries in (queries[:2], queries[2:]):
+    async def read_candidates():
+        nonlocal context, sources
+        related = select_corrob_sources(story, candidates, limit=18)
+        stats["related_headlines"] = len(related)
+        if related:
+            context, _, _, _, sources = await investigate_news(
+                [story, *related], return_sources=True, required_sources=required_sources,
+                browser_budget=browser_budget,
+            )
+            stats["readable_sources"] = len(sources)
+
+    if candidates:
+        await read_candidates()
+        if len(sources) >= required_sources:
+            return context, sources, stats
+
+    # Reuse headlines already found before repeating any network searches.
+    # The second round is only needed when the first lacks enough readable coverage.
+    for round_number, round_queries in enumerate((queries[:2], queries[2:]), start=1):
+        if round_number <= searched_rounds:
+            continue
         if not round_queries:
             continue
         searches = []
@@ -90,6 +125,7 @@ async def investigate_event(story, browser_budget=2):
         searches.append(asyncio.to_thread(extract_bing_news_rss, round_queries[0], max_items=25))
         results = await asyncio.gather(*searches, return_exceptions=True)
         stats["queries"] += len(searches)
+        stats["_searched_rounds"] = round_number
         for result in results:
             if isinstance(result, Exception):
                 print(f"    Buscador no disponible: {type(result).__name__}")
@@ -100,15 +136,7 @@ async def investigate_event(story, browser_budget=2):
                     seen_urls.add(url)
                     candidates.append(candidate)
 
-        related = select_corrob_sources(story, candidates, limit=18)
-        stats["related_headlines"] = len(related)
-        if not related:
-            continue
-        context, _, _, _, sources = await investigate_news(
-            [story, *related], return_sources=True, required_sources=2,
-            browser_budget=browser_budget,
-        )
-        stats["readable_sources"] = len(sources)
-        if len(sources) >= 2:
+        await read_candidates()
+        if len(sources) >= required_sources:
             break
     return context, sources, stats

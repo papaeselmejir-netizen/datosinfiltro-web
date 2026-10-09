@@ -442,7 +442,8 @@ async def investigate_news(noticias, return_sources=False, required_sources=None
                 print("    Texto sindicado duplicado; no cuenta como fuente independiente")
                 continue
             if not return_sources or len(text) >= 300:
-                context_parts.append(f"--- Fuente: {titulo} ---\n{base_context}{text}")
+                source_context = f"--- Fuente: {titulo} ---\n{base_context}{text}"
+                context_parts.append(source_context)
             if len(text) >= 300:
                 accepted_texts.append(text)
                 verified_sources.append({
@@ -450,6 +451,7 @@ async def investigate_news(noticias, return_sources=False, required_sources=None
                     "url": real_url,
                     "medio": noticia.get("fuente", ""),
                     "fecha": noticia.get("fecha", ""),
+                    "_context": source_context,
                 })
                 if return_sources and required_sources and len(verified_sources) >= required_sources:
                     print(f"    Cobertura confirmada en {required_sources} medios independientes")

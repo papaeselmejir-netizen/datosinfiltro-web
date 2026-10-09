@@ -16,7 +16,7 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, CATEGORIAS
-from src.research import investigate_event, rank_event_candidates
+from src.research import alternative_source_pairs, investigate_event, rank_event_candidates
 from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_sources_are_independent
 from src.multimedia import search_licensed_images, search_relevant_video
 from src.editorial import source_host, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
@@ -133,7 +133,22 @@ async def process_single_news(noticia, categoria, distributor=None):
     if len({source_host(source["url"]) for source in sources}) < 2:
         return reject("sin_dos_fuentes_legibles", "    Faltan dos medios independientes con texto suficiente. Saltando.")
     if not await asyncio.to_thread(verify_sources_are_independent, contexto):
-        return reject("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
+        print("    Probando otros medios antes de descartar la cobertura...")
+        _, extended_sources, retry_stats = await investigate_event(
+            noticia, browser_budget=1, required_sources=4,
+            candidate_cache=research_stats["_candidates"],
+            searched_rounds=research_stats["_searched_rounds"],
+        )
+        PIPELINE_METRICS["busquedas_de_acontecimientos"] += retry_stats["queries"]
+        PIPELINE_METRICS["titulares_relacionados"] += retry_stats["related_headlines"]
+        recovered = False
+        for alternative_context, alternative_sources in alternative_source_pairs(extended_sources):
+            if await asyncio.to_thread(verify_sources_are_independent, alternative_context):
+                contexto, sources, recovered = alternative_context, alternative_sources, True
+                PIPELINE_METRICS["coberturas_recuperadas"] += 1
+                break
+        if not recovered:
+            return reject("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
 
     print("    [Multimedia] Buscando imágenes con licencia y un video relacionado...")
     images, video = await asyncio.gather(
@@ -189,7 +204,7 @@ async def process_single_news(noticia, categoria, distributor=None):
     content["titulo_fuente"] = titulo
     content["autor"] = "Equipo editorial DatoSinFiltro"
     content["fecha_creacion"] = datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds")
-    content["fuentes"] = sources
+    content["fuentes"] = [{key: value for key, value in source.items() if key != "_context"} for source in sources]
     content["imagenes"] = images
     content["imagen_url"] = images[0]["url"]
     content["extra_images"] = [item["url"] for item in images[1:]]

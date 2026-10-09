@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from src.research import event_search_queries, investigate_event, rank_event_candidates
+from src.research import alternative_source_pairs, event_search_queries, investigate_event, rank_event_candidates
 from bs4 import BeautifulSoup
 from src.crawler import _jsonld_article_body, investigate_news
 from src import multimedia
@@ -45,6 +45,35 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(bing.call_count, 2)
         self.assertEqual(stats["readable_sources"], 2)
 
+    def test_alternative_pairs_skip_rejected_pair_and_keep_matching_texts(self):
+        sources = [
+            {"url": f"https://{number}.example/article", "_context": f"--- Fuente: {number} ---\nTexto {number}"}
+            for number in range(4)
+        ]
+        pairs = alternative_source_pairs(sources)
+        self.assertEqual(len(pairs), 4)
+        self.assertEqual([source["url"] for source in pairs[0][1]], [sources[0]["url"], sources[2]["url"]])
+        self.assertIn("Texto 0", pairs[0][0])
+        self.assertIn("Texto 2", pairs[0][0])
+        self.assertNotIn("Texto 1", pairs[0][0])
+
+    def test_retry_reuses_headlines_before_searching_again(self):
+        story = {"titulo": "Perú presenta satélite de telecomunicaciones en Lima", "url": "https://first.example/a", "fuente": "Uno"}
+        related = {"titulo": "Satélite de telecomunicaciones presentado en Lima", "url": "https://second.example/b", "fuente": "Dos"}
+        sources = [{"url": f"https://{number}.example/a", "_context": f"Texto {number}"} for number in range(4)]
+        with patch("src.research.extract_custom_topic_google_rss") as google, patch(
+            "src.research.extract_bing_news_rss"
+        ) as bing, patch("src.research.investigate_news", new_callable=AsyncMock, return_value=("Cuatro textos", "", [], "", sources)) as reader:
+            context, found, stats = asyncio.run(investigate_event(
+                story, candidate_cache=[related], searched_rounds=1, required_sources=4,
+            ))
+        self.assertEqual(context, "Cuatro textos")
+        self.assertEqual(found, sources)
+        self.assertEqual(stats["queries"], 0)
+        reader.assert_awaited_once()
+        google.assert_not_called()
+        bing.assert_not_called()
+
     def test_browser_recovers_one_unreadable_source_within_budget(self):
         text = "La entidad anunció el lanzamiento del satélite en Lima. " * 25
         second_text = "El proyecto tecnológico se presentó durante una conferencia y tendrá nuevas pruebas. " * 20
@@ -57,6 +86,8 @@ class ResearchTests(unittest.TestCase):
         ) as browser, patch("src.crawler.asyncio.sleep", new_callable=AsyncMock):
             _, _, _, _, sources = asyncio.run(investigate_news(stories, return_sources=True, required_sources=2, browser_budget=1))
         self.assertEqual(len(sources), 2)
+        self.assertIn("La entidad", sources[0]["_context"])
+        self.assertIn("Otro medio", sources[1]["_context"])
         browser.assert_called_once_with(stories[0]["url"])
 
     def test_licensed_event_image_is_preferred_to_generic_stock(self):
