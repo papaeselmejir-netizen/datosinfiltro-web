@@ -52,6 +52,49 @@ class SourceCoverageOutput(BaseModel):
     reason: str = Field(description="Motivo concreto y breve de la decisión.")
 
 
+class PrimaryAnnouncementOutput(BaseModel):
+    eligible: bool = Field(description="True únicamente para una nota atribuida a la acción o anuncio propio de la institución.")
+    reason: str = Field(description="Motivo concreto y breve de la decisión.")
+
+
+def verify_primary_announcement(content, context):
+    """A single official page may establish its own announcement, not outside facts."""
+    try:
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=(
+                "Decide si una nota puede publicarse usando UNA sola fuente primaria institucional. "
+                "eligible=true SOLO si el hecho central es una acción, documento, calendario, "
+                "lanzamiento o declaración de la propia institución que publica la fuente; "
+                "el título, resumen y artículo atribuyen claramente el anuncio a esa entidad; "
+                "y cada afirmación externa o cifra se presenta como dato declarado por ella, "
+                "sin darlo por verificado de forma independiente. "
+                "eligible=false si hay denuncias, acusaciones, delitos, víctimas, daños, "
+                "resultados electorales provisionales, eficacia o seguridad médica, "
+                "promesas de terceros, interpretaciones controvertidas, una versión disputada "
+                "o afirmaciones sobre el mundo que requieren confirmación fuera de la entidad. "
+                "Si parece un resumen promocional sin utilidad periodística, false. "
+                "No uses conocimiento externo; ante la duda, false.\n\n"
+                f"FUENTE:\n{context}\n\nTÍTULO:\n{content.get('titulo_articulo', '')}"
+                f"\n\nRESUMEN:\n{content.get('resumen', '')}"
+                f"\n\nARTÍCULO:\n{content.get('articulo_web', '')}"
+            ),
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=PrimaryAnnouncementOutput,
+                temperature=0,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+            ),
+        )
+        result = response.parsed or PrimaryAnnouncementOutput.model_validate_json(response.text)
+        if not result.eligible:
+            print(f"    Fuente primaria insuficiente: {result.reason[:180]}")
+        return bool(result.eligible)
+    except Exception as exc:
+        print(f"    No se pudo revisar fuente primaria: {type(exc).__name__}")
+        return False
+
+
 def verify_sources_are_independent(context):
     """Reject two URLs that only repeat one wire dispatch or a generic opinion."""
     try:
@@ -82,7 +125,8 @@ def verify_sources_are_independent(context):
         return False
 
 
-def generate_multi_channel_content(tema, contexto, categoria, web_url=None, region=None):
+def generate_multi_channel_content(tema, contexto, categoria, web_url=None, region=None,
+                                   primary_announcement=False):
     """
     Usa Gemini para redactar contenido multi-canal.
     Incluye enlaces de ejemplo al sitio web en los posts de redes sociales.
@@ -97,6 +141,13 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
         web_url = WEB_URL_PLACEHOLDER
 
     region_context = f"\n    REGION DEL ENFOQUE: {region}" if region else ""
+    primary_rule = (
+        "- Hay UNA fuente primaria institucional. Redacta solo su propio anuncio o acción; "
+        "atribúyelo a esa entidad en el título, resumen y cuerpo. No presentes datos "
+        "declarados por ella como verificados de manera independiente. Si el anuncio no "
+        "permite un artículo informativo sin relleno, devuelve articulo_web vacío.\n    "
+        if primary_announcement else ""
+    )
 
     prompt = f"""
     Eres un equipo experto de redactores compuesto por un Periodista Web, un Community Manager y un Guionista de TikTok.
@@ -108,7 +159,7 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
     - Si un detalle aparece en una sola fuente, atribúyelo a ese medio. Omite cifras secundarias que no puedas comprobar.
     - Si las fuentes discrepan, explica la discrepancia y no presentes el dato como confirmado.
     - No copies párrafos de las fuentes; aporta una síntesis propia. No agregues antecedentes externos ni datos para alargar el texto.
-    - Evita sensacionalismo, promesas de contenido oculto y afirmar que algo está ocurriendo EN VIVO sin prueba.
+    {primary_rule}- Evita sensacionalismo, promesas de contenido oculto y afirmar que algo está ocurriendo EN VIVO sin prueba.
     - Redacta en espanol neutro (latinoamerica).
     - Los posts de redes sociales pueden enlazar al artículo cuando exista una URL pública: {web_url}
     - Adapta el tono a cada plataforma.

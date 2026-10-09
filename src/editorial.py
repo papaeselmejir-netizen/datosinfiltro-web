@@ -279,6 +279,24 @@ def source_host(url):
     return host.removeprefix("www.").lower()
 
 
+OFFICIAL_PRIMARY_SUFFIXES = {"gob.pe", "gov", "gov.uk", "europa.eu"}
+OFFICIAL_PRIMARY_HOSTS = {
+    "who.int", "un.org", "fifa.com", "inside.fifa.com", "olympics.com",
+    "blog.google", "openai.com", "news.microsoft.com", "apple.com",
+    "news.samsung.com", "store.epicgames.com", "blog.playstation.com",
+}
+
+
+def official_primary_source(url):
+    """Conservative institutional domain check; a news outlet is not primary."""
+    if not https_url(url):
+        return False
+    host = source_host(url)
+    return host in OFFICIAL_PRIMARY_HOSTS or any(
+        host == domain or host.endswith("." + domain) for domain in OFFICIAL_PRIMARY_SUFFIXES
+    )
+
+
 def social_source(url, outlet=""):
     hosts = {"facebook.com", "instagram.com", "tiktok.com", "x.com", "youtube.com", "reddit.com"}
     host = source_host(url)
@@ -362,7 +380,13 @@ def publication_errors(article):
     errors = []
     source_hosts = {source_host(item.get("url")) for item in article.get("fuentes", []) if isinstance(item, dict) and https_url(item.get("url"))}
     source_hosts.discard("")
-    if len(source_hosts) < 2:
+    primary_exception = (
+        len(article.get("fuentes", [])) == 1
+        and article.get("verificacion_fuentes") == "comunicado_primario_oficial"
+        and isinstance(article["fuentes"][0], dict)
+        and official_primary_source(article["fuentes"][0].get("url"))
+    )
+    if len(source_hosts) < 2 and not primary_exception:
         errors.append("Se requieren dos fuentes verificadas")
     images = article.get("imagenes", [])
     if len(images) < 2 or any(

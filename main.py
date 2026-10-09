@@ -17,9 +17,9 @@ if sys.platform == "win32":
 
 from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, CATEGORIAS
 from src.research import alternative_source_pairs, investigate_event, rank_event_candidates
-from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_sources_are_independent
+from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_primary_announcement, verify_sources_are_independent
 from src.multimedia import search_licensed_images, search_relevant_video
-from src.editorial import source_host, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
+from src.editorial import source_host, official_primary_source, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
 
 load_dotenv()
 
@@ -128,11 +128,12 @@ async def process_single_news(noticia, categoria, distributor=None):
     print(f"    {research_stats['related_headlines']} medios relacionados; "
           f"{research_stats['readable_sources']} fuentes legibles; "
           f"{research_stats['queries']} búsquedas")
-    if not research_stats["related_headlines"]:
+    primary_announcement = len(sources) == 1 and official_primary_source(sources[0]["url"])
+    if not research_stats["related_headlines"] and not primary_announcement:
         return reject("sin_cobertura", "    Sin cobertura independiente del mismo hecho. Saltando.")
-    if len({source_host(source["url"]) for source in sources}) < 2:
+    if len({source_host(source["url"]) for source in sources}) < 2 and not primary_announcement:
         return reject("sin_dos_fuentes_legibles", "    Faltan dos medios independientes con texto suficiente. Saltando.")
-    if not await asyncio.to_thread(verify_sources_are_independent, contexto):
+    if not primary_announcement and not await asyncio.to_thread(verify_sources_are_independent, contexto):
         print("    Probando otros medios antes de descartar la cobertura...")
         _, extended_sources, retry_stats = await investigate_event(
             noticia, browser_budget=1, required_sources=4,
@@ -148,6 +149,10 @@ async def process_single_news(noticia, categoria, distributor=None):
                 PIPELINE_METRICS["coberturas_recuperadas"] += 1
                 break
         if not recovered:
+            official = next((item for item in extended_sources if official_primary_source(item["url"]) and item.get("_context")), None)
+            if official:
+                contexto, sources, primary_announcement = official["_context"], [official], True
+        if not recovered and not primary_announcement:
             return reject("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
 
     print("    [Multimedia] Buscando imágenes con licencia y un video relacionado...")
@@ -161,7 +166,10 @@ async def process_single_news(noticia, categoria, distributor=None):
     # FASE 3: Redaccion con IA
     print(f"    [Redactando] Generando contenido multi-canal...")
     region = noticia.get("region", "General")
-    content = generate_multi_channel_content(titulo, contexto, categoria, region=region)
+    content = generate_multi_channel_content(
+        titulo, contexto, categoria, region=region,
+        primary_announcement=primary_announcement,
+    )
 
     if not content:
         return reject("redaccion_fallida", "    Error en la generacion de contenido. Saltando.")
@@ -185,6 +193,8 @@ async def process_single_news(noticia, categoria, distributor=None):
             verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto)
     if not verified:
         return reject("afirmaciones_sin_sustento", "    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
+    if primary_announcement and not await asyncio.to_thread(verify_primary_announcement, content, contexto):
+        return reject("comunicado_no_autosuficiente", "    El comunicado no sostiene por sí solo esta nota. Saltando.")
 
     # The source headline may look different from the final, rewritten headline.
     # Check both before saving so a renamed version of an already published
@@ -205,6 +215,7 @@ async def process_single_news(noticia, categoria, distributor=None):
     content["autor"] = "Equipo editorial DatoSinFiltro"
     content["fecha_creacion"] = datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds")
     content["fuentes"] = [{key: value for key, value in source.items() if key != "_context"} for source in sources]
+    content["verificacion_fuentes"] = "comunicado_primario_oficial" if primary_announcement else "cobertura_independiente"
     content["imagenes"] = images
     content["imagen_url"] = images[0]["url"]
     content["extra_images"] = [item["url"] for item in images[1:]]

@@ -139,4 +139,11 @@ async def investigate_event(story, browser_budget=2, required_sources=2,
         await read_candidates()
         if len(sources) >= required_sources:
             break
+    if not sources:
+        # A direct institutional notice can establish its own publication even
+        # when no second newsroom has covered it. Editorial review is separate.
+        context, _, _, _, sources = await investigate_news(
+            [story], return_sources=True, required_sources=1, browser_budget=0,
+        )
+        stats["readable_sources"] = len(sources)
     return context, sources, stats

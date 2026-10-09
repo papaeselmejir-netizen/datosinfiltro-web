@@ -45,6 +45,18 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(bing.call_count, 2)
         self.assertEqual(stats["readable_sources"], 2)
 
+    def test_uncovered_primary_notice_is_read_before_rejection(self):
+        story = {"titulo": "MTC publica nuevo calendario para Lima", "url": "https://www.gob.pe/institucion/mtc/noticias/123", "fuente": "MTC"}
+        primary = [{"url": story["url"], "_context": "Comunicado del MTC"}]
+        with patch("src.research.extract_custom_topic_google_rss", return_value=[]), patch(
+            "src.research.extract_bing_news_rss", return_value=[]
+        ), patch("src.research.investigate_news", new_callable=AsyncMock, return_value=("Comunicado del MTC", "", [], "", primary)) as reader:
+            context, found, stats = asyncio.run(investigate_event(story))
+        self.assertEqual(context, "Comunicado del MTC")
+        self.assertEqual(found, primary)
+        self.assertEqual(stats["related_headlines"], 0)
+        reader.assert_awaited_once()
+
     def test_alternative_pairs_skip_rejected_pair_and_keep_matching_texts(self):
         sources = [
             {"url": f"https://{number}.example/article", "_context": f"--- Fuente: {number} ---\nTexto {number}"}

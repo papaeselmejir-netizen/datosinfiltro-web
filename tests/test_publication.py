@@ -10,7 +10,7 @@ from unittest.mock import patch, AsyncMock
 from urllib.parse import quote
 from xml.etree import ElementTree
 
-from src.editorial import publication_errors, rank_news, select_corrob_sources, matches_story_aspect, near_duplicate_text, corroboration_queries, contradictory_candidate_count, social_source, same_recent_event, claim_evidence_errors, media_alignment_errors
+from src.editorial import publication_errors, official_primary_source, rank_news, select_corrob_sources, matches_story_aspect, near_duplicate_text, corroboration_queries, contradictory_candidate_count, social_source, same_recent_event, claim_evidence_errors, media_alignment_errors
 from src.crawler import _public_url, _public_dns, decode_google_news_url, investigate_news, readable_article_text, BROWSER_HEADERS
 from website import builder
 from publish_verified import publish, fresh_election_evidence
@@ -402,6 +402,18 @@ class PublicationTests(unittest.TestCase):
         candidate["video_url"] = "https://untrusted.example/embed/abcdefghijk"
         candidate["imagenes"][0]["licencia"] = ""
         self.assertEqual(len(publication_errors(candidate)), 2)
+
+    def test_single_source_exception_requires_an_actual_primary_domain_and_review(self):
+        candidate = article()
+        candidate["fuentes"] = [{"url": "https://www.gob.pe/institucion/mtc/noticias/123", "medio": "MTC"}]
+        self.assertTrue(official_primary_source(candidate["fuentes"][0]["url"]))
+        self.assertIn("Se requieren dos fuentes verificadas", publication_errors(candidate))
+        candidate["verificacion_fuentes"] = "comunicado_primario_oficial"
+        self.assertEqual(publication_errors(candidate), [])
+        for url in ("https://gob.pe.fake.example/a", "https://rpp.pe/a", "https://community.openai.com/t/123", "http://www.gob.pe/a"):
+            candidate["fuentes"][0]["url"] = url
+            self.assertFalse(official_primary_source(url))
+            self.assertIn("Se requieren dos fuentes verificadas", publication_errors(candidate))
 
     def test_editorial_gate_accepts_licensed_stock_video(self):
         candidate = article()
