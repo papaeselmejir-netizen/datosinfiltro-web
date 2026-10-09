@@ -56,6 +56,11 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Incorporar noticias publicadas mientras se investigaba
+        run: |
+          git fetch origin main
+          git merge --ff-only origin/main
+
       - name: Publicar automáticamente los borradores que pasan los controles
         env:
           SITE_URL: https://datosinfiltro-web.vercel.app
@@ -70,5 +75,13 @@ jobs:
           git add -A -- drafts/ published/ website/public/
           if ! git diff --cached --quiet; then
             git commit -m "Publicar noticias verificadas"
-            git push
+            for attempt in 1 2 3; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              sleep 3
+            done
+            exit 1
           fi
