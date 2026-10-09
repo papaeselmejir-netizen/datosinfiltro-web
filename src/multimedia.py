@@ -564,6 +564,14 @@ def _stock_topic(titulo, categoria=None):
         ({"escuela", "universidad", "estudiantes", "campus"},
          "artificial intelligence university", {"robot", "robotic", "technology", "computer", "computers", "digital", "intelligence", "laboratory", "school", "students"}),
     )
+    if categoria == "Salud, Bienestar y Estilo de Vida":
+        if terms & {"anemia", "nutricion", "alimentacion", "infantil", "ninos", "ninas"}:
+            return "child nutrition healthcare", {"child", "children", "nutrition", "food", "healthy", "healthcare", "doctor", "clinic", "medical"}
+        if terms & {"mental", "depresion", "ansiedad", "psicologia", "psiquiatria"}:
+            return "mental health counseling therapy", {"mental", "health", "counseling", "counselling", "therapy", "therapist", "psychology", "doctor", "clinic"}
+        if terms & {"investigacion", "estudio", "ensayo", "medicamento", "farmaco", "cientificos"}:
+            return "medical research laboratory", {"medical", "medicine", "research", "laboratory", "lab", "science", "scientist", "doctor"}
+        return "healthcare doctor clinic", {"health", "healthcare", "doctor", "medical", "medicine", "clinic", "patient", "nurse"}
     for cues, query, media_terms in topics:
         if terms & cues:
             return query, media_terms
@@ -574,7 +582,7 @@ def _search_pexels_licensed(titulo, count, categoria=None):
     topic = _stock_topic(titulo, categoria)
     queries = [query_terms(titulo, 5)]
     if topic:
-        prioritize_stock = categoria in ("Deportes en Vivo", "Tecnologia, Gadgets e Inteligencia Artificial", "Finanzas, Negocios y Criptomonedas", "Gaming y Esports") or bool(keywords(titulo) & (HOUSING_EVICTION_CUES | {"premios", "ariel", "galardones", "alfombra", "cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas", "gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"})) or {"instagram", "whatsapp"} <= keywords(titulo)
+        prioritize_stock = categoria in ("Deportes en Vivo", "Tecnologia, Gadgets e Inteligencia Artificial", "Finanzas, Negocios y Criptomonedas", "Gaming y Esports", "Salud, Bienestar y Estilo de Vida") or bool(keywords(titulo) & (HOUSING_EVICTION_CUES | {"premios", "ariel", "galardones", "alfombra", "cine", "cinema", "cinematografica", "audiovisual", "audiovisuales", "pelicula", "peliculas", "gadgets", "hardware", "dispositivo", "dispositivos", "sdk", "electronica"})) or {"instagram", "whatsapp"} <= keywords(titulo)
         queries = [topic[0], queries[0]] if prioritize_stock else [queries[0], topic[0]]
     if not queries[0]:
         return []

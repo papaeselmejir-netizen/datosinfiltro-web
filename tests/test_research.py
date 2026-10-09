@@ -101,6 +101,12 @@ class ResearchTests(unittest.TestCase):
         commons.assert_called_once()
         self.assertEqual(pexels.call_args.args[1], 1)
 
+    def test_health_stock_search_follows_subject_of_headline(self):
+        category = "Salud, Bienestar y Estilo de Vida"
+        self.assertEqual(multimedia._stock_topic("Anemia infantil preocupa en Arequipa", category)[0], "child nutrition healthcare")
+        self.assertEqual(multimedia._stock_topic("Aumentan consultas por ansiedad y salud mental", category)[0], "mental health counseling therapy")
+        self.assertEqual(multimedia._stock_topic("Estudio médico prueba un nuevo tratamiento", category)[0], "medical research laboratory")
+
     def test_gambling_is_not_classified_as_video_games(self):
         self.assertFalse(extractor.matches_category(
             {"titulo": "Bloquean 50 plataformas de juego clandestino y apuestas en Perú"},
