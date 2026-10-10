@@ -1,0 +1,243 @@
+{
+  "date": "2026-10-09",
+  "runs": {
+    "38012130868-1": {
+      "started_at": "2026-10-09T20:11:05-05:00",
+      "finished_at": "2026-10-09T20:18:59-05:00",
+      "categories": {
+        "Entretenimiento, Farandula y Cine": {
+          "investigadas": 2,
+          "borradores_verificados": 0,
+          "candidatas_peru": 2,
+          "candidatas_mundo": 0,
+          "oficiales_peru": 1,
+          "oficiales_mundo": 0,
+          "rechazos": {
+            "Perú": {
+              "afirmaciones_sin_sustento": 1,
+              "sin_imagen_con_licencia": 1
+            },
+            "Mundial": {},
+            "General": {}
+          }
+        },
+        "Tendencias": {
+          "investigadas": 2,
+          "borradores_verificados": 0,
+          "candidatas_peru": 2,
+          "candidatas_mundo": 0,
+          "oficiales_peru": 2,
+          "oficiales_mundo": 0,
+          "rechazos": {
+            "Perú": {
+              "sin_imagen_con_licencia": 2
+            },
+            "Mundial": {},
+            "General": {}
+          }
+        },
+        "Tecnologia, Gadgets e Inteligencia Artificial": {
+          "investigadas": 5,
+          "borradores_verificados": 1,
+          "candidatas_peru": 2,
+          "candidatas_mundo": 3,
+          "oficiales_peru": 1,
+          "oficiales_mundo": 2,
+          "rechazos": {
+            "Perú": {
+              "cobertura_no_independiente": 1,
+              "afirmaciones_sin_sustento": 1
+            },
+            "Mundial": {
+              "sin_cobertura": 1,
+              "sin_imagen_con_licencia": 1
+            },
+            "General": {}
+          }
+        },
+        "Finanzas, Negocios y Criptomonedas": {
+          "investigadas": 4,
+          "borradores_verificados": 0,
+          "candidatas_peru": 3,
+          "candidatas_mundo": 1,
+          "oficiales_peru": 2,
+          "oficiales_mundo": 1,
+          "rechazos": {
+            "Perú": {
+              "sin_cobertura": 1,
+              "sin_imagen_con_licencia": 2
+            },
+            "Mundial": {
+              "sin_video_relacionado": 1
+            },
+            "General": {}
+          }
+        },
+        "Gaming y Esports": {
+          "investigadas": 2,
+          "borradores_verificados": 0,
+          "candidatas_peru": 0,
+          "candidatas_mundo": 2,
+          "oficiales_peru": 0,
+          "oficiales_mundo": 1,
+          "rechazos": {
+            "Perú": {},
+            "Mundial": {
+              "sin_cobertura": 1,
+              "sin_imagen_con_licencia": 1
+            },
+            "General": {}
+          }
+        },
+        "Deportes en Vivo": {
+          "investigadas": 2,
+          "borradores_verificados": 0,
+          "candidatas_peru": 2,
+          "candidatas_mundo": 0,
+          "oficiales_peru": 1,
+          "oficiales_mundo": 0,
+          "rechazos": {
+            "Perú": {
+              "cobertura_no_independiente": 1,
+              "afirmaciones_sin_sustento": 1
+            },
+            "Mundial": {},
+            "General": {}
+          }
+        },
+        "Salud, Bienestar y Estilo de Vida": {
+          "investigadas": 2,
+          "borradores_verificados": 1,
+          "candidatas_peru": 1,
+          "candidatas_mundo": 1,
+          "oficiales_peru": 1,
+          "oficiales_mundo": 0,
+          "rechazos": {
+            "Perú": {},
+            "Mundial": {
+              "sin_cobertura": 1
+            },
+            "General": {}
+          }
+        },
+        "Noticias de Ultima Hora y Politica": {
+          "investigadas": 2,
+          "borradores_verificados": 0,
+          "candidatas_peru": 3,
+          "candidatas_mundo": 0,
+          "oficiales_peru": 2,
+          "oficiales_mundo": 0,
+          "rechazos": {
+            "Perú": {
+              "sin_imagen_con_licencia": 2
+            },
+            "Mundial": {},
+            "General": {}
+          }
+        }
+      },
+      "published": {
+        "Salud, Bienestar y Estilo de Vida": 1,
+        "Tecnologia, Gadgets e Inteligencia Artificial": 1
+      }
+    }
+  },
+  "categories": {
+    "Deportes en Vivo": {
+      "investigadas": 2,
+      "borradores_verificados": 0,
+      "publicadas": 0,
+      "candidatas_peru": 2,
+      "candidatas_mundo": 0,
+      "rechazos": {
+        "afirmaciones_sin_sustento": 1,
+        "cobertura_no_independiente": 1
+      },
+      "bloqueo_principal": "cobertura_no_independiente"
+    },
+    "Entretenimiento, Farandula y Cine": {
+      "investigadas": 2,
+      "borradores_verificados": 0,
+      "publicadas": 0,
+      "candidatas_peru": 2,
+      "candidatas_mundo": 0,
+      "rechazos": {
+        "afirmaciones_sin_sustento": 1,
+        "sin_imagen_con_licencia": 1
+      },
+      "bloqueo_principal": "afirmaciones_sin_sustento"
+    },
+    "Noticias de Ultima Hora y Politica": {
+      "investigadas": 2,
+      "borradores_verificados": 0,
+      "publicadas": 0,
+      "candidatas_peru": 3,
+      "candidatas_mundo": 0,
+      "rechazos": {
+        "sin_imagen_con_licencia": 2
+      },
+      "bloqueo_principal": "sin_imagen_con_licencia"
+    },
+    "Tecnologia, Gadgets e Inteligencia Artificial": {
+      "investigadas": 5,
+      "borradores_verificados": 1,
+      "publicadas": 1,
+      "candidatas_peru": 2,
+      "candidatas_mundo": 3,
+      "rechazos": {
+        "afirmaciones_sin_sustento": 1,
+        "cobertura_no_independiente": 1,
+        "sin_cobertura": 1,
+        "sin_imagen_con_licencia": 1
+      },
+      "bloqueo_principal": "cobertura_no_independiente"
+    },
+    "Finanzas, Negocios y Criptomonedas": {
+      "investigadas": 4,
+      "borradores_verificados": 0,
+      "publicadas": 0,
+      "candidatas_peru": 3,
+      "candidatas_mundo": 1,
+      "rechazos": {
+        "sin_cobertura": 1,
+        "sin_imagen_con_licencia": 2,
+        "sin_video_relacionado": 1
+      },
+      "bloqueo_principal": "sin_imagen_con_licencia"
+    },
+    "Gaming y Esports": {
+      "investigadas": 2,
+      "borradores_verificados": 0,
+      "publicadas": 0,
+      "candidatas_peru": 0,
+      "candidatas_mundo": 2,
+      "rechazos": {
+        "sin_cobertura": 1,
+        "sin_imagen_con_licencia": 1
+      },
+      "bloqueo_principal": "sin_cobertura"
+    },
+    "Salud, Bienestar y Estilo de Vida": {
+      "investigadas": 2,
+      "borradores_verificados": 1,
+      "publicadas": 1,
+      "candidatas_peru": 1,
+      "candidatas_mundo": 1,
+      "rechazos": {
+        "sin_cobertura": 1
+      },
+      "bloqueo_principal": "sin_cobertura"
+    },
+    "Tendencias": {
+      "investigadas": 2,
+      "borradores_verificados": 0,
+      "publicadas": 0,
+      "candidatas_peru": 2,
+      "candidatas_mundo": 0,
+      "rechazos": {
+        "sin_imagen_con_licencia": 2
+      },
+      "bloqueo_principal": "sin_imagen_con_licencia"
+    }
+  }
+}
