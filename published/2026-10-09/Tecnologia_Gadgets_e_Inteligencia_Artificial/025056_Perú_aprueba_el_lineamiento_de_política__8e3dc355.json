@@ -1,66 +1,66 @@
 {
-  "titulo_articulo": "Minsa aprueba lineamientos para el uso seguro y ético de inteligencia artificial",
-  "articulo_web": "El Ministerio de Salud de Perú formalizó el documento técnico sobre lineamientos de política institucional para el uso seguro, responsable y ético de los sistemas basados en inteligencia artificial en la entidad. La medida se aprobó mediante la Resolución Ministerial N.º 903-2026/MINSA, norma que lleva la firma del ministro de Salud, Luis Williams Dyer Fernández, e incorpora la guía técnica como anexo integrante. Respecto a la fecha, una fuente indica que la resolución fue emitida en Lima el 2 de octubre, mientras que Consultorsalud señala su publicación el 6 de octubre de 2026. La política abarca el ciclo tecnológico de los sistemas basados en inteligencia artificial utilizados por el ministerio. Esto comprende las fases de diseño, desarrollo, adquisición, implementación, integración, operación y retiro de dichas tecnologías. Cada una de estas etapas debe sujetarse a criterios de seguridad, ética, sostenibilidad, transparencia, explicabilidad, inclusión y responsabilidad. La finalidad declarada de estos lineamientos es contribuir a la protección de los derechos fundamentales, la vida, la salud, la dignidad, la privacidad y la igualdad de las personas. Además, la resolución fundamenta la medida en la Ley N.º 29733, Ley de Protección de Datos Personales, y se articula con obligaciones relativas a información sanitaria. El documento técnico fue elaborado por la Oficina General de Tecnologías de la Información, dentro de las funciones previstas en su Reglamento de Organización y Funciones. La normativa identifica a esta área como el órgano de apoyo responsable de implementar el gobierno electrónico, planificar y desplegar los sistemas de información ministeriales, así como administrar la información estadística y científica del sector Salud. Asimismo, la resolución ministerial asigna a la Oficina General de Tecnologías de la Información las tareas de difusión, implementación, supervisión y asistencia técnica vinculadas con estos lineamientos. Entre sus atribuciones también figura el establecimiento de soluciones tecnológicas, estándares y procedimientos para la información del sector, además de competencias en seguridad de tecnologías de información para garantizar la integridad, confidencialidad y disponibilidad de los datos.",
-  "resumen": "El Ministerio de Salud formalizó lineamientos de política institucional para regular el uso ético y seguro de la inteligencia artificial en todas sus fases de desarrollo y operación.",
-  "hilo_x": "El Ministerio de Salud de Perú oficializó lineamientos para regular el uso ético, seguro y responsable de la inteligencia artificial en sus sistemas mediante la RM N.º 903-2026/MINSA. 🧵👇\n\nLa norma abarca todo el ciclo de las herramientas de IA: diseño, adquisición, implementación, operación y retiro, bajo principios de transparencia, explicabilidad y protección de datos personales.\n\nLa Oficina General de Tecnologías de la Información del Minsa será la encargada de supervisar, implementar y brindar asistencia técnica sobre estas directrices en el sector.\n\nAunque los reportes difieren entre el 2 y el 6 de octubre de 2026 como fecha de la medida, el marco sienta un precedente en salud digital. Detalles aquí: https://saluddigital.com/",
-  "post_facebook": "El Ministerio de Salud de Perú (Minsa) aprobó un documento técnico que establece los lineamientos de política institucional para el uso seguro, responsable y ético de la inteligencia artificial. La medida, oficializada mediante la Resolución Ministerial N.º 903-2026/MINSA firmada por Luis Williams Dyer Fernández, regula todo el ciclo tecnológico de estas herramientas, desde su adquisición y diseño hasta su retiro, priorizando la privacidad bajo la Ley de Protección de Datos Personales. La Oficina General de Tecnologías de la Información estará a cargo de su supervisión e implementación. Conoce los detalles de esta normativa en: https://saluddigital.com/",
-  "guion_tiktok": "(0-3s) ¿El sector salud de Perú ya tiene reglas claras para usar inteligencia artificial?\n\n(3-45s) El Ministerio de Salud formalizó una política institucional para regular la IA mediante la Resolución Ministerial 903-2026. Esta norma no solo vigila cómo funcionan los sistemas, sino todo su ciclo de vida: desde que se compran o diseñan, hasta su integración y retiro. La Oficina General de Tecnologías de la Información del Minsa estará a cargo de supervisar que cada herramienta respete la ética, la transparencia y la privacidad ciudadana bajo la ley de protección de datos personales. Aunque las fuentes difieren sobre si se oficializó el 2 o el 6 de octubre de 2026, la directriz ya marca un estándar institucional.\n\n(45-60s) ¿Crees que estas medidas garantizarán la seguridad de los pacientes? Cuéntame en los comentarios. Tienes el link con la noticia completa en mi perfil.",
-  "categoria": "Tecnologia, Gadgets e Inteligencia Artificial",
-  "web_url": "",
-  "region": "Perú",
-  "schema_version": 2,
-  "media_review_version": 1,
-  "titulo_fuente": "Perú aprueba el lineamiento de política institucional para el uso seguro, responsable y ético de la inteligencia artificial - https://saluddigital.com/",
-  "autor": "Equipo editorial DatoSinFiltro",
-  "fecha_creacion": "2026-10-08T21:50:56-05:00",
-  "fuentes": [
-    {
-      "titulo": "El Minsa aprueba lineamientos para el uso seguro y ético de inteligencia artificial en sus sistemas",
-      "url": "https://www.infobae.com/peru/2026/10/06/el-minsa-aprueba-lineamientos-para-el-uso-seguro-y-etico-de-inteligencia-artificial-en-sus-sistemas/",
-      "medio": "infobae.com",
-      "fecha": "Tue, 06 Oct 2026 09:36:00 GMT"
-    },
-    {
-      "titulo": "Perú fija política para el uso seguro de inteligencia artificial en el Ministerio de Salud - consultorsalud",
-      "url": "https://consultorsalud.com/inteligencia-artificial-salud-peru-politica/",
-      "medio": "consultorsalud",
-      "fecha": "Tue, 06 Oct 2026 16:04:53 GMT"
-    }
-  ],
-  "imagenes": [
-    {
-      "url": "https://images.pexels.com/photos/8566470/pexels-photo-8566470.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Advanced humanoid robot with glowing blue accents in a digital network setting.",
-      "credito": "Kindel Media",
-      "origen": "https://www.pexels.com/photo/white-robot-action-figure-on-blue-string-lights-8566470/",
-      "licencia": "Pexels License",
-      "licencia_url": "https://www.pexels.com/license/",
-      "tipo": "Ilustración de archivo"
-    },
-    {
-      "url": "https://images.pexels.com/photos/18799047/pexels-photo-18799047.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Close-up of a humanoid robot with a futuristic design posing outdoors.",
-      "credito": "igovar igovar",
-      "origen": "https://www.pexels.com/photo/person-in-a-robot-costume-18799047/",
-      "licencia": "Pexels License",
-      "licencia_url": "https://www.pexels.com/license/",
-      "tipo": "Ilustración de archivo"
-    }
-  ],
-  "imagen_url": "https://images.pexels.com/photos/8566470/pexels-photo-8566470.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-  "extra_images": [
-    "https://images.pexels.com/photos/18799047/pexels-photo-18799047.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-  ],
-  "video_url": "https://videos.pexels.com/video-files/8084494/8084494-hd_1920_1080_25fps.mp4",
-  "video_titulo": "Close up of a robot 8084494",
-  "video_canal": "Pavel Danilyuk",
-  "video_source": "pexels",
-  "video_tipo": "Video ilustrativo de archivo",
-  "video_origen": "https://www.pexels.com/video/close-up-of-a-robot-8084494/",
-  "video_licencia": "Pexels License",
-  "video_licencia_url": "https://www.pexels.com/license/",
-  "video_poster": "https://images.pexels.com/videos/8084494/pexels-photo-8084494.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
-  "fuente_url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxNLVIwUGxWQXpaeDNNVk5jM2RGeE9kZzdMVTVySTdVdTlkRWR0VHM1MWtNUFBkc1hXNV9SZ3Rac0dCWldCWENwY2hsWkVDcHNxUlhZYndGMkc2TlhnNmNZekFLWXQwbGtnRUM3Tnh1cjJHX1IxRmQ0dlQwUm5YbXJabWVVQjRBaE5CMG9DaHo4WVhpOXNIZGtDMm8tYk9RV0VITlJaUnoyQjVzS2gyU2M4d01yT0U2RXVuQkFha2pycTcwRjV0a0kyYUV1NE12QVdMb013ZlhvUEViOEhFZlhsSjltc0d1d0xwWDROaGFR?oc=5",
-  "fecha_publicacion": "2026-10-09T03:05:10+00:00",
-  "revision_humana": false
+    "titulo_articulo": "Minsa aprueba lineamientos para el uso seguro y ético de inteligencia artificial",
+    "articulo_web": "El Ministerio de Salud de Perú formalizó el documento técnico sobre lineamientos de política institucional para el uso seguro, responsable y ético de los sistemas basados en inteligencia artificial en la entidad. La medida se aprobó mediante la Resolución Ministerial N.º 903-2026/MINSA, norma que lleva la firma del ministro de Salud, Luis Williams Dyer Fernández, e incorpora la guía técnica como anexo integrante. Respecto a la fecha, una fuente indica que la resolución fue emitida en Lima el 2 de octubre, mientras que Consultorsalud señala su publicación el 6 de octubre de 2026. La política abarca el ciclo tecnológico de los sistemas basados en inteligencia artificial utilizados por el ministerio. Esto comprende las fases de diseño, desarrollo, adquisición, implementación, integración, operación y retiro de dichas tecnologías. Cada una de estas etapas debe sujetarse a criterios de seguridad, ética, sostenibilidad, transparencia, explicabilidad, inclusión y responsabilidad. La finalidad declarada de estos lineamientos es contribuir a la protección de los derechos fundamentales, la vida, la salud, la dignidad, la privacidad y la igualdad de las personas. Además, la resolución fundamenta la medida en la Ley N.º 29733, Ley de Protección de Datos Personales, y se articula con obligaciones relativas a información sanitaria. El documento técnico fue elaborado por la Oficina General de Tecnologías de la Información, dentro de las funciones previstas en su Reglamento de Organización y Funciones. La normativa identifica a esta área como el órgano de apoyo responsable de implementar el gobierno electrónico, planificar y desplegar los sistemas de información ministeriales, así como administrar la información estadística y científica del sector Salud. Asimismo, la resolución ministerial asigna a la Oficina General de Tecnologías de la Información las tareas de difusión, implementación, supervisión y asistencia técnica vinculadas con estos lineamientos. Entre sus atribuciones también figura el establecimiento de soluciones tecnológicas, estándares y procedimientos para la información del sector, además de competencias en seguridad de tecnologías de información para garantizar la integridad, confidencialidad y disponibilidad de los datos.",
+    "resumen": "El Ministerio de Salud formalizó lineamientos de política institucional para regular el uso ético y seguro de la inteligencia artificial en todas sus fases de desarrollo y operación.",
+    "hilo_x": "El Ministerio de Salud de Perú oficializó lineamientos para regular el uso ético, seguro y responsable de la inteligencia artificial en sus sistemas mediante la RM N.º 903-2026/MINSA. 🧵👇\n\nLa norma abarca todo el ciclo de las herramientas de IA: diseño, adquisición, implementación, operación y retiro, bajo principios de transparencia, explicabilidad y protección de datos personales.\n\nLa Oficina General de Tecnologías de la Información del Minsa será la encargada de supervisar, implementar y brindar asistencia técnica sobre estas directrices en el sector.\n\nAunque los reportes difieren entre el 2 y el 6 de octubre de 2026 como fecha de la medida, el marco sienta un precedente en salud digital. Detalles aquí: https://saluddigital.com/",
+    "post_facebook": "El Ministerio de Salud de Perú (Minsa) aprobó un documento técnico que establece los lineamientos de política institucional para el uso seguro, responsable y ético de la inteligencia artificial. La medida, oficializada mediante la Resolución Ministerial N.º 903-2026/MINSA firmada por Luis Williams Dyer Fernández, regula todo el ciclo tecnológico de estas herramientas, desde su adquisición y diseño hasta su retiro, priorizando la privacidad bajo la Ley de Protección de Datos Personales. La Oficina General de Tecnologías de la Información estará a cargo de su supervisión e implementación. Conoce los detalles de esta normativa en: https://saluddigital.com/",
+    "guion_tiktok": "(0-3s) ¿El sector salud de Perú ya tiene reglas claras para usar inteligencia artificial?\n\n(3-45s) El Ministerio de Salud formalizó una política institucional para regular la IA mediante la Resolución Ministerial 903-2026. Esta norma no solo vigila cómo funcionan los sistemas, sino todo su ciclo de vida: desde que se compran o diseñan, hasta su integración y retiro. La Oficina General de Tecnologías de la Información del Minsa estará a cargo de supervisar que cada herramienta respete la ética, la transparencia y la privacidad ciudadana bajo la ley de protección de datos personales. Aunque las fuentes difieren sobre si se oficializó el 2 o el 6 de octubre de 2026, la directriz ya marca un estándar institucional.\n\n(45-60s) ¿Crees que estas medidas garantizarán la seguridad de los pacientes? Cuéntame en los comentarios. Tienes el link con la noticia completa en mi perfil.",
+    "categoria": "Tecnologia, Gadgets e Inteligencia Artificial",
+    "web_url": "",
+    "region": "Perú",
+    "schema_version": 2,
+    "media_review_version": 1,
+    "titulo_fuente": "Perú aprueba el lineamiento de política institucional para el uso seguro, responsable y ético de la inteligencia artificial - https://saluddigital.com/",
+    "autor": "Equipo editorial DatoSinFiltro",
+    "fecha_creacion": "2026-10-08T21:50:56-05:00",
+    "fuentes": [
+        {
+            "titulo": "El Minsa aprueba lineamientos para el uso seguro y ético de inteligencia artificial en sus sistemas",
+            "url": "https://www.infobae.com/peru/2026/10/06/el-minsa-aprueba-lineamientos-para-el-uso-seguro-y-etico-de-inteligencia-artificial-en-sus-sistemas/",
+            "medio": "infobae.com",
+            "fecha": "Tue, 06 Oct 2026 09:36:00 GMT"
+        },
+        {
+            "titulo": "Perú fija política para el uso seguro de inteligencia artificial en el Ministerio de Salud - consultorsalud",
+            "url": "https://consultorsalud.com/inteligencia-artificial-salud-peru-politica/",
+            "medio": "consultorsalud",
+            "fecha": "Tue, 06 Oct 2026 16:04:53 GMT"
+        }
+    ],
+    "imagenes": [
+        {
+            "url": "https://images.pexels.com/photos/18799047/pexels-photo-18799047.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+            "descripcion": "Close-up of a humanoid robot with a futuristic design posing outdoors.",
+            "credito": "igovar igovar",
+            "origen": "https://www.pexels.com/photo/person-in-a-robot-costume-18799047/",
+            "licencia": "Pexels License",
+            "licencia_url": "https://www.pexels.com/license/",
+            "tipo": "Ilustración de archivo"
+        },
+        {
+            "url": "https://images.pexels.com/photos/8566470/pexels-photo-8566470.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+            "descripcion": "Advanced humanoid robot with glowing blue accents in a digital network setting.",
+            "credito": "Kindel Media",
+            "origen": "https://www.pexels.com/photo/white-robot-action-figure-on-blue-string-lights-8566470/",
+            "licencia": "Pexels License",
+            "licencia_url": "https://www.pexels.com/license/",
+            "tipo": "Ilustración de archivo"
+        }
+    ],
+    "imagen_url": "https://images.pexels.com/photos/18799047/pexels-photo-18799047.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "extra_images": [
+        "https://images.pexels.com/photos/8566470/pexels-photo-8566470.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    ],
+    "video_url": "https://videos.pexels.com/video-files/8084494/8084494-hd_1920_1080_25fps.mp4",
+    "video_titulo": "Close up of a robot 8084494",
+    "video_canal": "Pavel Danilyuk",
+    "video_source": "pexels",
+    "video_tipo": "Video ilustrativo de archivo",
+    "video_origen": "https://www.pexels.com/video/close-up-of-a-robot-8084494/",
+    "video_licencia": "Pexels License",
+    "video_licencia_url": "https://www.pexels.com/license/",
+    "video_poster": "https://images.pexels.com/videos/8084494/pexels-photo-8084494.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+    "fuente_url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxNLVIwUGxWQXpaeDNNVk5jM2RGeE9kZzdMVTVySTdVdTlkRWR0VHM1MWtNUFBkc1hXNV9SZ3Rac0dCWldCWENwY2hsWkVDcHNxUlhZYndGMkc2TlhnNmNZekFLWXQwbGtnRUM3Tnh1cjJHX1IxRmQ0dlQwUm5YbXJabWVVQjRBaE5CMG9DaHo4WVhpOXNIZGtDMm8tYk9RV0VITlJaUnoyQjVzS2gyU2M4d01yT0U2RXVuQkFha2pycTcwRjV0a0kyYUV1NE12QVdMb013ZlhvUEViOEhFZlhsSjltc0d1d0xwWDROaGFR?oc=5",
+    "fecha_publicacion": "2026-10-09T03:05:10+00:00",
+    "revision_humana": false
 }

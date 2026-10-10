@@ -1,67 +1,67 @@
 {
-  "titulo_articulo": "Florida regulará los cajeros de criptomonedas con límites diarios de hasta 10.000 dólares",
-  "articulo_web": "El estado de Florida implementará nuevas restricciones para regular las operaciones en cajeros automáticos de criptomonedas a partir del 1° de enero de 2027. La medida forma parte de la ley HB 505, promulgada por el gobernador Ron DeSantis, orientada a combatir esquemas de fraude financiero que han provocado pérdidas millonarias, especialmente entre personas mayores, según análisis de la Cámara de Representantes de Florida y la Oficina de Regulación Financiera (OFR).\n\n## Límites según la antigüedad del usuario\n\nLa normativa, que incorpora disposiciones dentro del capítulo 560 de los Estatutos de Florida, clasifica a los clientes en dos categorías para definir los montos autorizados:\n\n- **Clientes nuevos:** Quienes lleven menos de siete días operando con una empresa de cajeros virtuales tendrán un tope de 2.000 dólares por día calendario.\n- **Clientes existentes:** Aquellos usuarios que superen los siete días de antigüedad con el proveedor podrán mover hasta 10.000 dólares diarios.\n\nAmbas restricciones se calcularán sobre el total acumulado en la jornada, sin importar si el usuario realiza una o varias operaciones, o si intenta distribuir los fondos utilizando diferentes terminales pertenecientes a la misma compañía.\n\n## Controles obligatorios y comprobantes\n\nAntes de procesar cualquier transacción, los quioscos deberán consultar al usuario si ya efectuó transferencias en otro cajero de moneda virtual durante ese mismo día e indicar el monto, verificando así el saldo disponible antes de alcanzar el tope. Además, la pantalla mostrará advertencias sobre estafas comunes, indicando que se debe detener la transacción si un desconocido, supuesto cobrador o presunto agente de la ley solicitó usar el cajero.\n\nAl terminar, la empresa deberá entregar un comprobante físico o digital con tarifas, tipo de cambio y datos de contacto, incluyendo correo electrónico y línea gratuita. A partir del 1° de marzo de 2027, las compañías operadoras también tendrán que registrarse formalmente ante la autoridad correspondiente.",
-  "resumen": "Florida fijó límites de 2.000 a 10.000 dólares diarios en cajeros de criptomonedas desde 2027 mediante la ley HB 505 para frenar estafas millonarias.",
-  "hilo_x": "1/4 Florida aprobó nuevas restricciones para quioscos de criptomonedas mediante la ley HB 505, promulgada para frenar fraudes que han generado pérdidas millonarias, principalmente a personas mayores. 🚨\n\n2/4 Desde el 1° de enero de 2027 habrá límites diarios acumulados: 2.000 dólares para clientes nuevos (con menos de 7 días de uso) y hasta 10.000 dólares para clientes existentes. Usar múltiples máquinas de la misma firma no permitirá evadir el tope.\n\n3/4 Antes de operar, los cajeros deberán preguntar si el usuario ya movió dinero ese día y proyectar alertas en pantalla sobre engaños de personas haciéndose pasar por agentes o cobradores. También deberán emitir recibos detallados con tarifas.\n\n4/4 Las empresas del sector tendrán registro obligatorio en el estado a partir de marzo de 2027. Consulta el reporte completo en nuestro sitio web: [enlace]",
-  "post_facebook": "A partir del 1° de enero de 2027, Florida limitará las transacciones en cajeros automáticos de criptomonedas bajo la ley HB 505, firmada por el gobernador Ron DeSantis. La medida surge tras detectarse pérdidas millonarias por estafas dirigidas a residentes y adultos mayores.\n\nLa normativa establece un límite diario de 2.000 dólares para clientes con menos de siete días de historial con el operador, y de 10.000 dólares para usuarios existentes. Las máquinas deberán además emitir advertencias de fraude en pantalla, exigir declaraciones de uso previo en el día y entregar comprobantes detallados con tarifas y datos de contacto. Encuentra más detalles en el enlace.",
-  "guion_tiktok": "(0-3s) [Texto en pantalla: Nuevos límites para cajeros cripto en Florida]\n¿Usas cajeros de criptomonedas? En Florida acaban de imponer límites estrictos a tu dinero.\n\n(3-45s) [Voz dinámica, cortes rápidos]\nEl gobernador Ron DeSantis firmó la ley HB 505 para frenar estafas que han provocado pérdidas millonarias, sobre todo en adultos mayores.\nDesde el primero de enero de 2027, no podrás mover todo el dinero que quieras. Si eres un cliente nuevo, con menos de siete días con la empresa, tu límite diario será de 2.000 dólares.\nSi ya tienes más de siete días, el tope subirá a 10.000 dólares por día. Y ojo: aplica al total acumulado, aunque intentes repartir el monto en varias máquinas del mismo operador.\nAdemás, antes de procesar el pago, el cajero te preguntará si hiciste otras operaciones en el día y te mostrará alertas para evitar que caigas en manos de falsos cobradores o agentes policiales.\n\n(45-60s)\n¿Crees que estas medidas protegerán a los usuarios o complicarán el uso de criptoactivos? Déjame tu opinión en los comentarios. Tienes el link con la noticia completa en mi perfil.",
-  "categoria": "Finanzas, Negocios y Criptomonedas",
-  "web_url": "",
-  "region": "Mundial",
-  "schema_version": 2,
-  "media_review_version": 1,
-  "titulo_fuente": "Florida impone nuevos límites para usar cajeros de criptomonedas que van de los 2000 a 10.000 dólares - La Nación",
-  "autor": "Equipo editorial DatoSinFiltro",
-  "fecha_creacion": "2026-10-09T12:27:23-05:00",
-  "fuentes": [
-    {
-      "titulo": "Florida impone nuevos límites para usar cajeros de criptomonedas que van de los 2000 a 10.000 dólares - La Nación",
-      "url": "https://www.lanacion.com.ar/estados-unidos/florida/florida-impone-nuevos-limites-para-usar-cajeros-de-criptomonedas-que-van-de-los-2000-a-10000-dolares-nid09102026/",
-      "medio": "La Nación",
-      "fecha": "Fri, 09 Oct 2026 10:11:00 GMT"
-    },
-    {
-      "titulo": "Florida impone un límite de retiro diario en estos cajeros: ¿Cuánto dinero se podrá mover? - 2001 Online",
-      "url": "https://2001online.com/usa/servicios/florida-impone-un-limite-de-retiro-diario-en-estos-cajeros-cuanto-dinero-se-podra-mover-20261081500",
-      "medio": "2001 Online",
-      "fecha": "Thu, 08 Oct 2026 20:20:49 GMT"
-    }
-  ],
-  "verificacion_fuentes": "cobertura_independiente",
-  "imagenes": [
-    {
-      "url": "https://images.pexels.com/photos/7267491/pexels-photo-7267491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "A detailed image showcasing a stack of Bitcoin cryptocurrency coins on a black background.",
-      "credito": "DS stories",
-      "origen": "https://www.pexels.com/photo/bitcoins-on-black-surface-7267491/",
-      "licencia": "Pexels License",
-      "licencia_url": "https://www.pexels.com/license/",
-      "tipo": "Ilustración de archivo"
-    },
-    {
-      "url": "https://images.pexels.com/photos/39181599/pexels-photo-39181599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-      "descripcion": "Golden bitcoins with financial growth charts illustrating investment opportunities in cryptocurrency.",
-      "credito": "Rafael Minguet Delgado",
-      "origen": "https://www.pexels.com/photo/bitcoin-investment-with-financial-graph-analysis-39181599/",
-      "licencia": "Pexels License",
-      "licencia_url": "https://www.pexels.com/license/",
-      "tipo": "Ilustración de archivo"
-    }
-  ],
-  "imagen_url": "https://images.pexels.com/photos/7267491/pexels-photo-7267491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-  "extra_images": [
-    "https://images.pexels.com/photos/39181599/pexels-photo-39181599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-  ],
-  "video_url": "https://videos.pexels.com/video-files/38905687/16543760_1920_1080_25fps.mp4",
-  "video_titulo": "Dynamic bitcoin cryptocurrency trading visuals 38905687",
-  "video_canal": "Rafael Minguet Delgado",
-  "video_source": "pexels",
-  "video_tipo": "Video ilustrativo de archivo",
-  "video_origen": "https://www.pexels.com/video/dynamic-bitcoin-cryptocurrency-trading-visuals-38905687/",
-  "video_licencia": "Pexels License",
-  "video_licencia_url": "https://www.pexels.com/license/",
-  "video_poster": "https://images.pexels.com/videos/38905687/bitcoin-blockchain-btc-copy-space-38905687.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
-  "fuente_url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxOeXAxelBQTERRaWFtZUdTb0ZDTzdkdmF5M3JQRl8tZVBUTkxfc0J2QXpOa1lKUkdDdGpFX3d0TjViZnVaVzZ3WVhxVTJKbDNkMko1SkV1UTBxeU5sSE1ob3VDOFFNdUtxQ20zbzVFdVk2R2lUSXpNdWRQemdIUVBxZEhwUVUxRzlWUW1nS3dDNThDNnFWQVE2elRVRk5vX0ROVEk1SlBfOGJ3eFd5SUVIeFRTV1ZJYmJIVHV6dWNFYnJHN3FYQmljNUctV3ljZl9mY1RHMTIta0ltMGxjMVk2TEU0WnVHZ1RQRlJjeFR2dmdIX0dtWUFN?oc=5",
-  "fecha_publicacion": "2026-10-09T17:57:59+00:00",
-  "revision_humana": false
+    "titulo_articulo": "Florida regulará los cajeros de criptomonedas con límites diarios de hasta 10.000 dólares",
+    "articulo_web": "El estado de Florida implementará nuevas restricciones para regular las operaciones en cajeros automáticos de criptomonedas a partir del 1° de enero de 2027. La medida forma parte de la ley HB 505, promulgada por el gobernador Ron DeSantis, orientada a combatir esquemas de fraude financiero que han provocado pérdidas millonarias, especialmente entre personas mayores, según análisis de la Cámara de Representantes de Florida y la Oficina de Regulación Financiera (OFR).\n\n## Límites según la antigüedad del usuario\n\nLa normativa, que incorpora disposiciones dentro del capítulo 560 de los Estatutos de Florida, clasifica a los clientes en dos categorías para definir los montos autorizados:\n\n- **Clientes nuevos:** Quienes lleven menos de siete días operando con una empresa de cajeros virtuales tendrán un tope de 2.000 dólares por día calendario.\n- **Clientes existentes:** Aquellos usuarios que superen los siete días de antigüedad con el proveedor podrán mover hasta 10.000 dólares diarios.\n\nAmbas restricciones se calcularán sobre el total acumulado en la jornada, sin importar si el usuario realiza una o varias operaciones, o si intenta distribuir los fondos utilizando diferentes terminales pertenecientes a la misma compañía.\n\n## Controles obligatorios y comprobantes\n\nAntes de procesar cualquier transacción, los quioscos deberán consultar al usuario si ya efectuó transferencias en otro cajero de moneda virtual durante ese mismo día e indicar el monto, verificando así el saldo disponible antes de alcanzar el tope. Además, la pantalla mostrará advertencias sobre estafas comunes, indicando que se debe detener la transacción si un desconocido, supuesto cobrador o presunto agente de la ley solicitó usar el cajero.\n\nAl terminar, la empresa deberá entregar un comprobante físico o digital con tarifas, tipo de cambio y datos de contacto, incluyendo correo electrónico y línea gratuita. A partir del 1° de marzo de 2027, las compañías operadoras también tendrán que registrarse formalmente ante la autoridad correspondiente.",
+    "resumen": "Florida fijó límites de 2.000 a 10.000 dólares diarios en cajeros de criptomonedas desde 2027 mediante la ley HB 505 para frenar estafas millonarias.",
+    "hilo_x": "1/4 Florida aprobó nuevas restricciones para quioscos de criptomonedas mediante la ley HB 505, promulgada para frenar fraudes que han generado pérdidas millonarias, principalmente a personas mayores. 🚨\n\n2/4 Desde el 1° de enero de 2027 habrá límites diarios acumulados: 2.000 dólares para clientes nuevos (con menos de 7 días de uso) y hasta 10.000 dólares para clientes existentes. Usar múltiples máquinas de la misma firma no permitirá evadir el tope.\n\n3/4 Antes de operar, los cajeros deberán preguntar si el usuario ya movió dinero ese día y proyectar alertas en pantalla sobre engaños de personas haciéndose pasar por agentes o cobradores. También deberán emitir recibos detallados con tarifas.\n\n4/4 Las empresas del sector tendrán registro obligatorio en el estado a partir de marzo de 2027. Consulta el reporte completo en nuestro sitio web: [enlace]",
+    "post_facebook": "A partir del 1° de enero de 2027, Florida limitará las transacciones en cajeros automáticos de criptomonedas bajo la ley HB 505, firmada por el gobernador Ron DeSantis. La medida surge tras detectarse pérdidas millonarias por estafas dirigidas a residentes y adultos mayores.\n\nLa normativa establece un límite diario de 2.000 dólares para clientes con menos de siete días de historial con el operador, y de 10.000 dólares para usuarios existentes. Las máquinas deberán además emitir advertencias de fraude en pantalla, exigir declaraciones de uso previo en el día y entregar comprobantes detallados con tarifas y datos de contacto. Encuentra más detalles en el enlace.",
+    "guion_tiktok": "(0-3s) [Texto en pantalla: Nuevos límites para cajeros cripto en Florida]\n¿Usas cajeros de criptomonedas? En Florida acaban de imponer límites estrictos a tu dinero.\n\n(3-45s) [Voz dinámica, cortes rápidos]\nEl gobernador Ron DeSantis firmó la ley HB 505 para frenar estafas que han provocado pérdidas millonarias, sobre todo en adultos mayores.\nDesde el primero de enero de 2027, no podrás mover todo el dinero que quieras. Si eres un cliente nuevo, con menos de siete días con la empresa, tu límite diario será de 2.000 dólares.\nSi ya tienes más de siete días, el tope subirá a 10.000 dólares por día. Y ojo: aplica al total acumulado, aunque intentes repartir el monto en varias máquinas del mismo operador.\nAdemás, antes de procesar el pago, el cajero te preguntará si hiciste otras operaciones en el día y te mostrará alertas para evitar que caigas en manos de falsos cobradores o agentes policiales.\n\n(45-60s)\n¿Crees que estas medidas protegerán a los usuarios o complicarán el uso de criptoactivos? Déjame tu opinión en los comentarios. Tienes el link con la noticia completa en mi perfil.",
+    "categoria": "Finanzas, Negocios y Criptomonedas",
+    "web_url": "",
+    "region": "Mundial",
+    "schema_version": 2,
+    "media_review_version": 1,
+    "titulo_fuente": "Florida impone nuevos límites para usar cajeros de criptomonedas que van de los 2000 a 10.000 dólares - La Nación",
+    "autor": "Equipo editorial DatoSinFiltro",
+    "fecha_creacion": "2026-10-09T12:27:23-05:00",
+    "fuentes": [
+        {
+            "titulo": "Florida impone nuevos límites para usar cajeros de criptomonedas que van de los 2000 a 10.000 dólares - La Nación",
+            "url": "https://www.lanacion.com.ar/estados-unidos/florida/florida-impone-nuevos-limites-para-usar-cajeros-de-criptomonedas-que-van-de-los-2000-a-10000-dolares-nid09102026/",
+            "medio": "La Nación",
+            "fecha": "Fri, 09 Oct 2026 10:11:00 GMT"
+        },
+        {
+            "titulo": "Florida impone un límite de retiro diario en estos cajeros: ¿Cuánto dinero se podrá mover? - 2001 Online",
+            "url": "https://2001online.com/usa/servicios/florida-impone-un-limite-de-retiro-diario-en-estos-cajeros-cuanto-dinero-se-podra-mover-20261081500",
+            "medio": "2001 Online",
+            "fecha": "Thu, 08 Oct 2026 20:20:49 GMT"
+        }
+    ],
+    "verificacion_fuentes": "cobertura_independiente",
+    "imagenes": [
+        {
+            "url": "https://images.pexels.com/photos/39181599/pexels-photo-39181599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+            "descripcion": "Golden bitcoins with financial growth charts illustrating investment opportunities in cryptocurrency.",
+            "credito": "Rafael Minguet Delgado",
+            "origen": "https://www.pexels.com/photo/bitcoin-investment-with-financial-graph-analysis-39181599/",
+            "licencia": "Pexels License",
+            "licencia_url": "https://www.pexels.com/license/",
+            "tipo": "Ilustración de archivo"
+        },
+        {
+            "url": "https://images.pexels.com/photos/7267491/pexels-photo-7267491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+            "descripcion": "A detailed image showcasing a stack of Bitcoin cryptocurrency coins on a black background.",
+            "credito": "DS stories",
+            "origen": "https://www.pexels.com/photo/bitcoins-on-black-surface-7267491/",
+            "licencia": "Pexels License",
+            "licencia_url": "https://www.pexels.com/license/",
+            "tipo": "Ilustración de archivo"
+        }
+    ],
+    "imagen_url": "https://images.pexels.com/photos/39181599/pexels-photo-39181599.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "extra_images": [
+        "https://images.pexels.com/photos/7267491/pexels-photo-7267491.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    ],
+    "video_url": "https://videos.pexels.com/video-files/38905687/16543760_1920_1080_25fps.mp4",
+    "video_titulo": "Dynamic bitcoin cryptocurrency trading visuals 38905687",
+    "video_canal": "Rafael Minguet Delgado",
+    "video_source": "pexels",
+    "video_tipo": "Video ilustrativo de archivo",
+    "video_origen": "https://www.pexels.com/video/dynamic-bitcoin-cryptocurrency-trading-visuals-38905687/",
+    "video_licencia": "Pexels License",
+    "video_licencia_url": "https://www.pexels.com/license/",
+    "video_poster": "https://images.pexels.com/videos/38905687/bitcoin-blockchain-btc-copy-space-38905687.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200",
+    "fuente_url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxOeXAxelBQTERRaWFtZUdTb0ZDTzdkdmF5M3JQRl8tZVBUTkxfc0J2QXpOa1lKUkdDdGpFX3d0TjViZnVaVzZ3WVhxVTJKbDNkMko1SkV1UTBxeU5sSE1ob3VDOFFNdUtxQ20zbzVFdVk2R2lUSXpNdWRQemdIUVBxZEhwUVUxRzlWUW1nS3dDNThDNnFWQVE2elRVRk5vX0ROVEk1SlBfOGJ3eFd5SUVIeFRTV1ZJYmJIVHV6dWNFYnJHN3FYQmljNUctV3ljZl9mY1RHMTIta0ltMGxjMVk2TEU0WnVHZ1RQRlJjeFR2dmdIX0dtWUFN?oc=5",
+    "fecha_publicacion": "2026-10-09T17:57:59+00:00",
+    "revision_humana": false
 }
