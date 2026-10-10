@@ -15,9 +15,10 @@ Usamos Brave Search como fallback en su lugar.
 import os
 import re
 import json
+from pathlib import Path
 import requests
 from html import unescape
-from urllib.parse import quote_plus, urljoin, urlparse, parse_qs
+from urllib.parse import quote_plus, unquote, urljoin, urlparse, parse_qs
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from src.editorial import HOUSING_EVICTION_CUES, event_terms, keywords, media_alignment_errors, place_terms, query_terms, relevance
@@ -478,13 +479,15 @@ def search_pexels_images(titulo, count=3):
         return []
 
 
-def search_licensed_images(titulo, count=2, categoria=None, minimum=None):
+def search_licensed_images(titulo, count=2, categoria=None, minimum=None, excluded=None):
     """Prefer Commons; use licensed stock only when the required minimum is missing."""
     minimum = count if minimum is None else max(1, min(minimum, count))
-    matches = search_commons_images(titulo, count)
+    excluded = set(excluded or ())
+    matches = [item for item in search_commons_images(titulo, count, excluded=excluded) if image_identity(item) not in excluded]
     if len(matches) < minimum:
-        stock = _search_pexels_licensed(titulo, minimum - len(matches), categoria) if PEXELS_API_KEY else []
-        matches.extend(item for item in stock if item["url"] not in {match["url"] for match in matches})
+        already = excluded | {image_identity(item) for item in matches}
+        stock = _search_pexels_licensed(titulo, minimum - len(matches), categoria, excluded=already) if PEXELS_API_KEY else []
+        matches.extend(item for item in stock if image_identity(item) and image_identity(item) not in already)
     return matches[:count]
 
 
@@ -579,7 +582,45 @@ def _stock_topic(titulo, categoria=None):
     return None
 
 
-def _search_pexels_licensed(titulo, count, categoria=None):
+def image_identity(image):
+    """Identify the underlying photo, ignoring resize parameters and thumbnail URLs."""
+    if isinstance(image, dict):
+        url = image.get("url", "")
+        origin = image.get("origen", "")
+    else:
+        url, origin = image or "", ""
+    for candidate in (url, origin):
+        parsed = urlparse(candidate)
+        host = parsed.netloc.lower()
+        path = unquote(parsed.path).lower().rstrip("/")
+        if host == "pexels.com" or host.endswith(".pexels.com"):
+            photo_id = re.search(r"/photos/(\d+)|/photo/(?:[^/]*-)?(\d+)$", path)
+            if photo_id:
+                return "pexels:" + next(group for group in photo_id.groups() if group)
+        if "commons.wikimedia.org" in host and "/wiki/file:" in path:
+            return "commons:" + path.split("/wiki/file:", 1)[1].replace("_", " ")
+    parsed = urlparse(url or origin)
+    return f"{parsed.netloc.lower()}{unquote(parsed.path).lower()}" if parsed.netloc else ""
+
+
+def used_cover_identities(*directories):
+    """Load cover photos already reserved by published stories or pending drafts."""
+    identities = set()
+    for directory in directories:
+        for path in Path(directory).rglob("*.json"):
+            try:
+                article = json.loads(path.read_text(encoding="utf-8"))
+                images = article.get("imagenes") or []
+                cover = images[0] if images else article.get("imagen_url", "")
+                identity = image_identity(cover)
+                if identity:
+                    identities.add(identity)
+            except (OSError, ValueError, TypeError, IndexError):
+                continue
+    return identities
+
+
+def _search_pexels_licensed(titulo, count, categoria=None, excluded=None):
     topic = _stock_topic(titulo, categoria)
     queries = [query_terms(titulo, 5)]
     if topic:
@@ -588,79 +629,95 @@ def _search_pexels_licensed(titulo, count, categoria=None):
     if not queries[0]:
         return []
     matches = []
-    seen = set()
+    seen = set(excluded or ())
     for query in dict.fromkeys(queries):
         if len(matches) >= count:
             break
-        try:
-            response = requests.get(
-                "https://api.pexels.com/v1/search",
-                params={"query": query, "per_page": 40, "orientation": "landscape"},
-                headers={"Authorization": PEXELS_API_KEY}, timeout=12,
-            )
-            response.raise_for_status()
-            photos = response.json().get("photos", [])
-        except Exception as exc:
-            print(f"    [Pexels] No se pudieron validar imágenes: {type(exc).__name__}")
-            continue
-        for photo in photos:
-            description = photo.get("alt") or ""
-            description_terms = keywords(description)
-            if not description or not (
-                (topic and description_terms & topic[1])
-                or (not topic and len(keywords(titulo) & description_terms) >= 2)
-            ):
-                continue
-            lowered = description.lower()
-            if "lima" in keywords(titulo) and any(place in lowered for place in ("buenos aires", "argentina", "madrid")):
-                continue
-            headline_places, photo_places = place_terms(titulo), place_terms(description)
-            if photo_places and not photo_places <= headline_places:
-                continue
-            if topic and not (description_terms & topic[1]):
-                continue
-            if media_alignment_errors({"titulo_articulo": titulo, "imagenes": [{"descripcion": description}]}):
-                continue
-            url = photo.get("src", {}).get("large2x") or photo.get("src", {}).get("large")
-            if not url or url in seen:
-                continue
-            seen.add(url)
-            matches.append({
-                "url": url, "descripcion": description,
-                "credito": photo.get("photographer", "Pexels"),
-                "origen": photo.get("url", ""),
-                "licencia": "Pexels License",
-                "licencia_url": "https://www.pexels.com/license/",
-                "tipo": "Ilustración de archivo",
-            })
+        for page in range(1, 5):
             if len(matches) >= count:
                 break
+            try:
+                response = requests.get(
+                    "https://api.pexels.com/v1/search",
+                    params={"query": query, "per_page": 40, "page": page, "orientation": "landscape"},
+                    headers={"Authorization": PEXELS_API_KEY}, timeout=12,
+                )
+                response.raise_for_status()
+                photos = response.json().get("photos", [])
+            except Exception as exc:
+                print(f"    [Pexels] No se pudieron validar imágenes: {type(exc).__name__}")
+                break
+            if not photos:
+                break
+            for photo in photos:
+                description = photo.get("alt") or ""
+                description_terms = keywords(description)
+                if not description or not (
+                    (topic and description_terms & topic[1])
+                    or (not topic and len(keywords(titulo) & description_terms) >= 2)
+                ):
+                    continue
+                lowered = description.lower()
+                if "lima" in keywords(titulo) and any(place in lowered for place in ("buenos aires", "argentina", "madrid")):
+                    continue
+                headline_places, photo_places = place_terms(titulo), place_terms(description)
+                if photo_places and not photo_places <= headline_places:
+                    continue
+                if topic and not (description_terms & topic[1]):
+                    continue
+                if media_alignment_errors({"titulo_articulo": titulo, "imagenes": [{"descripcion": description}]}):
+                    continue
+                url = photo.get("src", {}).get("large2x") or photo.get("src", {}).get("large")
+                identity = image_identity({"url": url, "origen": photo.get("url", "")})
+                if not url or not identity or identity in seen:
+                    continue
+                seen.add(identity)
+                matches.append({
+                    "url": url, "descripcion": description,
+                    "credito": photo.get("photographer", "Pexels"),
+                    "origen": photo.get("url", ""),
+                    "licencia": "Pexels License",
+                    "licencia_url": "https://www.pexels.com/license/",
+                    "tipo": "Ilustración de archivo",
+                })
+                if len(matches) >= count:
+                    break
     return matches
 
 
-def search_commons_images(titulo, count=2):
+def search_commons_images(titulo, count=2, excluded=None):
     """Use Commons file metadata to keep attribution and license alongside images."""
     if count <= 0:
         return []
     query = query_terms(titulo, 5)
     if not query:
         return []
-    try:
-        response = requests.get(
-            "https://commons.wikimedia.org/w/api.php",
-            params={
-                "action": "query", "format": "json", "formatversion": 2,
-                "generator": "search", "gsrsearch": query, "gsrnamespace": 6,
-                "gsrlimit": 20, "prop": "imageinfo", "iiprop": "url|extmetadata|size",
-                "iiurlwidth": 1200,
-                "iiextmetadatafilter": "LicenseShortName|LicenseUrl|Artist|ImageDescription",
-            },
-            headers={"User-Agent": "DatoSinFiltro/0.2 (editorial image research)"},
-            timeout=15,
-        )
-        response.raise_for_status()
-        matches = []
-        for page in response.json().get("query", {}).get("pages", []):
+    matches = []
+    seen = set(excluded or ())
+    offset = 0
+    for _ in range(3):
+        if len(matches) >= count:
+            break
+        try:
+            response = requests.get(
+                "https://commons.wikimedia.org/w/api.php",
+                params={
+                    "action": "query", "format": "json", "formatversion": 2,
+                    "generator": "search", "gsrsearch": query, "gsrnamespace": 6,
+                    "gsrlimit": 20, "gsroffset": offset, "prop": "imageinfo", "iiprop": "url|extmetadata|size",
+                    "iiurlwidth": 1200,
+                    "iiextmetadatafilter": "LicenseShortName|LicenseUrl|Artist|ImageDescription",
+                },
+                headers={"User-Agent": "DatoSinFiltro/0.2 (editorial image research)"},
+                timeout=15,
+            )
+            response.raise_for_status()
+            payload = response.json()
+            pages = payload.get("query", {}).get("pages", [])
+        except Exception as exc:
+            print(f"    [Commons] No se pudieron validar imágenes: {exc}")
+            break
+        for page in pages:
             title = page.get("title", "").removeprefix("File:")
             if not page.get("imageinfo") or "logo" in title.lower():
                 continue
@@ -685,7 +742,7 @@ def search_commons_images(titulo, count=2):
             url = info.get("thumburl") or info.get("url", "")
             if not url.startswith("https://"):
                 continue
-            matches.append({
+            item = {
                 "url": url,
                 "descripcion": description[:180],
                 "credito": author[:140] or "Wikimedia Commons",
@@ -693,13 +750,19 @@ def search_commons_images(titulo, count=2):
                 "licencia": license_name,
                 "licencia_url": license_url,
                 "tipo": "Ilustración de archivo",
-            })
+            }
+            identity = image_identity(item)
+            if not identity or identity in seen:
+                continue
+            seen.add(identity)
+            matches.append(item)
             if len(matches) >= count:
                 break
-        return matches
-    except Exception as exc:
-        print(f"    [Commons] No se pudieron validar imágenes: {exc}")
-        return []
+        next_offset = payload.get("continue", {}).get("gsroffset")
+        if not isinstance(next_offset, int) or next_offset <= offset:
+            break
+        offset = next_offset
+    return matches
 
 
 def search_relevant_youtube_video(titulo, categoria=None):

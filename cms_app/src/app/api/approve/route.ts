@@ -16,6 +16,50 @@ function categoryFolder(category: string): string {
   return category.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '_');
 }
 
+function imageIdentity(image: { url?: string; origen?: string } | string): string {
+  const url = typeof image === 'string' ? image : image.url || '';
+  const origin = typeof image === 'string' ? '' : image.origen || '';
+  for (const value of [url, origin]) {
+    try {
+      const parsed = new URL(value);
+      const host = parsed.hostname.toLowerCase();
+      const imagePath = decodeURIComponent(parsed.pathname).toLowerCase().replace(/\/$/, '');
+      if (host === 'pexels.com' || host.endsWith('.pexels.com')) {
+        const id = imagePath.match(/\/photos\/(\d+)|\/photo\/(?:[^/]*-)?(\d+)$/);
+        if (id) return `pexels:${id[1] || id[2]}`;
+      }
+      if (host === 'commons.wikimedia.org' && imagePath.includes('/wiki/file:')) {
+        return `commons:${imagePath.split('/wiki/file:')[1].replace(/_/g, ' ')}`;
+      }
+    } catch { /* Invalid image URL; validation handles it. */ }
+  }
+  try {
+    const parsed = new URL(url || origin);
+    return `${parsed.hostname.toLowerCase()}${decodeURIComponent(parsed.pathname).toLowerCase()}`;
+  } catch { return ''; }
+}
+
+function publishedCoverIdentities(directory: string): Set<string> {
+  const covers = new Set<string>();
+  if (!fs.existsSync(directory)) return covers;
+  const visit = (folder: string) => {
+    for (const entry of fs.readdirSync(folder, { withFileTypes: true })) {
+      const entryPath = path.join(folder, entry.name);
+      if (entry.isDirectory()) visit(entryPath);
+      else if (entry.isFile() && entry.name.endsWith('.json')) {
+        try {
+          const published = JSON.parse(fs.readFileSync(entryPath, 'utf8')) as ArticleDraft;
+          const cover = published.imagenes?.[0] || published.imagen_url || '';
+          const identity = imageIdentity(cover);
+          if (identity) covers.add(identity);
+        } catch { /* Skip unreadable historical records. */ }
+      }
+    }
+  };
+  visit(directory);
+  return covers;
+}
+
 export async function POST(request: Request) {
   const denied = requireAdmin(request);
   if (denied) return denied;
@@ -33,6 +77,19 @@ export async function POST(request: Request) {
     }
     const article = JSON.parse(fs.readFileSync(source, 'utf8')) as ArticleDraft;
     article.categoria = category;
+    const occupied = publishedCoverIdentities(OUTPUT_DIR);
+    const available = article.imagenes?.slice(0, 2).findIndex(image => {
+      const identity = imageIdentity(image);
+      return Boolean(identity && !occupied.has(identity));
+    }) ?? -1;
+    if (available < 0) {
+      return NextResponse.json({ success: false, error: 'La portada ya aparece en otra noticia; selecciona una imagen nueva con licencia' }, { status: 422 });
+    }
+    if (available > 0 && article.imagenes) {
+      [article.imagenes[0], article.imagenes[available]] = [article.imagenes[available], article.imagenes[0]];
+      article.imagen_url = article.imagenes[0].url;
+      article.extra_images = article.imagenes.slice(1).map(image => image.url);
+    }
     const errors = validationErrors(article);
     if (errors.length) {
       return NextResponse.json({ success: false, error: errors.join('; ') }, { status: 422 });

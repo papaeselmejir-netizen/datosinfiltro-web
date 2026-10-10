@@ -12,6 +12,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from src.editorial import claim_evidence_errors, keywords, publication_errors
+from src.multimedia import image_identity, used_cover_identities
 from website import builder
 
 BASE = Path(__file__).resolve().parent
@@ -79,12 +80,26 @@ def publish(drafts_dir=None, published_dir=None, public_dir=None):
         categories = set(json.load(file))
 
     staged_articles = []
+    reserved_covers = used_cover_identities(published_dir)
     for source in glob.glob(str(drafts_dir / "**" / "*.json"), recursive=True):
         source = Path(source)
         try:
             article = json.loads(source.read_text(encoding="utf-8"))
             if article.get("schema_version") != 2 or article.get("media_review_version", 0) < 1 or article.get("categoria") not in categories:
                 continue
+            images = article.get("imagenes") or []
+            available = next(
+                (index for index, image in enumerate(images[:2]) if image_identity(image) and image_identity(image) not in reserved_covers),
+                None,
+            )
+            if available is None:
+                print(f"Borrador sin portada original: {source.name}")
+                continue
+            if available:
+                images[0], images[available] = images[available], images[0]
+                article["imagenes"] = images
+                article["imagen_url"] = images[0]["url"]
+                article["extra_images"] = [item["url"] for item in images[1:]]
             if publication_errors(article):
                 continue
             if not fresh_election_evidence(article):
@@ -97,6 +112,7 @@ def publish(drafts_dir=None, published_dir=None, public_dir=None):
             if destination.exists():
                 continue
             staged_articles.append((source, destination, article))
+            reserved_covers.add(image_identity(images[0]))
         except (OSError, ValueError, TypeError) as exc:
             print(f"Borrador ilegible {source}: {exc}")
     if not staged_articles:

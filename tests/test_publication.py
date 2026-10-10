@@ -653,6 +653,11 @@ class PublicationTests(unittest.TestCase):
             })
             (drafts / "second.json").write_text(json.dumps(second), encoding="utf-8")
             self.assertEqual(publish(drafts, published, public), 1)
+            second_published = next(
+                json.loads(path.read_text(encoding="utf-8"))
+                for path in published.rglob("second.json")
+            )
+            self.assertEqual(second_published["imagen_url"], second["imagenes"][1]["url"])
             search = json.loads((public / "search.json").read_text(encoding="utf-8"))
             self.assertEqual(len(search), 2)
             stock_item = next(item for item in search if item["title"] == second["titulo_articulo"])
@@ -661,6 +666,33 @@ class PublicationTests(unittest.TestCase):
             self.assertIn("Pexels License", page)
             self.assertTrue((public / "css" / "style.css").exists())
             self.assertTrue((public / "favicon.svg").exists())
+
+            repeated = article()
+            repeated["titulo_articulo"] = "Tercer cambio del transporte en Lima"
+            (drafts / "third.json").write_text(json.dumps(repeated), encoding="utf-8")
+            self.assertEqual(publish(drafts, published, public), 0)
+            self.assertTrue((drafts / "third.json").exists())
+
+    def test_photo_identity_ignores_pexels_resizing_and_commons_thumbnail(self):
+        original = {"url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?w=900"}
+        resized = {"url": "https://images.pexels.com/photos/7103185/pexels-photo-7103185.jpeg?w=1200"}
+        self.assertEqual(multimedia.image_identity(original), multimedia.image_identity(resized))
+        commons = {"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/b/example.jpg/900px-example.jpg",
+                   "origen": "https://commons.wikimedia.org/wiki/File:Example.jpg"}
+        self.assertEqual(multimedia.image_identity(commons), "commons:example.jpg")
+
+    def test_stock_search_skips_used_cover_and_tries_another_page(self):
+        first = {"alt": "People voting at polling station", "src": {"large": "https://images.pexels.com/photos/111/pexels-photo-111.jpeg"},
+                 "url": "https://www.pexels.com/photo/voters-111/", "photographer": "Uno"}
+        second = {"alt": "People voting at polling station", "src": {"large": "https://images.pexels.com/photos/222/pexels-photo-222.jpeg"},
+                  "url": "https://www.pexels.com/photo/voters-222/", "photographer": "Dos"}
+        responses = [SimpleNamespace(json=lambda photo=photo: {"photos": [photo]}, raise_for_status=lambda: None) for photo in (first, second)]
+        with patch.object(multimedia, "PEXELS_API_KEY", "test-key"), patch("src.multimedia.requests.get", side_effect=responses) as request:
+            images = multimedia._search_pexels_licensed(
+                "Candidatos a las elecciones de Arequipa", 1, excluded={"pexels:111"}
+            )
+        self.assertEqual([multimedia.image_identity(item) for item in images], ["pexels:222"])
+        self.assertEqual(request.call_count, 2)
 
 
 if __name__ == "__main__":

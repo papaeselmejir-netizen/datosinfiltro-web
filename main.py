@@ -18,7 +18,7 @@ if sys.platform == "win32":
 from src.extractor import extract_news_multi_source, extract_custom_topic_google_rss, CATEGORIAS
 from src.research import alternative_source_pairs, investigate_event, rank_event_candidates
 from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_primary_announcement, verify_sources_are_independent
-from src.multimedia import search_licensed_images, search_relevant_video
+from src.multimedia import search_licensed_images, search_relevant_video, used_cover_identities
 from src.editorial import source_host, official_primary_source, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
 
 load_dotenv()
@@ -204,12 +204,17 @@ async def process_single_news(noticia, categoria, distributor=None):
             return reject("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
 
     print("    [Multimedia] Buscando una imagen con licencia y un video relacionado...")
+    used_covers = await asyncio.to_thread(
+        used_cover_identities,
+        os.path.join(os.path.dirname(__file__), "published"),
+        OUTPUT_DIR,
+    )
     images, video = await asyncio.gather(
-        asyncio.to_thread(search_licensed_images, titulo, 2, categoria, 1),
+        asyncio.to_thread(search_licensed_images, titulo, 2, categoria, 1, used_covers),
         asyncio.to_thread(search_relevant_video, titulo, categoria),
     )
     if not images:
-        return reject("sin_imagen_con_licencia", "    No hay imagen pertinente con licencia verificable. Saltando.")
+        return reject("sin_portada_original", "    No hay una portada pertinente, licenciada y distinta de las ya publicadas. Saltando.")
     if not video:
         return reject("sin_video_relacionado", "    No hay video relacionado o ilustrativo válido. Saltando.")
 
