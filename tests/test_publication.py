@@ -131,6 +131,14 @@ class PublicationTests(unittest.TestCase):
             "Pedro Sánchez convoca elecciones anticipadas en España tras el rechazo a su plan de vivienda",
             "Pedro Sánchez convoca elecciones generales anticipadas en España para el 29 de noviembre",
         ))
+        self.assertTrue(same_recent_event(
+            "Natanael Cano cancela conciertos en México para priorizar su salud",
+            "Natanael Cano pausa su carrera por salud física y mental",
+        ))
+        self.assertFalse(same_recent_event(
+            "Natanael Cano cancela conciertos en México para priorizar su salud",
+            "Natanael Cano anuncia una nueva gira en México",
+        ))
 
     def test_volleyball_article_rejects_football_photos(self):
         candidate = article()
@@ -360,6 +368,43 @@ class PublicationTests(unittest.TestCase):
         ), patch.object(extractor, "extract_bing_news_rss", return_value=[]):
             selected = extractor.extract_news_multi_source("Entretenimiento, Farandula y Cine", max_items=3, geo="US")
         self.assertEqual([item["fuente"] for item in selected], ["A"])
+
+    def test_entertainment_includes_creators_and_health_excludes_celebrity_hiatus(self):
+        entertainment = "Entretenimiento, Farandula y Cine"
+        health = "Salud, Bienestar y Estilo de Vida"
+        streamer = {"titulo": "Streamer peruana anuncia nuevo pódcast en Lima"}
+        actress = {"titulo": "Actriz anuncia estreno de su película en Madrid"}
+        hiatus = {"titulo": "Cantante cancela conciertos por motivos de salud"}
+        public_health = {"titulo": "Actriz impulsa campaña de vacunación en hospital público"}
+        self.assertTrue(extractor.matches_category(streamer, entertainment))
+        self.assertTrue(extractor.matches_category(actress, entertainment))
+        self.assertTrue(extractor.matches_category(hiatus, entertainment))
+        self.assertFalse(extractor.matches_category(hiatus, health))
+        self.assertTrue(extractor.matches_category(public_health, health))
+        self.assertFalse(extractor.matches_category({"titulo": "Perro sin pelo del Perú recibe homenaje cultural", "origen": "local_rss"}, entertainment))
+        self.assertEqual(multimedia._stock_topic(streamer["titulo"])[0], "content creator recording studio microphone")
+        self.assertEqual(multimedia._stock_topic(actress["titulo"])[0], "film red carpet premiere")
+
+    def test_entertainment_specialists_search_creators_across_more_publishers(self):
+        category = "Entretenimiento, Farandula y Cine"
+        with patch.object(extractor, "extract_custom_topic_google_rss", return_value=[]) as search:
+            self.real_specialist_search(category, geo="PE", max_items=5)
+        queries = [call.args[0] for call in search.call_args_list]
+        self.assertEqual(len(queries), 4)
+        self.assertTrue(any("youtuber" in query and "infobae.com" in query for query in queries))
+        self.assertTrue(any("actriz" in query and "rpp.pe" in query for query in queries))
+
+    def test_entertainment_reserves_discovery_space_for_creators(self):
+        category = "Entretenimiento, Farandula y Cine"
+        arts = {"titulo": "Película peruana anuncia estreno en Lima", "url": "https://cine.example/a", "fuente": "Cine"}
+        creator = {"titulo": "Streamer peruana estrena pódcast en Lima", "url": "https://creador.example/b", "fuente": "Creador"}
+        with patch.object(extractor, "extract_news_local_rss", return_value=[]), patch.object(
+            extractor, "extract_news_specialist_sources", return_value=[arts, creator]
+        ), patch.object(extractor, "extract_news_google_rss", return_value=[]), patch.object(
+            extractor, "extract_custom_topic_google_rss", return_value=[]
+        ), patch.object(extractor, "extract_bing_news_rss", return_value=[]):
+            selected = extractor.extract_news_multi_source(category, max_items=2, geo="PE")
+        self.assertEqual([item["fuente"] for item in selected], ["Creador", "Cine"])
 
     def test_search_skips_stale_social_and_viewing_guides(self):
         stale = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()

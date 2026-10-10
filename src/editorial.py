@@ -113,6 +113,15 @@ def relevance(headline, candidate):
 def same_recent_event(first, second):
     """Conservatively suppress a second headline about the same recent event."""
     left, right = keywords(first), keywords(second)
+    # Entertainment headlines often describe one hiatus as a tour cancellation
+    # in one outlet and a career pause in another.
+    def names(value):
+        return {frozenset(keywords(match.group(0))) for match in re.finditer(
+            r"\b[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+\b", value or ""
+        )}
+    hiatus = {"cancela", "cancelan", "cancelacion", "suspende", "suspension", "pausa", "pospone", "aplaza"}
+    if names(first) & names(second) and "salud" in left & right and left & hiatus and right & hiatus:
+        return True
     if place_terms(first) and place_terms(second) and not place_terms(first) & place_terms(second):
         return False
     if event_terms(first) and event_terms(second) and not event_terms(first) & event_terms(second):

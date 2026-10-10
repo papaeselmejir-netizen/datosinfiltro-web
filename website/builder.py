@@ -36,7 +36,7 @@ NAV_LABELS = {
     "Finanzas, Negocios y Criptomonedas": "Economía",
     "Tecnologia, Gadgets e Inteligencia Artificial": "Tecnología",
     "Salud, Bienestar y Estilo de Vida": "Salud",
-    "Entretenimiento, Farandula y Cine": "Cultura",
+    "Entretenimiento, Farandula y Cine": "Farándula",
     "Gaming y Esports": "Gaming",
     "Tendencias": "Tendencias",
 }

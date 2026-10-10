@@ -22,7 +22,7 @@ CURRENTS_API_KEY = os.getenv("CURRENTS_API_KEY", "")
 # Mapeo de las 8 categorias del usuario a búsquedas estrictas por keywords en Google News RSS
 CATEGORIAS = {
     "Deportes en Vivo": "search?q=deportes+OR+futbol+OR+tenis+OR+NBA",
-    "Entretenimiento, Farandula y Cine": "search?q=cine+OR+musica+OR+espectaculos+OR+streamers",
+    "Entretenimiento, Farandula y Cine": "search?q=farándula+OR+actrices+OR+streamers+OR+youtubers+OR+cine+OR+música",
     "Noticias de Ultima Hora y Politica": "search?q=politica+OR+gobierno+OR+elecciones",
     "Tecnologia, Gadgets e Inteligencia Artificial": "search?q=tecnologia+OR+gadgets+OR+inteligencia+artificial",
     "Finanzas, Negocios y Criptomonedas": "search?q=economia+OR+negocios+OR+criptomonedas",
@@ -175,8 +175,8 @@ FUENTES_ESPECIALIZADAS = {
         "WORLD": ("marca.com", "as.com", "espn.com", "apnews.com"),
     },
     "Entretenimiento, Farandula y Cine": {
-        "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe"),
-        "WORLD": ("variety.com", "hollywoodreporter.com", "elpais.com", "apnews.com"),
+        "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe", "infobae.com", "trome.com", "peru21.pe"),
+        "WORLD": ("variety.com", "hollywoodreporter.com", "elpais.com", "apnews.com", "people.com", "deadline.com", "billboard.com"),
     },
     "Noticias de Ultima Hora y Politica": {
         "PE": ("rpp.pe", "andina.pe", "elcomercio.pe", "larepublica.pe"),
@@ -206,7 +206,7 @@ FUENTES_ESPECIALIZADAS = {
 
 BUSQUEDAS_ESPECIALIZADAS = {
     "Deportes en Vivo": ("(fútbol OR tenis OR vóley OR baloncesto)", "(football OR soccer OR tennis OR basketball OR fútbol)"),
-    "Entretenimiento, Farandula y Cine": ("(cine OR música OR concierto OR artistas)", "(film OR movie OR music OR concert OR cine)"),
+    "Entretenimiento, Farandula y Cine": ("(cine OR música OR farándula OR streamer)", "(film OR music OR celebrity OR streamer)"),
     "Noticias de Ultima Hora y Politica": ("(gobierno OR elecciones OR congreso OR parlamento)", "(government OR election OR congress OR parliament)"),
     "Tecnologia, Gadgets e Inteligencia Artificial": ("(tecnología OR inteligencia artificial OR gadgets)", "(technology OR artificial intelligence OR gadgets OR tecnología)"),
     "Finanzas, Negocios y Criptomonedas": ("(economía OR empresas OR mercados OR bitcoin)", "(economy OR business OR markets OR bitcoin OR economía)"),
@@ -215,9 +215,20 @@ BUSQUEDAS_ESPECIALIZADAS = {
     "Tendencias": ("(viral OR cultura OR sociedad OR tendencias)", "(viral OR culture OR society OR trends OR cultura)"),
 }
 
+ENTERTAINMENT_SEARCHES = {
+    "PE": (
+        "(farándula OR actriz OR actor OR cantante OR estreno)",
+        "(streamer OR youtuber OR influencer OR creador de contenido OR podcast)",
+    ),
+    "WORLD": (
+        "(celebrity OR actress OR actor OR singer OR film)",
+        "(streamer OR youtuber OR influencer OR content creator OR podcast)",
+    ),
+}
+
 CATEGORY_CUES = {
     "Deportes en Vivo": {"deporte", "deportes", "futbol", "tenis", "voley", "voleibol", "baloncesto", "basket", "basquet", "nba", "liga", "copa", "seleccion", "gol", "partido", "atleta", "deportista", "sporting", "alianza", "universitario", "entrenador", "fichaje", "football", "soccer", "tennis", "basketball", "volleyball"},
-    "Entretenimiento, Farandula y Cine": {"cine", "pelicula", "peliculas", "serie", "series", "musica", "concierto", "conciertos", "artista", "actor", "actriz", "festival", "estreno", "television", "streaming", "famoso", "famosos", "film", "movie", "music", "concert", "actress"},
+    "Entretenimiento, Farandula y Cine": {"cine", "pelicula", "peliculas", "serie", "series", "musica", "concierto", "conciertos", "gira", "artista", "artistas", "actor", "actores", "actriz", "actrices", "festival", "estreno", "television", "streaming", "streamer", "streamers", "youtuber", "youtubers", "influencer", "influencers", "tiktoker", "tiktokers", "creador", "creadora", "creadores", "creadoras", "podcast", "famoso", "famosos", "celebridad", "celebridades", "farandula", "espectaculos", "film", "movie", "music", "concert", "actress", "celebrity", "creator"},
     "Noticias de Ultima Hora y Politica": {"gobierno", "congreso", "presidente", "presidencia", "elecciones", "electoral", "ministro", "senado", "parlamento", "alcalde", "cancilleria", "politica", "votacion", "tribunal", "government", "congress", "parliament", "election", "president", "minister"},
     "Tecnologia, Gadgets e Inteligencia Artificial": {"tecnologia", "tecnologico", "inteligencia", "artificial", "openai", "chatgpt", "gemini", "software", "hardware", "robot", "robots", "digital", "chip", "chips", "smartphone", "computadora", "aplicacion", "internet", "ciberseguridad", "technology", "gadgets", "cybersecurity"},
     "Finanzas, Negocios y Criptomonedas": {"economia", "economico", "finanzas", "financiero", "mercado", "bolsa", "empresa", "empresas", "negocio", "negocios", "inversion", "inversiones", "banco", "bancos", "bitcoin", "criptomonedas", "dolares", "millones", "logistico", "logistica", "ventas", "capital", "inflacion", "economy", "financial", "business", "markets", "bank", "investment", "inflation"},
@@ -229,6 +240,10 @@ TREND_CUES = {"viral", "virales", "tendencia", "tendencias", "moda", "redes", "t
 TREND_EXCLUSIONS = {"elecciones", "electoral", "escrutinio", "presidente", "gobierno", "parlamento"}
 GAMBLING_CUES = {"apuestas", "apuesta", "casino", "casinos", "loteria", "tragamonedas", "ludopatia", "clandestino", "clandestinas", "clandestinos", "azar", "betting", "igaming"}
 VIDEO_GAME_CUES = {"videojuego", "videojuegos", "esports", "nintendo", "playstation", "xbox", "steam", "consola", "consolas", "gamer", "epic"}
+DIGITAL_CREATOR_CUES = {"streamer", "streamers", "youtuber", "youtubers", "influencer", "influencers", "tiktoker", "tiktokers", "podcast", "podcaster"}
+CREATOR_EVENT_CUES = {"anuncia", "anuncio", "estrena", "estreno", "lanza", "lanzamiento", "presenta", "confirma", "gana", "premio", "premios", "debuta", "regresa", "cancela", "firma", "publica", "boda", "matrimonio"}
+ENTERTAINMENT_HEALTH_CUES = {"concierto", "conciertos", "gira", "cantante", "artista", "actor", "actriz", "actores", "actrices", "streamer", "youtuber", "influencer", "famoso", "celebridad", "pelicula", "album", "fans", "escenario"}
+PUBLIC_HEALTH_CUES = {"vacuna", "vacunas", "vacunacion", "epidemia", "pandemia", "hospital", "pacientes", "estudio", "investigacion", "ensayo", "tratamiento", "ministerio", "minsa", "oms"}
 
 
 def matches_category(item, categoria):
@@ -254,13 +269,17 @@ def matches_category(item, categoria):
             return False
     if categoria == "Tecnologia, Gadgets e Inteligencia Artificial" and terms & {"marcador", "goles", "partido"} and terms & {"predice", "pronostica", "pronostico"}:
         return False
-    if item.get("origen") == "local_rss" and "/tvmas/" not in item.get("url", ""):
+    if categoria == "Salud, Bienestar y Estilo de Vida":
+        title_terms = keywords(item.get("titulo", ""))
+        if title_terms & ENTERTAINMENT_HEALTH_CUES and not title_terms & PUBLIC_HEALTH_CUES:
+            return False
+    if item.get("origen") == "local_rss" and categoria != "Entretenimiento, Farandula y Cine" and "/tvmas/" not in item.get("url", ""):
         return True
     return bool(terms & CATEGORY_CUES.get(categoria, set()))
 
 CATEGORY_SEARCH_QUERIES = {
     "Deportes en Vivo": ("selección fútbol liga clubes", "fútbol tenis baloncesto"),
-    "Entretenimiento, Farandula y Cine": ("conciertos cine estrenos artistas", "cine música artistas estrenos"),
+    "Entretenimiento, Farandula y Cine": ("farándula peruana actrices streamers youtubers", "celebridades actrices streamers youtubers"),
     "Noticias de Ultima Hora y Politica": ("congreso gobierno elecciones", "gobierno parlamento elecciones"),
     "Tecnologia, Gadgets e Inteligencia Artificial": ("tecnología inteligencia artificial empresas", "tecnología inteligencia artificial lanzamiento"),
     "Finanzas, Negocios y Criptomonedas": ("economía bancos empresas inversión", "economía empresas mercados"),
@@ -327,16 +346,31 @@ def extract_news_world_rss(categoria, max_items=3):
 
 
 def extract_news_specialist_sources(categoria, geo="PE", lang=None, max_items=20):
-    """Search current news from category-specific publishers in one RSS request."""
+    """Search category publishers with compact queries that cover each subtopic."""
     region = "PE" if geo == "PE" else "WORLD"
     domains = FUENTES_ESPECIALIZADAS.get(categoria, {}).get(region, ())
     topics = BUSQUEDAS_ESPECIALIZADAS.get(categoria)
     if not domains or not topics:
         return []
-    sites = " OR ".join(f"site:{domain}" for domain in domains)
     location = " (Perú OR Lima OR Arequipa OR Cusco OR Trujillo)" if region == "PE" else ""
-    query = f"{topics[0 if region == 'PE' else 1]} ({sites}){location} when:4d"
-    results = extract_custom_topic_google_rss(query, lang=lang, geo=geo, max_items=max_items)
+    if categoria == "Entretenimiento, Farandula y Cine":
+        search_topics = ENTERTAINMENT_SEARCHES[region]
+        domain_groups = (domains[:4], domains[4:])
+    else:
+        search_topics = (topics[0 if region == "PE" else 1],)
+        domain_groups = (domains,)
+    results = []
+    seen = set()
+    for topic in search_topics:
+        for group in domain_groups:
+            if not group:
+                continue
+            sites = " OR ".join(f"site:{domain}" for domain in group)
+            query = f"{topic} ({sites}){location} when:4d"
+            for item in extract_custom_topic_google_rss(query, lang=lang, geo=geo, max_items=max_items):
+                if item.get("url") and item["url"] not in seen:
+                    results.append(item)
+                    seen.add(item["url"])
     return [{**item, "origen": "specialist_rss"} for item in results]
 
 
@@ -674,7 +708,8 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
                 continue
             if not title or not url or title in seen_titles or url in seen_urls:
                 continue
-            if outlet_counts.get(outlet, 0) >= 1:
+            outlet_limit = 2 if categoria == "Entretenimiento, Farandula y Cine" else 1
+            if outlet_counts.get(outlet, 0) >= outlet_limit:
                 continue
             selected.append(item)
             seen_titles.add(title)
@@ -719,7 +754,11 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
 
     if len(selected) < max_items:
         print(f"    Buscando medios especializados de {categoria} ({geo})...")
-        add_candidates(extract_news_specialist_sources(categoria, geo=geo, lang=lang, max_items=max_items * 6), limit=2)
+        specialist = extract_news_specialist_sources(categoria, geo=geo, lang=lang, max_items=max_items * 6)
+        if categoria == "Entretenimiento, Farandula y Cine":
+            creators = [item for item in specialist if keywords(item.get("titulo", "")) & DIGITAL_CREATOR_CUES and keywords(item.get("titulo", "")) & CREATOR_EVENT_CUES]
+            add_candidates(creators, limit=2)
+        add_candidates(specialist, limit=2)
 
     if len(selected) < max_items:
         print(f"    Intentando Google News RSS (geo={geo})...")
@@ -729,6 +768,10 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
         base_topic = CATEGORY_SEARCH_QUERIES.get(categoria, (categoria, categoria))[0 if geo == "PE" else 1]
         topic = f"{base_topic} Perú when:4d" if geo == "PE" else f"{base_topic} when:4d"
         print("    Ampliando con búsqueda temática de Google News...")
+        add_candidates(extract_custom_topic_google_rss(topic, lang=lang, geo=geo, max_items=max_items * 6))
+
+    if len(selected) < max_items and categoria == "Entretenimiento, Farandula y Cine":
+        topic = "actores cantantes estrenos Perú when:4d" if geo == "PE" else "actors singers film premieres when:4d"
         add_candidates(extract_custom_topic_google_rss(topic, lang=lang, geo=geo, max_items=max_items * 6))
 
     if len(selected) < max_items:
