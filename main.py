@@ -19,7 +19,7 @@ from src.extractor import extract_news_multi_source, extract_custom_topic_google
 from src.research import alternative_source_pairs, investigate_event, rank_event_candidates
 from src.writer import generate_multi_channel_content, revise_article_against_sources, verify_article_against_sources, verify_primary_announcement, verify_sources_are_independent
 from src.multimedia import search_licensed_images, search_relevant_video, used_cover_identities
-from src.editorial import source_host, official_primary_source, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
+from src.editorial import source_host, official_primary_source, primary_announcement_eligible, publication_errors, rank_news, matches_story_aspect, same_recent_event, claim_evidence_errors
 
 load_dotenv()
 
@@ -176,12 +176,31 @@ async def process_single_news(noticia, categoria, distributor=None):
     print(f"    {research_stats['related_headlines']} medios relacionados; "
           f"{research_stats['readable_sources']} fuentes legibles; "
           f"{research_stats['queries']} búsquedas")
-    primary_announcement = len(sources) == 1 and official_primary_source(sources[0]["url"])
-    if not research_stats["related_headlines"] and not primary_announcement:
+    primary_announcement = (
+        len(sources) == 1 and official_primary_source(sources[0]["url"])
+        and primary_announcement_eligible(categoria, titulo)
+    )
+    independence_verified = False
+    if len(sources) == 1 and official_primary_source(sources[0]["url"]) and not primary_announcement:
+        print("    Esta afirmación necesita contraste; buscando más fuentes antes de descartarla.")
+        _, extended_sources, retry_stats = await investigate_event(
+            noticia, browser_budget=1, required_sources=4,
+            candidate_cache=research_stats.get("_candidates"),
+            searched_rounds=research_stats.get("_searched_rounds", 0),
+        )
+        PIPELINE_METRICS["busquedas_de_acontecimientos"] += retry_stats["queries"]
+        PIPELINE_METRICS["titulares_relacionados"] += retry_stats["related_headlines"]
+        for alternative_context, alternative_sources in alternative_source_pairs(extended_sources):
+            if await asyncio.to_thread(verify_sources_are_independent, alternative_context):
+                contexto, sources = alternative_context, alternative_sources
+                independence_verified = True
+                PIPELINE_METRICS["coberturas_recuperadas"] += 1
+                break
+    if not research_stats["related_headlines"] and len(sources) < 2 and not primary_announcement:
         return reject("sin_cobertura", "    Sin cobertura independiente del mismo hecho. Saltando.")
     if len({source_host(source["url"]) for source in sources}) < 2 and not primary_announcement:
         return reject("sin_dos_fuentes_legibles", "    Faltan dos medios independientes con texto suficiente. Saltando.")
-    if not primary_announcement and not await asyncio.to_thread(verify_sources_are_independent, contexto):
+    if not primary_announcement and not independence_verified and not await asyncio.to_thread(verify_sources_are_independent, contexto):
         print("    Probando otros medios antes de descartar la cobertura...")
         _, extended_sources, retry_stats = await investigate_event(
             noticia, browser_budget=1, required_sources=4,
@@ -197,7 +216,7 @@ async def process_single_news(noticia, categoria, distributor=None):
                 PIPELINE_METRICS["coberturas_recuperadas"] += 1
                 break
         if not recovered:
-            official = next((item for item in extended_sources if official_primary_source(item["url"]) and item.get("_context")), None)
+            official = next((item for item in extended_sources if official_primary_source(item["url"]) and item.get("_context") and primary_announcement_eligible(categoria, titulo)), None)
             if official:
                 contexto, sources, primary_announcement = official["_context"], [official], True
         if not recovered and not primary_announcement:
@@ -216,7 +235,7 @@ async def process_single_news(noticia, categoria, distributor=None):
     if not images:
         return reject("sin_portada_original", "    No hay una portada pertinente, licenciada y distinta de las ya publicadas. Saltando.")
     if not video:
-        return reject("sin_video_relacionado", "    No hay video relacionado o ilustrativo válido. Saltando.")
+        print("    No hay video pertinente; la noticia seguirá con su imagen acreditada.")
 
     # FASE 3: Redaccion con IA
     print(f"    [Redactando] Generando contenido multi-canal...")
@@ -277,15 +296,16 @@ async def process_single_news(noticia, categoria, distributor=None):
     content["imagenes"] = images
     content["imagen_url"] = images[0]["url"]
     content["extra_images"] = [item["url"] for item in images[1:]]
-    content["video_url"] = video["url"]
-    content["video_titulo"] = video["titulo"]
-    content["video_canal"] = video["canal"]
-    content["video_source"] = video["source"]
-    content["video_tipo"] = video["tipo"]
-    content["video_origen"] = video.get("origen", "")
-    content["video_licencia"] = video.get("licencia", "")
-    content["video_licencia_url"] = video.get("licencia_url", "")
-    content["video_poster"] = video.get("poster", "")
+    if video:
+        content["video_url"] = video["url"]
+        content["video_titulo"] = video["titulo"]
+        content["video_canal"] = video["canal"]
+        content["video_source"] = video["source"]
+        content["video_tipo"] = video["tipo"]
+        content["video_origen"] = video.get("origen", "")
+        content["video_licencia"] = video.get("licencia", "")
+        content["video_licencia_url"] = video.get("licencia_url", "")
+        content["video_poster"] = video.get("poster", "")
     content["fuente_url"] = noticia.get("url", "")
     errors = publication_errors(content)
     if errors:

@@ -10,7 +10,7 @@ from unittest.mock import patch, AsyncMock
 from urllib.parse import quote
 from xml.etree import ElementTree
 
-from src.editorial import publication_errors, official_primary_source, rank_news, select_corrob_sources, matches_story_aspect, near_duplicate_text, corroboration_queries, contradictory_candidate_count, social_source, same_recent_event, claim_evidence_errors, media_alignment_errors
+from src.editorial import publication_errors, official_primary_source, primary_announcement_eligible, rank_news, select_corrob_sources, matches_story_aspect, near_duplicate_text, corroboration_queries, contradictory_candidate_count, social_source, same_recent_event, claim_evidence_errors, media_alignment_errors
 from src.crawler import _public_url, _public_dns, decode_google_news_url, investigate_news, readable_article_text, BROWSER_HEADERS
 from website import builder
 from publish_verified import publish, fresh_election_evidence
@@ -442,6 +442,31 @@ class PublicationTests(unittest.TestCase):
             self.assertFalse(official_primary_source(url))
             self.assertIn("Se requieren dos fuentes verificadas", publication_errors(candidate))
 
+    def test_category_specific_primary_source_rules(self):
+        self.assertTrue(official_primary_source("https://www.ecb.europa.eu/press/pressreleases/html/index.en.html"))
+        self.assertTrue(official_primary_source("https://www.nba.com/news/official-final-result"))
+        self.assertTrue(primary_announcement_eligible("Deportes en Vivo", "NBA publica el resultado final del partido"))
+        self.assertFalse(primary_announcement_eligible("Deportes en Vivo", "Club negocia supuesto fichaje"))
+        self.assertFalse(primary_announcement_eligible("Salud, Bienestar y Estilo de Vida", "Estudio afirma eficacia de tratamiento"))
+        self.assertFalse(primary_announcement_eligible("Finanzas, Negocios y Criptomonedas", "Empresa predice precio de bitcoin"))
+        candidate = article()
+        candidate["categoria"] = "Salud, Bienestar y Estilo de Vida"
+        candidate["titulo_fuente"] = "Estudio afirma eficacia de tratamiento"
+        candidate["fuentes"] = [{"url": "https://www.who.int/news/item/123", "medio": "OMS"}]
+        candidate["verificacion_fuentes"] = "comunicado_primario_oficial"
+        self.assertIn("Se requieren dos fuentes verificadas", publication_errors(candidate))
+
+    def test_short_verified_story_can_publish_without_video(self):
+        candidate = article()
+        candidate["articulo_web"] = "Información contrastada sobre el transporte en Lima. " * 26
+        for field in ("video_url", "video_titulo", "video_canal"):
+            candidate.pop(field, None)
+        self.assertEqual(publication_errors(candidate), [])
+        candidate["articulo_web"] = "Información contrastada sobre el transporte en Lima. " * 20
+        self.assertIn("El artículo es demasiado breve", publication_errors(candidate))
+        candidate["video_url"] = "https://untrusted.example/clip.mp4"
+        self.assertIn("Se requiere un video relacionado con origen verificable", publication_errors(candidate))
+
     def test_one_licensed_image_and_related_video_are_sufficient(self):
         candidate = article()
         candidate["imagenes"] = candidate["imagenes"][:1]
@@ -625,6 +650,26 @@ class PublicationTests(unittest.TestCase):
             self.assertIn("Ilustración de archivo", home)
             ElementTree.fromstring(public.joinpath("sitemap.xml").read_text(encoding="utf-8"))
             ElementTree.fromstring(public.joinpath("news-sitemap.xml").read_text(encoding="utf-8"))
+
+    def test_builder_omits_video_section_when_no_valid_video_exists(self):
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / "published" / "2026-10-03" / "Noticias"
+            public = Path(temp) / "public"
+            output.mkdir(parents=True)
+            good = article()
+            for field in ("video_url", "video_titulo", "video_canal"):
+                good.pop(field, None)
+            output.joinpath("good.json").write_text(json.dumps(good), encoding="utf-8")
+            original = (builder.OUTPUT_DIR, builder.PUBLIC_DIR, builder.SITE_URL)
+            builder.OUTPUT_DIR, builder.PUBLIC_DIR, builder.SITE_URL = str(output.parent.parent), str(public), "https://example.org"
+            try:
+                builder.build_site()
+            finally:
+                builder.OUTPUT_DIR, builder.PUBLIC_DIR, builder.SITE_URL = original
+            search = json.loads(public.joinpath("search.json").read_text(encoding="utf-8"))
+            page = public.joinpath(search[0]["slug"] + ".html").read_text(encoding="utf-8")
+            self.assertNotIn('class="video-section"', page)
+            self.assertIn("Imagen original", page)
 
     def test_auto_publisher_persists_articles_across_runs(self):
         with tempfile.TemporaryDirectory() as temp:

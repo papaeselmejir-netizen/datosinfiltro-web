@@ -138,6 +138,19 @@ class ResearchTests(unittest.TestCase):
         commons.assert_called_once()
         self.assertEqual(pexels.call_args.args[1], 1)
 
+    def test_licensed_image_search_tries_topic_before_stock(self):
+        image = {"url": "https://commons.wikimedia.org/hospital.jpg", "origen": "https://commons.wikimedia.org/wiki/File:Hospital.jpg", "tipo": "Ilustración de archivo"}
+        with patch.object(multimedia, "PEXELS_API_KEY", "configured"), patch.object(
+            multimedia, "search_commons_images", side_effect=[[], [image]]
+        ) as commons, patch.object(multimedia, "_search_pexels_licensed") as pexels:
+            found = multimedia.search_licensed_images(
+                "Lima inaugura un nuevo hospital público", count=2,
+                categoria="Salud, Bienestar y Estilo de Vida", minimum=1,
+            )
+        self.assertEqual(found, [image])
+        self.assertEqual(commons.call_args.kwargs["query_override"], "hospital healthcare")
+        pexels.assert_not_called()
+
     def test_one_matching_commons_image_does_not_need_stock_filler(self):
         image = {"url": "https://commons.wikimedia.org/topic.jpg", "tipo": "Ilustración de archivo"}
         with patch.object(multimedia, "PEXELS_API_KEY", "configured"), patch.object(

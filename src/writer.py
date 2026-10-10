@@ -67,6 +67,7 @@ def verify_primary_announcement(content, context):
                 "Decide si una nota puede publicarse usando UNA sola fuente primaria institucional. "
                 "eligible=true SOLO si el hecho central es una acción, documento, calendario, "
                 "lanzamiento o declaración de la propia institución que publica la fuente; "
+                "también un resultado deportivo final publicado por el organizador oficial. "
                 "el título, resumen y artículo atribuyen claramente el anuncio a esa entidad; "
                 "y cada afirmación externa o cifra se presenta como dato declarado por ella, "
                 "sin darlo por verificado de forma independiente. "
@@ -154,10 +155,20 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
         if primary_announcement else ""
     )
     length_rule = (
-        "La nota breve debe tener entre 100 y 220 palabras, solo si la fuente permite "
+        "La nota breve debe tener entre 120 y 220 palabras, solo si la fuente permite "
         "esa extensión sin inventar datos." if primary_announcement else
-        "El artículo debe tener entre 270 y 360 palabras."
+        "La noticia contrastada debe tener entre 180 y 360 palabras según los datos disponibles."
     )
+    category_rules = {
+        "Noticias de Ultima Hora y Politica": "Distingue anuncios oficiales de hechos comprobados; cifras electorales, acusaciones y versiones disputadas requieren corroboración independiente.",
+        "Salud, Bienestar y Estilo de Vida": "No conviertas resultados preliminares en consejos médicos ni afirmes eficacia o seguridad sin evidencia independiente.",
+        "Finanzas, Negocios y Criptomonedas": "Atribuye anuncios de empresas y reguladores; no presentes predicciones, rentabilidad ni movimientos de precio sin datos corroborados.",
+        "Deportes en Vivo": "Distingue resultados y calendarios oficiales de rumores de fichajes; no llames final a un marcador parcial.",
+        "Tecnologia, Gadgets e Inteligencia Artificial": "Atribuye funciones anunciadas por fabricantes; no conviertas promesas de rendimiento en pruebas independientes.",
+        "Gaming y Esports": "Atribuye lanzamientos y cambios anunciados por editores; no inventes reseñas, rendimiento ni experiencia de juego.",
+        "Entretenimiento, Farandula y Cine": "Atribuye anuncios del protagonista u organizador; rumores y acusaciones no son hechos confirmados.",
+        "Tendencias": "Identifica el hecho concreto detrás de la tendencia; no publiques rumores ni cifras de popularidad sin evidencia.",
+    }
 
     prompt = f"""
     Eres un equipo experto de redactores compuesto por un Periodista Web, un Community Manager y un Guionista de TikTok.
@@ -166,6 +177,7 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
     REGLAS ESTRICTAS:
     - NO INVENTES DATOS, citas, cifras, fechas ni declaraciones. Usa SOLO el contexto proporcionado.
     - {length_rule} Usa solo detalles que estén explícitos en las fuentes leídas.
+    - {category_rules.get(categoria, '')}
     - Si un detalle aparece en una sola fuente, atribúyelo a ese medio. Omite cifras secundarias que no puedas comprobar.
     - Si las fuentes discrepan, explica la discrepancia y no presentes el dato como confirmado.
     - No copies párrafos de las fuentes; aporta una síntesis propia. No agregues antecedentes externos ni datos para alargar el texto.
@@ -259,9 +271,9 @@ def revise_article_against_sources(content, context, primary_announcement=False)
                 "explícitamente por FUENTES, incluidas cifras, fechas, citas y antecedentes. "
                 "Respeta el tiempo verbal: un acto futuro no puede redactarse como ya celebrado. "
                 "Si un dato consta en una sola fuente, atribúyelo. Comprueba las sumas. "
-                + ("Escribe una nota breve de 100 a 220 palabras. Atribuye el anuncio a "
+                + ("Escribe una nota breve de 120 a 220 palabras. Atribuye el anuncio a "
                    "la institución en título, resumen y cuerpo. " if primary_announcement else
-                   "Escribe 270 a 360 palabras con información concreta, sin relleno. ") +
+                   "Escribe entre 180 y 360 palabras según la evidencia disponible, sin relleno. ") +
                 "Si no hay evidencia suficiente, deja articulo_web vacío. No uses conocimiento externo.\n\n"
                 f"FUENTES:\n{context}\n\nBORRADOR COMPLETO:\n"
                 f"Título: {content.get('titulo_articulo', '')}\n"

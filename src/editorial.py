@@ -284,6 +284,8 @@ OFFICIAL_PRIMARY_HOSTS = {
     "who.int", "un.org", "fifa.com", "inside.fifa.com", "olympics.com",
     "blog.google", "openai.com", "news.microsoft.com", "apple.com",
     "news.samsung.com", "store.epicgames.com", "blog.playstation.com",
+    "nasa.gov", "ecb.europa.eu", "cdc.gov", "nba.com", "uefa.com",
+    "conmebol.com", "thegameawards.com",
 }
 
 
@@ -295,6 +297,26 @@ def official_primary_source(url):
     return host in OFFICIAL_PRIMARY_HOSTS or any(
         host == domain or host.endswith("." + domain) for domain in OFFICIAL_PRIMARY_SUFFIXES
     )
+
+
+# A primary source can establish its own announcement, but not a disputed or
+# externally measurable claim. The AI source review applies in addition to this
+# deterministic guard; it cannot grant an exception that this guard denies.
+PRIMARY_REQUIRES_CORROBORATION = {
+    "Noticias de Ultima Hora y Politica": {"denuncia", "acusacion", "delito", "corrupcion", "fraude", "preliminar", "provisional", "primeros", "encuesta"},
+    "Salud, Bienestar y Estilo de Vida": {"cura", "curar", "eficacia", "eficaz", "seguridad", "seguro", "previene", "tratamiento", "ensayo", "estudio"},
+    "Finanzas, Negocios y Criptomonedas": {"inversion", "invertir", "rentabilidad", "recomendacion", "prediccion", "subira", "bajara", "precio"},
+    "Deportes en Vivo": {"rumor", "rumores", "ficharia", "negocia", "negociaciones", "supuesto"},
+    "Tecnologia, Gadgets e Inteligencia Artificial": {"mejor", "supera", "rendimiento", "prueba", "resena", "comparativa"},
+    "Gaming y Esports": {"mejor", "supera", "rendimiento", "prueba", "resena", "comparativa"},
+    "Entretenimiento, Farandula y Cine": {"rumor", "rumores", "denuncia", "acusacion", "supuesto"},
+    "Tendencias": {"rumor", "rumores", "denuncia", "acusacion", "supuesto"},
+}
+
+
+def primary_announcement_eligible(category, headline):
+    """Only self-announcements without category-specific high-risk claims qualify."""
+    return not keywords(headline) & PRIMARY_REQUIRES_CORROBORATION.get(category, set())
 
 
 def social_source(url, outlet=""):
@@ -385,6 +407,8 @@ def publication_errors(article):
         and article.get("verificacion_fuentes") == "comunicado_primario_oficial"
         and isinstance(article["fuentes"][0], dict)
         and official_primary_source(article["fuentes"][0].get("url"))
+        and primary_announcement_eligible(article.get("categoria"), article.get("titulo_fuente") or article.get("titulo_articulo"))
+        and primary_announcement_eligible(article.get("categoria"), article.get("titulo_articulo"))
     )
     if len(source_hosts) < 2 and not primary_exception:
         errors.append("Se requieren dos fuentes verificadas")
@@ -396,15 +420,17 @@ def publication_errors(article):
         for item in images[:2]
     ):
         errors.append("Se requiere una imagen pertinente con licencia registrada")
-    if not valid_video(article):
+    # A missing video never justifies unrelated footage. If supplied, it must
+    # still pass the same URL, origin and story-alignment checks.
+    if article.get("video_url") and not valid_video(article):
         errors.append("Se requiere un video relacionado con origen verificable")
     headline_places = place_terms(article.get("titulo_articulo"))
-    if headline_places and article.get("video_source") != "pexels" and not headline_places <= place_terms(article.get("video_titulo")):
+    if article.get("video_url") and headline_places and article.get("video_source") != "pexels" and not headline_places <= place_terms(article.get("video_titulo")):
         errors.append("El video trata una ubicación distinta a la noticia")
     headline_events = event_terms(article.get("titulo_articulo"))
-    if headline_events and article.get("video_source") != "pexels" and not headline_events <= event_terms(article.get("video_titulo")):
+    if article.get("video_url") and headline_events and article.get("video_source") != "pexels" and not headline_events <= event_terms(article.get("video_titulo")):
         errors.append("El video trata otro país o rival")
-    if article.get("categoria") == "Deportes en Vivo" and article.get("video_source") != "pexels" and event_terms(article.get("video_titulo")) - headline_events:
+    if article.get("video_url") and article.get("categoria") == "Deportes en Vivo" and article.get("video_source") != "pexels" and event_terms(article.get("video_titulo")) - headline_events:
         errors.append("El video muestra un rival distinto al de la noticia")
     if any(
         place_terms(item.get("descripcion")) and not place_terms(item.get("descripcion")) <= headline_places
@@ -466,7 +492,7 @@ def publication_errors(article):
     if contradictory_candidate_count(article.get("articulo_web")):
         errors.append("Los subtotales de candidatos no coinciden con el total")
     word_count = len((article.get("articulo_web") or "").split())
-    if word_count < (100 if primary_exception else 250):
+    if word_count < (120 if primary_exception else 180):
         errors.append("El artículo es demasiado breve")
     if primary_exception and word_count > 220:
         errors.append("La nota de fuente única supera la extensión permitida")

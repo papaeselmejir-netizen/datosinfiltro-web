@@ -480,10 +480,18 @@ def search_pexels_images(titulo, count=3):
 
 
 def search_licensed_images(titulo, count=2, categoria=None, minimum=None, excluded=None):
-    """Prefer Commons; use licensed stock only when the required minimum is missing."""
+    """Try exact Commons, then topic Commons, then licensed stock."""
     minimum = count if minimum is None else max(1, min(minimum, count))
     excluded = set(excluded or ())
     matches = [item for item in search_commons_images(titulo, count, excluded=excluded) if image_identity(item) not in excluded]
+    if len(matches) < minimum:
+        topic = _stock_topic(titulo, categoria)
+        if topic:
+            already = excluded | {image_identity(item) for item in matches}
+            matches.extend(item for item in search_commons_images(
+                titulo, minimum - len(matches), excluded=already,
+                query_override=topic[0], required_terms=topic[1],
+            ) if image_identity(item) and image_identity(item) not in already)
     if len(matches) < minimum:
         already = excluded | {image_identity(item) for item in matches}
         stock = _search_pexels_licensed(titulo, minimum - len(matches), categoria, excluded=already) if PEXELS_API_KEY else []
@@ -569,6 +577,8 @@ def _stock_topic(titulo, categoria=None):
          "artificial intelligence university", {"robot", "robotic", "technology", "computer", "computers", "digital", "intelligence", "laboratory", "school", "students"}),
     )
     if categoria == "Salud, Bienestar y Estilo de Vida":
+        if terms & {"hospital", "hospitales", "clinica", "clinicas"}:
+            return "hospital healthcare", {"hospital", "healthcare", "medical", "clinic", "doctor", "patient"}
         if terms & {"anemia", "nutricion", "alimentacion", "infantil", "ninos", "ninas"}:
             return "child nutrition healthcare", {"child", "children", "nutrition", "food", "healthy", "healthcare", "doctor", "clinic", "medical"}
         if terms & {"mental", "depresion", "ansiedad", "psicologia", "psiquiatria"}:
@@ -685,11 +695,11 @@ def _search_pexels_licensed(titulo, count, categoria=None, excluded=None):
     return matches
 
 
-def search_commons_images(titulo, count=2, excluded=None):
+def search_commons_images(titulo, count=2, excluded=None, query_override=None, required_terms=None):
     """Use Commons file metadata to keep attribution and license alongside images."""
     if count <= 0:
         return []
-    query = query_terms(titulo, 5)
+    query = query_override or query_terms(titulo, 5)
     if not query:
         return []
     matches = []
@@ -732,7 +742,11 @@ def search_commons_images(titulo, count=2, excluded=None):
             license_url = metadata.get("LicenseUrl", {}).get("value", "") or "https://commons.wikimedia.org/wiki/Commons:Licensing"
             author = BeautifulSoup(metadata.get("Artist", {}).get("value", ""), "html.parser").get_text(" ", strip=True)
             description = BeautifulSoup(metadata.get("ImageDescription", {}).get("value", ""), "html.parser").get_text(" ", strip=True) or title
-            if len(keywords(titulo) & keywords(f"{title} {description}")) < 2:
+            image_terms = keywords(f"{title} {description}")
+            if required_terms is not None:
+                if not image_terms & required_terms:
+                    continue
+            elif len(keywords(titulo) & image_terms) < 2:
                 continue
             headline_places, image_places = place_terms(titulo), place_terms(f"{title} {description}")
             if image_places and not image_places <= headline_places:
