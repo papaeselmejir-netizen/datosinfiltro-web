@@ -1,0 +1,52 @@
+name: Renovar portadas repetidas
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: noticias-programadas
+  cancel-in-progress: false
+
+jobs:
+  reparar_portadas:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v6
+
+      - name: Configurar Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Buscar y validar portadas distintas
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          SITE_URL: https://datosinfiltro-web.vercel.app
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          ADSENSE_PUBLISHER_ID: ${{ vars.ADSENSE_PUBLISHER_ID }}
+        run: python repair_duplicate_covers.py
+
+      - name: Publicar las correcciones
+        run: |
+          git config user.name '${{ github.actor }}'
+          git config user.email '${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com'
+          git add -A -- published/ website/public/
+          if ! git diff --cached --quiet; then
+            git commit -m "Renovar portadas antiguas repetidas"
+            for attempt in 1 2 3; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              sleep 3
+            done
+            exit 1
+          fi

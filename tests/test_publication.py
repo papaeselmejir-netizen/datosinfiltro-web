@@ -14,6 +14,7 @@ from src.editorial import publication_errors, official_primary_source, rank_news
 from src.crawler import _public_url, _public_dns, decode_google_news_url, investigate_news, readable_article_text, BROWSER_HEADERS
 from website import builder
 from publish_verified import publish, fresh_election_evidence
+from repair_duplicate_covers import repair_covers
 from src import multimedia, extractor
 
 
@@ -680,6 +681,29 @@ class PublicationTests(unittest.TestCase):
         commons = {"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/b/example.jpg/900px-example.jpg",
                    "origen": "https://commons.wikimedia.org/wiki/File:Example.jpg"}
         self.assertEqual(multimedia.image_identity(commons), "commons:example.jpg")
+
+    def test_historical_cover_repair_uses_existing_alternative_then_new_photo(self):
+        with tempfile.TemporaryDirectory() as temp:
+            published = Path(temp) / "published"
+            published.mkdir()
+            for index in range(3):
+                candidate = article()
+                candidate["titulo_articulo"] = f"Prueba de transporte en Lima {index}"
+                (published / f"{index}.json").write_text(json.dumps(candidate), encoding="utf-8")
+            fresh = {
+                "url": "https://images.pexels.com/photos/333/pexels-photo-333.jpeg",
+                "descripcion": "Autobús en Lima", "credito": "Autor C",
+                "origen": "https://www.pexels.com/photo/bus-333/",
+                "licencia": "Pexels License", "licencia_url": "https://www.pexels.com/license/",
+                "tipo": "Ilustración de archivo",
+            }
+            with patch("repair_duplicate_covers.PEXELS_API_KEY", ""), patch("repair_duplicate_covers.search_licensed_images", return_value=[fresh]) as lookup:
+                report = repair_covers(published, search=True, write=False)
+            self.assertEqual(report["affected_articles_before"], 3)
+            self.assertEqual(report["affected_articles_after"], 0)
+            self.assertEqual(report["changed_covers"], 2)
+            lookup.assert_called_once()
+            self.assertEqual(len(list(published.glob("*.json"))), 3)
 
     def test_stock_search_skips_used_cover_and_tries_another_page(self):
         first = {"alt": "People voting at polling station", "src": {"large": "https://images.pexels.com/photos/111/pexels-photo-111.jpeg"},
