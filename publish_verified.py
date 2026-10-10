@@ -6,13 +6,48 @@ import os
 import re
 import shutil
 import uuid
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from src.editorial import claim_evidence_errors, keywords, publication_errors
 from website import builder
 
 BASE = Path(__file__).resolve().parent
+
+
+def record_daily_publications(articles, directory, run_id):
+    """Add actual publications to the research report after the site is swapped."""
+    if not directory:
+        return
+    day = datetime.now(ZoneInfo("America/Lima")).date().isoformat()
+    path = Path(directory) / f"{day}.json"
+    if not path.is_file():
+        return
+    report = json.loads(path.read_text(encoding="utf-8"))
+    runs = report.get("runs", {})
+    if not run_id and runs:
+        run_id = max(runs, key=lambda key: runs[key].get("started_at", ""))
+    run = runs.get(run_id)
+    if not run:
+        return
+    run["published"] = dict(Counter(article.get("categoria") for article in articles))
+    for category, totals in report.get("categories", {}).items():
+        totals["publicadas"] = sum(
+            item.get("published", {}).get(category, 0)
+            for item in report["runs"].values()
+        )
+    temporary = path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.replace(path)
+    summary = os.getenv("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as file:
+            file.write(f"\n### Publicaciones reales del {day}\n\n")
+            file.write("| Categoría | Publicadas hoy | Bloqueo principal |\n| --- | ---: | --- |\n")
+            for category, totals in report["categories"].items():
+                file.write(f"| {category} | {totals['publicadas']} | {totals['bloqueo_principal']} |\n")
 
 
 def fresh_election_evidence(article):
@@ -119,6 +154,15 @@ def publish(drafts_dir=None, published_dir=None, public_dir=None):
                 shutil.rmtree(backup)
             except OSError as exc:
                 print(f"Aviso: copia de seguridad retenida en {backup}: {exc}")
+        try:
+            record_daily_publications(
+                [article for _, _, article in staged_articles],
+                os.getenv("PIPELINE_DAILY_REPORT_DIR"),
+                (os.getenv("GITHUB_RUN_ID") + "-" + os.getenv("GITHUB_RUN_ATTEMPT", "1"))
+                if os.getenv("GITHUB_RUN_ID") else None,
+            )
+        except (OSError, ValueError, TypeError) as exc:
+            print(f"Aviso: no se pudo actualizar el balance diario: {type(exc).__name__}")
         print(f"Publicadas {len(staged_articles)} noticias verificadas")
         return len(staged_articles)
     except Exception:

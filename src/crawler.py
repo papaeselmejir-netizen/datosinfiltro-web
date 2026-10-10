@@ -157,7 +157,10 @@ def _extract_text_sync(url, headers=None):
         if response.encoding and response.encoding.lower() == "iso-8859-1":
             response.encoding = response.apparent_encoding
 
-        html_content = response.text
+        html_content = (
+            response.content.decode("utf-8", errors="replace")
+            if source_host(url) == "gob.pe" else response.text
+        )
 
         soup = BeautifulSoup(html_content, "html.parser")
 
@@ -172,7 +175,9 @@ def _extract_text_sync(url, headers=None):
             tag.extract()
 
         # Intentar extraer solo el contenido del articulo
-        article = soup.find("article") or soup.find("main")
+        article = (
+            soup.select_one(".feed-content") if source_host(url) == "gob.pe" else None
+        ) or soup.find("article") or soup.find("main")
 
         if article:
             paragraphs = article.find_all("p")

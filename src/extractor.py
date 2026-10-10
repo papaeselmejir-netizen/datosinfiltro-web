@@ -1,10 +1,13 @@
 import os
 import re
 import unicodedata
+from datetime import datetime, timedelta, timezone
+from email.utils import parsedate_to_datetime
 from html import unescape
-from urllib.parse import quote, unquote, parse_qs, urlparse
+from urllib.parse import quote, unquote, parse_qs, urlparse, urljoin
 import feedparser
 import requests
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from src.editorial import keywords, normalized_headline, rank_news, social_source, source_host
 
@@ -81,6 +84,89 @@ FUENTES_INTERNACIONALES = {
     "Salud, Bienestar y Estilo de Vida": ["https://www.sciencedaily.com/rss/health_medicine.xml"],
 }
 
+# Newsrooms owned by the institution reporting its own activity. Their pages
+# are read directly; a recognised newspaper is never treated as primary.
+FUENTES_OFICIALES_PERU = {
+    "Deportes en Vivo": ("ipd",),
+    "Entretenimiento, Farandula y Cine": ("cultura",),
+    "Noticias de Ultima Hora y Politica": ("pcm", "minjus"),
+    "Tecnologia, Gadgets e Inteligencia Artificial": ("concytec", "pcm"),
+    "Finanzas, Negocios y Criptomonedas": ("mef", "produce"),
+    "Gaming y Esports": ("ipd", "produce"),
+    "Salud, Bienestar y Estilo de Vida": ("minsa", "ins"),
+    "Tendencias": ("cultura", "produce"),
+}
+
+FUENTES_OFICIALES_MUNDO_RSS = {
+    "Noticias de Ultima Hora y Politica": ("https://www.un.org/en/rss.xml",),
+    "Tecnologia, Gadgets e Inteligencia Artificial": (
+        "https://blog.google/rss/", "https://www.nasa.gov/news-release/feed/",
+    ),
+    "Finanzas, Negocios y Criptomonedas": ("https://www.ecb.europa.eu/rss/press.html",),
+    "Gaming y Esports": ("https://blog.playstation.com/feed/",),
+    "Salud, Bienestar y Estilo de Vida": (
+        "https://www.who.int/rss-feeds/news-english.xml",
+        "https://wwwnc.cdc.gov/travel/rss/notices.xml",
+    ),
+}
+
+
+def extract_news_official_peru(categoria, max_items=6):
+    """Read current institution news cards directly from Peru's state portal."""
+    results = []
+    for slug in FUENTES_OFICIALES_PERU.get(categoria, ()):
+        url = f"https://www.gob.pe/institucion/{slug}/noticias"
+        try:
+            response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=12)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.content.decode("utf-8", errors="replace"), "html.parser")
+        except requests.RequestException as exc:
+            print(f"  [Oficial Perú] {slug}: {type(exc).__name__}")
+            continue
+        seen = set()
+        for card in soup.select(".card")[:20]:
+            link = card.select_one(f'a[href^="/institucion/{slug}/noticias/"]')
+            if not link:
+                continue
+            news_url = urljoin(url, link.get("href", ""))
+            title = link.get_text(" ", strip=True)
+            date = card.find("time")
+            if not title or news_url in seen or not date or not date.get("datetime"):
+                continue
+            seen.add(news_url)
+            summary = card.get_text(" ", strip=True).replace(title, "", 1)
+            summary = summary.replace(date.get_text(" ", strip=True), "").replace("Leer más", "").strip()
+            results.append({
+                "titulo": title, "url": news_url,
+                "fecha": date["datetime"], "fuente": slug.upper(),
+                "snippet": summary[:500],
+                "origen": "official_peru",
+            })
+            if len(seen) >= 4 or len(results) >= max_items:
+                break
+        if len(results) >= max_items:
+            break
+    return results
+
+
+def extract_news_official_world(categoria, max_items=6):
+    """Read dated official feed items, retaining the institution's article URL."""
+    results = _extract_direct_rss(
+        FUENTES_OFICIALES_MUNDO_RSS.get(categoria, ()), max_items, "official_world"
+    )
+    recent = []
+    now = datetime.now(timezone.utc)
+    for item in results:
+        try:
+            published = parsedate_to_datetime(item.get("fecha", ""))
+            if published.tzinfo is None:
+                published = published.replace(tzinfo=timezone.utc)
+            if -timedelta(hours=6) <= now - published <= timedelta(hours=96):
+                recent.append(item)
+        except (TypeError, ValueError, OverflowError, IndexError):
+            continue
+    return recent
+
 # Medios con cobertura de la sección indicada. La búsqueda acotada por dominio
 # complementa los RSS directos y los índices generales sin requerir otra API.
 FUENTES_ESPECIALIZADAS = {
@@ -148,6 +234,18 @@ VIDEO_GAME_CUES = {"videojuego", "videojuegos", "esports", "nintendo", "playstat
 def matches_category(item, categoria):
     """Require a visible topic signal unless the publisher feed is section-specific."""
     terms = keywords(" ".join((item.get("titulo", ""), item.get("snippet", ""))))
+    host = source_host(item.get("url", ""))
+    if item.get("origen") == "official_world":
+        if categoria == "Gaming y Esports" and host == "blog.playstation.com":
+            return True
+        if categoria == "Salud, Bienestar y Estilo de Vida" and host == "who.int":
+            return True
+        if categoria == "Salud, Bienestar y Estilo de Vida" and host == "wwwnc.cdc.gov":
+            return True
+        if categoria == "Finanzas, Negocios y Criptomonedas" and host == "ecb.europa.eu":
+            return True
+        if categoria == "Tecnologia, Gadgets e Inteligencia Artificial" and (host == "nasa.gov" or host.endswith(".nasa.gov")):
+            return True
     if categoria == "Tendencias":
         return bool(terms & TREND_CUES) and not bool(terms & TREND_EXCLUSIONS)
     if categoria == "Gaming y Esports":
@@ -572,7 +670,7 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
                 continue
             if not matches_category(item, categoria):
                 continue
-            if is_peru_story(item) != (geo == "PE"):
+            if item.get("origen") != "official_peru" and is_peru_story(item) != (geo == "PE"):
                 continue
             if not title or not url or title in seen_titles or url in seen_urls:
                 continue
@@ -585,6 +683,12 @@ def extract_news_multi_source(categoria, max_items=3, lang=None, geo=None):
             added += 1
             if len(selected) >= max_items or (limit and added >= limit):
                 break
+
+    # Direct institutional pages give the pipeline the original announcement.
+    if geo == "PE":
+        add_candidates(extract_news_official_peru(categoria, max_items=max_items), limit=2)
+    else:
+        add_candidates(extract_news_official_world(categoria, max_items=max_items), limit=2)
 
     # Google Trends indica dónde se busca un tema, no dónde ocurrió el hecho.
     if categoria == "Tendencias":

@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 from src.research import alternative_source_pairs, event_search_queries, investigate_event, rank_event_candidates
 from bs4 import BeautifulSoup
-from src.crawler import _jsonld_article_body, investigate_news
+from src.crawler import _extract_text_sync, _jsonld_article_body, investigate_news
 from src import multimedia
 from src import extractor
 
@@ -27,6 +27,15 @@ class ResearchTests(unittest.TestCase):
         ]
         chosen = rank_event_candidates(pool, limit=2)
         self.assertEqual({item["url"] for item in chosen}, {pool[1]["url"], pool[2]["url"]})
+
+    def test_one_official_candidate_gets_an_investigation_slot(self):
+        pool = [
+            {"titulo": "MTC publica nuevo calendario de transporte", "url": "https://www.gob.pe/institucion/mtc/noticias/123", "fuente": "MTC", "origen": "official_peru"},
+            {"titulo": "FIFA anuncia nuevo calendario deportivo", "url": "https://a.example/news", "fuente": "A"},
+            {"titulo": "Nuevo calendario deportivo anunciado por FIFA", "url": "https://b.example/news", "fuente": "B"},
+        ]
+        chosen = rank_event_candidates(pool, limit=2)
+        self.assertIn(pool[0], chosen)
 
     def test_second_round_runs_when_first_pages_are_unreadable(self):
         story = {"titulo": "Perú presenta satélite de telecomunicaciones en Lima", "url": "https://first.example/a", "fuente": "Uno", "region": "Perú"}
@@ -102,6 +111,22 @@ class ResearchTests(unittest.TestCase):
         self.assertIn("Otro medio", sources[1]["_context"])
         browser.assert_called_once_with(stories[0]["url"])
 
+    def test_gob_pe_reader_uses_release_body_instead_of_date_only(self):
+        html = '<main><p>9 de octubre de 2026</p><div class="feed-content">' + (
+            'El ministerio publicó un calendario de actividades en Lima. ' * 12
+        ) + '</div></main>'
+        response = type("Response", (), {
+            "status_code": 200, "headers": {}, "encoding": "utf-8",
+            "content": html.encode("utf-8"), "text": html,
+            "raise_for_status": lambda self: None,
+        })()
+        with patch("src.crawler._public_url", return_value=True), patch(
+            "src.crawler._public_dns", return_value=True
+        ), patch("src.crawler.requests.get", return_value=response):
+            text, _, _, _ = _extract_text_sync("https://www.gob.pe/institucion/mtc/noticias/123")
+        self.assertIn("calendario de actividades", text)
+        self.assertGreater(len(text), 300)
+
     def test_licensed_event_image_is_preferred_to_generic_stock(self):
         event = {"url": "https://commons.wikimedia.org/event.jpg", "tipo": "Ilustración de archivo"}
         stock = {"url": "https://images.pexels.com/stock.jpg", "tipo": "Ilustración de archivo"}
@@ -112,6 +137,15 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(images, [event, stock])
         commons.assert_called_once()
         self.assertEqual(pexels.call_args.args[1], 1)
+
+    def test_one_matching_commons_image_does_not_need_stock_filler(self):
+        image = {"url": "https://commons.wikimedia.org/topic.jpg", "tipo": "Ilustración de archivo"}
+        with patch.object(multimedia, "PEXELS_API_KEY", "configured"), patch.object(
+            multimedia, "search_commons_images", return_value=[image]
+        ), patch.object(multimedia, "_search_pexels_licensed") as pexels:
+            found = multimedia.search_licensed_images("Tecnología en Lima", count=2, minimum=1)
+        self.assertEqual(found, [image])
+        pexels.assert_not_called()
 
     def test_health_stock_search_follows_subject_of_headline(self):
         category = "Salud, Bienestar y Estilo de Vida"

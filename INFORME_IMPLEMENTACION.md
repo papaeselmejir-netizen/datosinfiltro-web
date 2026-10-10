@@ -2,6 +2,8 @@
 
 Fecha: 4 de octubre de 2026.
 
+**Archivo histórico.** Este informe describe el estado del 4 de octubre. El flujo actual se documenta en [README.md](README.md): admite notas breves de una fuente primaria oficial, exige al menos una imagen con licencia y un video, consulta páginas institucionales por categoría y guarda un balance editorial diario.
+
 ## Estado
 
 El proyecto ya tiene un flujo local y programado que investiga noticias, redacta borradores, exige dos fuentes con texto extraído, dos imágenes con licencia y un video relacionado, y publica automáticamente los artículos que cumplen las reglas. La web resultante es estática y está configurada para Vercel.

@@ -107,6 +107,54 @@ def recent_category_counts(hours=24):
     return counts
 
 
+def save_daily_editorial_report(category_results, started_at, finished_at, directory, run_id):
+    """Merge scheduled runs into one auditable Peru-date report by category."""
+    os.makedirs(directory, exist_ok=True)
+    day = started_at[:10]
+    path = os.path.join(directory, f"{day}.json")
+    try:
+        with open(path, encoding="utf-8") as file:
+            previous = json.load(file)
+        runs = previous.get("runs", {}) if previous.get("date") == day else {}
+    except (OSError, ValueError, TypeError):
+        runs = {}
+    previous_publications = runs.get(str(run_id), {}).get("published", {})
+    runs[str(run_id)] = {
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "categories": category_results,
+        "published": previous_publications,
+    }
+    totals = {}
+    for category in CATEGORIAS_ACTIVAS:
+        investigated = drafts = published = peru = world = 0
+        reasons = Counter()
+        for run in runs.values():
+            result = run.get("categories", {}).get(category, {})
+            investigated += result.get("investigadas", 0)
+            drafts += result.get("borradores_verificados", 0)
+            published += run.get("published", {}).get(category, 0)
+            peru += result.get("candidatas_peru", 0)
+            world += result.get("candidatas_mundo", 0)
+            for regional in result.get("rechazos", {}).values():
+                reasons.update(regional)
+        blocker = reasons.most_common(1)[0][0] if reasons else (
+            "sin_investigacion" if not investigated else "sin_rechazos"
+        )
+        totals[category] = {
+            "investigadas": investigated, "borradores_verificados": drafts,
+            "publicadas": published,
+            "candidatas_peru": peru, "candidatas_mundo": world,
+            "rechazos": dict(sorted(reasons.items())), "bloqueo_principal": blocker,
+        }
+    report = {"date": day, "runs": runs, "categories": totals}
+    temporary = path + ".tmp"
+    with open(temporary, "w", encoding="utf-8") as file:
+        json.dump(report, file, ensure_ascii=False, indent=2)
+    os.replace(temporary, path)
+    return report
+
+
 async def process_single_news(noticia, categoria, distributor=None):
     """
     Procesa UNA sola noticia: investiga, redacta y distribuye.
@@ -155,13 +203,15 @@ async def process_single_news(noticia, categoria, distributor=None):
         if not recovered and not primary_announcement:
             return reject("cobertura_no_independiente", "    Las páginas no aportan corroboración independiente. Saltando.")
 
-    print("    [Multimedia] Buscando imágenes con licencia y un video relacionado...")
+    print("    [Multimedia] Buscando una imagen con licencia y un video relacionado...")
     images, video = await asyncio.gather(
-        asyncio.to_thread(search_licensed_images, titulo, 2, categoria),
+        asyncio.to_thread(search_licensed_images, titulo, 2, categoria, 1),
         asyncio.to_thread(search_relevant_video, titulo, categoria),
     )
-    if len(images) < 2 or not video:
-        return reject("multimedia_insuficiente", "    Multimedia insuficiente o no verificable. Saltando.")
+    if not images:
+        return reject("sin_imagen_con_licencia", "    No hay imagen pertinente con licencia verificable. Saltando.")
+    if not video:
+        return reject("sin_video_relacionado", "    No hay video relacionado o ilustrativo válido. Saltando.")
 
     # FASE 3: Redaccion con IA
     print(f"    [Redactando] Generando contenido multi-canal...")
@@ -178,19 +228,22 @@ async def process_single_news(noticia, categoria, distributor=None):
     def evidence_errors(draft):
         return claim_evidence_errors(" ".join(str(draft.get(field, "")) for field in ("titulo_articulo", "resumen", "articulo_web")), contexto)
 
+    def complete_text(draft):
+        return "\n".join(str(draft.get(field, "")) for field in ("titulo_articulo", "resumen", "articulo_web"))
+
     deterministic_errors = evidence_errors(content)
     if deterministic_errors:
         print("    " + "; ".join(deterministic_errors))
-    verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto)
+    verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, complete_text(content), contexto)
     if not verified:
         print("    La primera revisión detectó afirmaciones sin sustento; intentando una corrección.")
-        revision = await asyncio.to_thread(revise_article_against_sources, content, contexto)
+        revision = await asyncio.to_thread(revise_article_against_sources, content, contexto, primary_announcement)
         if revision and all(matches_story_aspect(titulo, revision.get(field, "")) for field in ("titulo_articulo", "resumen")):
             content.update(revision)
             deterministic_errors = evidence_errors(content)
             if deterministic_errors:
                 print("    " + "; ".join(deterministic_errors))
-            verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, content.get("articulo_web", ""), contexto)
+            verified = not deterministic_errors and await asyncio.to_thread(verify_article_against_sources, complete_text(content), contexto)
     if not verified:
         return reject("afirmaciones_sin_sustento", "    La revisión automática detectó afirmaciones no sustentadas. Saltando.")
     if primary_announcement and not await asyncio.to_thread(verify_primary_announcement, content, contexto):
@@ -327,11 +380,14 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
         
     if not noticias_peru and not noticias_mundial:
         PIPELINE_METRICS["sin_candidatas"] += 1
+        REJECTION_METRICS[(categoria, "General", "sin_candidatas")] += 1
         print(f"  No se encontraron noticias para '{categoria}'. Saltando.")
         return []
 
     PIPELINE_METRICS["candidatas_descubiertas_peru"] += len(noticias_peru)
     PIPELINE_METRICS["candidatas_descubiertas_mundo"] += len(noticias_mundial)
+    PIPELINE_METRICS["candidatas_oficiales_peru"] += sum(item.get("origen") == "official_peru" for item in noticias_peru)
+    PIPELINE_METRICS["candidatas_oficiales_mundo"] += sum(item.get("origen") == "official_world" for item in noticias_mundial)
 
     # Cargar historial para deduplicar
     history = load_history()
@@ -357,6 +413,7 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
 
     if not noticias_filtradas:
         PIPELINE_METRICS["ya_procesadas"] += 1
+        REJECTION_METRICS[(categoria, "General", "ya_procesadas")] += 1
         print(f"  Todas las noticias encontradas para '{categoria}' ya fueron procesadas antes. Saltando.")
         return []
 
@@ -382,6 +439,7 @@ async def process_category(categoria, distributor=None, max_noticias=3, max_draf
                 RUN_TITLES.extend(filter(None, (result.get("titulo_fuente"), result.get("titulo_articulo"))))
         except Exception as e:
             PIPELINE_METRICS["errores_procesamiento"] += 1
+            REJECTION_METRICS[(categoria, noticia.get("region", "General"), "errores_procesamiento")] += 1
             print(f"    ERROR procesando noticia: {e}")
             continue
 
@@ -476,11 +534,14 @@ async def main(topic=None):
             print(f"\n  ERROR procesando '{categoria}': {e}")
             resultados = []
             PIPELINE_METRICS["errores_categoria"] += 1
+            REJECTION_METRICS[(categoria, "General", "errores_categoria")] += 1
         category_results[categoria] = {
             "investigadas": PIPELINE_METRICS["candidatas_investigadas"] - before["candidatas_investigadas"],
             "borradores_verificados": len(resultados),
             "candidatas_peru": PIPELINE_METRICS["candidatas_descubiertas_peru"] - before["candidatas_descubiertas_peru"],
             "candidatas_mundo": PIPELINE_METRICS["candidatas_descubiertas_mundo"] - before["candidatas_descubiertas_mundo"],
+            "oficiales_peru": PIPELINE_METRICS["candidatas_oficiales_peru"] - before["candidatas_oficiales_peru"],
+            "oficiales_mundo": PIPELINE_METRICS["candidatas_oficiales_mundo"] - before["candidatas_oficiales_mundo"],
             "rechazos": {
                 region: {
                     reason: REJECTION_METRICS[(categoria, region, reason)] - before_rejections[(categoria, region, reason)]
@@ -490,6 +551,26 @@ async def main(topic=None):
                 for region in ("Perú", "Mundial", "General")
             },
         }
+
+    for categoria in CATEGORIAS_ACTIVAS:
+        category_results.setdefault(categoria, {
+            "investigadas": 0, "borradores_verificados": 0,
+            "candidatas_peru": 0, "candidatas_mundo": 0,
+            "oficiales_peru": 0, "oficiales_mundo": 0,
+            "rechazos": {"General": {"limite_de_ejecucion": 1}},
+        })
+
+    finished_at = datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds")
+    daily_report = None
+    daily_dir = os.getenv("PIPELINE_DAILY_REPORT_DIR")
+    if daily_dir:
+        try:
+            daily_report = save_daily_editorial_report(
+                category_results, started_at, finished_at, daily_dir,
+                os.getenv("GITHUB_RUN_ID", started_at) + "-" + os.getenv("GITHUB_RUN_ATTEMPT", "1"),
+            )
+        except OSError as exc:
+            print(f"    No se pudo guardar el balance diario: {type(exc).__name__}")
 
     # Resumen final
     total_articulos = sum(len(v) for v in todos_los_resultados.values())
@@ -521,13 +602,19 @@ async def main(topic=None):
                         for region, reasons in result["rechazos"].items():
                             if reasons:
                                 file.write(f"  - {region}: " + ", ".join(f"{reason} {count}" for reason, count in sorted(reasons.items())) + "\n")
+                    if daily_report:
+                        file.write("\n**Balance diario por categoría (hora de Perú)**\n\n")
+                        file.write("| Categoría | Investigadas | Borradores | Bloqueo principal |\n")
+                        file.write("| --- | ---: | ---: | --- |\n")
+                        for category, result in daily_report["categories"].items():
+                            file.write(f"| {category} | {result['investigadas']} | {result['borradores_verificados']} | {result['bloqueo_principal']} |\n")
             except OSError as exc:
                 print(f"    No se pudo escribir el resumen de GitHub: {type(exc).__name__}")
     report_file = os.getenv("PIPELINE_REPORT_FILE")
     if report_file:
         report = {
             "started_at": started_at,
-            "finished_at": datetime.now(ZoneInfo("America/Lima")).isoformat(timespec="seconds"),
+            "finished_at": finished_at,
             "categories": category_results,
             "metrics": dict(PIPELINE_METRICS),
             "total_drafts": total_articulos,

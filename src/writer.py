@@ -54,6 +54,7 @@ class SourceCoverageOutput(BaseModel):
 
 class PrimaryAnnouncementOutput(BaseModel):
     eligible: bool = Field(description="True únicamente para una nota atribuida a la acción o anuncio propio de la institución.")
+    claims_requiring_independent_source: list[str] = Field(description="Afirmaciones concretas que no puede acreditar el comunicado por sí solo.")
     reason: str = Field(description="Motivo concreto y breve de la decisión.")
 
 
@@ -73,6 +74,8 @@ def verify_primary_announcement(content, context):
                 "resultados electorales provisionales, eficacia o seguridad médica, "
                 "promesas de terceros, interpretaciones controvertidas, una versión disputada "
                 "o afirmaciones sobre el mundo que requieren confirmación fuera de la entidad. "
+                "Enumera cada afirmación que requiere verificación independiente en "
+                "claims_requiring_independent_source y marca eligible=false si la lista no está vacía. "
                 "Si parece un resumen promocional sin utilidad periodística, false. "
                 "No uses conocimiento externo; ante la duda, false.\n\n"
                 f"FUENTE:\n{context}\n\nTÍTULO:\n{content.get('titulo_articulo', '')}"
@@ -87,9 +90,11 @@ def verify_primary_announcement(content, context):
             ),
         )
         result = response.parsed or PrimaryAnnouncementOutput.model_validate_json(response.text)
-        if not result.eligible:
+        if not result.eligible or result.claims_requiring_independent_source:
             print(f"    Fuente primaria insuficiente: {result.reason[:180]}")
-        return bool(result.eligible)
+            for claim in result.claims_requiring_independent_source[:3]:
+                print(f"    Requiere otra fuente: {claim[:160]}")
+        return bool(result.eligible and not result.claims_requiring_independent_source)
     except Exception as exc:
         print(f"    No se pudo revisar fuente primaria: {type(exc).__name__}")
         return False
@@ -145,8 +150,13 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
         "- Hay UNA fuente primaria institucional. Redacta solo su propio anuncio o acción; "
         "atribúyelo a esa entidad en el título, resumen y cuerpo. No presentes datos "
         "declarados por ella como verificados de manera independiente. Si el anuncio no "
-        "permite un artículo informativo sin relleno, devuelve articulo_web vacío.\n    "
+        "permite una nota breve informativa sin relleno, devuelve articulo_web vacío.\n    "
         if primary_announcement else ""
+    )
+    length_rule = (
+        "La nota breve debe tener entre 100 y 220 palabras, solo si la fuente permite "
+        "esa extensión sin inventar datos." if primary_announcement else
+        "El artículo debe tener entre 270 y 360 palabras."
     )
 
     prompt = f"""
@@ -155,7 +165,7 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
 
     REGLAS ESTRICTAS:
     - NO INVENTES DATOS, citas, cifras, fechas ni declaraciones. Usa SOLO el contexto proporcionado.
-    - El artículo debe tener entre 270 y 360 palabras. Usa solo detalles que estén explícitos en las fuentes leídas.
+    - {length_rule} Usa solo detalles que estén explícitos en las fuentes leídas.
     - Si un detalle aparece en una sola fuente, atribúyelo a ese medio. Omite cifras secundarias que no puedas comprobar.
     - Si las fuentes discrepan, explica la discrepancia y no presentes el dato como confirmado.
     - No copies párrafos de las fuentes; aporta una síntesis propia. No agregues antecedentes externos ni datos para alargar el texto.
@@ -173,7 +183,7 @@ def generate_multi_channel_content(tema, contexto, categoria, web_url=None, regi
     INSTRUCCIONES POR CANAL:
     1. titulo_articulo: Un titulo periodistico atractivo y optimizado para SEO.
     2. resumen: Una oración que responda qué sucedió y por qué importa.
-    3. articulo_web: Párrafos cortos, dos o tres subtítulos útiles y límites de lo conocido. No añadas relleno.
+    3. articulo_web: Párrafos cortos, subtítulos solo si ayudan y límites de lo conocido. No añadas relleno.
     4. hilo_x: Hilo de 3-5 posts fieles a la noticia.
     5. post_facebook: Explica el hecho principal sin ocultar información para forzar clics.
     6. guion_tiktok: Guion de 45-60 segundos, informativo y sin dramatización artificial.
@@ -216,7 +226,8 @@ def verify_article_against_sources(article, context):
         response = client.models.generate_content(
             model=GEMINI_MODEL,
             contents=(
-                "Compara el artículo con el contexto de fuentes. Marca supported=false si hay "
+                "Compara el título, resumen y artículo con el contexto de fuentes. "
+                "Evalúa cada afirmación concreta por separado. Marca supported=false si hay "
                 "cualquier cifra, fecha, cargo, declaración, resultado o hecho concreto que no esté "
                 "respaldado explícitamente. Revisa de forma específica la temporalidad: si una fuente "
                 "dice que algo ocurrirá y el artículo afirma que ya ocurrió, supported=false. "
@@ -238,7 +249,7 @@ def verify_article_against_sources(article, context):
         return False
 
 
-def revise_article_against_sources(content, context):
+def revise_article_against_sources(content, context, primary_announcement=False):
     """One bounded repair pass; the revised text must pass verification again."""
     try:
         response = client.models.generate_content(
@@ -248,9 +259,14 @@ def revise_article_against_sources(content, context):
                 "explícitamente por FUENTES, incluidas cifras, fechas, citas y antecedentes. "
                 "Respeta el tiempo verbal: un acto futuro no puede redactarse como ya celebrado. "
                 "Si un dato consta en una sola fuente, atribúyelo. Comprueba las sumas. "
-                "Escribe 270 a 360 palabras con información concreta, sin relleno. "
+                + ("Escribe una nota breve de 100 a 220 palabras. Atribuye el anuncio a "
+                   "la institución en título, resumen y cuerpo. " if primary_announcement else
+                   "Escribe 270 a 360 palabras con información concreta, sin relleno. ") +
                 "Si no hay evidencia suficiente, deja articulo_web vacío. No uses conocimiento externo.\n\n"
-                f"FUENTES:\n{context}\n\nBORRADOR:\n{content.get('articulo_web', '')}"
+                f"FUENTES:\n{context}\n\nBORRADOR COMPLETO:\n"
+                f"Título: {content.get('titulo_articulo', '')}\n"
+                f"Resumen: {content.get('resumen', '')}\n"
+                f"Artículo: {content.get('articulo_web', '')}"
             ),
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",

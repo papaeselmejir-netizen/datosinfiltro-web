@@ -45,16 +45,8 @@ jobs:
           MAX_DRAFTS_PER_CATEGORY: '2'
           MAX_DRAFTS_PER_RUN: '16'
           PIPELINE_REPORT_FILE: research-report.json
+          PIPELINE_DAILY_REPORT_DIR: reports/daily
         run: python main.py
-
-      - name: Guardar diagnóstico de la investigación
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: investigacion-${{ github.run_id }}
-          path: research-report.json
-          if-no-files-found: ignore
-          retention-days: 14
 
       - name: Incorporar noticias publicadas mientras se investigaba
         run: |
@@ -66,13 +58,25 @@ jobs:
           SITE_URL: https://datosinfiltro-web.vercel.app
           CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
           ADSENSE_PUBLISHER_ID: ${{ vars.ADSENSE_PUBLISHER_ID }}
+          PIPELINE_DAILY_REPORT_DIR: reports/daily
         run: python publish_verified.py
+
+      - name: Guardar diagnóstico de la investigación
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: investigacion-${{ github.run_id }}
+          path: |
+            research-report.json
+            reports/daily/
+          if-no-files-found: ignore
+          retention-days: 14
         
       - name: Guardar artículos y sitio en GitHub
         run: |
           git config user.name '${{ github.actor }}'
           git config user.email '${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com'
-          git add -A -- drafts/ published/ website/public/
+          git add -A -- drafts/ published/ website/public/ reports/daily/
           if ! git diff --cached --quiet; then
             git commit -m "Publicar noticias verificadas"
             for attempt in 1 2 3; do

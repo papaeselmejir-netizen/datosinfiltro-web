@@ -478,11 +478,12 @@ def search_pexels_images(titulo, count=3):
         return []
 
 
-def search_licensed_images(titulo, count=2, categoria=None):
-    """Prefer attributable Commons photos; fill missing slots with stock images."""
+def search_licensed_images(titulo, count=2, categoria=None, minimum=None):
+    """Prefer Commons; use licensed stock only when the required minimum is missing."""
+    minimum = count if minimum is None else max(1, min(minimum, count))
     matches = search_commons_images(titulo, count)
-    if len(matches) < count:
-        stock = _search_pexels_licensed(titulo, count - len(matches), categoria) if PEXELS_API_KEY else []
+    if len(matches) < minimum:
+        stock = _search_pexels_licensed(titulo, minimum - len(matches), categoria) if PEXELS_API_KEY else []
         matches.extend(item for item in stock if item["url"] not in {match["url"] for match in matches})
     return matches[:count]
 

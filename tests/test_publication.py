@@ -47,15 +47,40 @@ class PublicationTests(unittest.TestCase):
     def setUp(self):
         # Existing tests exercise the old providers without making live RSS calls.
         self.real_specialist_search = extractor.extract_news_specialist_sources
+        self.real_official_peru = extractor.extract_news_official_peru
         specialist = patch.object(extractor, "extract_news_specialist_sources", return_value=[])
         specialist.start()
         self.addCleanup(specialist.stop)
+        for name in ("extract_news_official_peru", "extract_news_official_world"):
+            official = patch.object(extractor, name, return_value=[])
+            official.start()
+            self.addCleanup(official.stop)
 
     def test_category_source_registry_covers_peru_and_world(self):
         self.assertEqual(set(extractor.FUENTES_ESPECIALIZADAS), set(extractor.CATEGORIAS))
+        self.assertEqual(set(extractor.FUENTES_OFICIALES_PERU), set(extractor.CATEGORIAS))
         for sources in extractor.FUENTES_ESPECIALIZADAS.values():
             for region in ("PE", "WORLD"):
                 self.assertGreaterEqual(len(set(sources[region])), 3)
+
+    def test_official_peru_reader_extracts_dated_original_link(self):
+        html = '''<div class="card"><h3><a href="/institucion/mef/noticias/123-prueba">MEF publica calendario económico</a></h3>
+        <div>El ministerio presenta fechas para Lima.</div><time datetime="2026-10-09 10:00:00.000">9 de octubre de 2026</time></div>'''
+        response = SimpleNamespace(content=html.encode("utf-8"), raise_for_status=lambda: None)
+        with patch("src.extractor.requests.get", return_value=response):
+            found = self.real_official_peru("Finanzas, Negocios y Criptomonedas", max_items=1)
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0]["url"], "https://www.gob.pe/institucion/mef/noticias/123-prueba")
+        self.assertEqual(found[0]["fecha"], "2026-10-09 10:00:00.000")
+        self.assertEqual(found[0]["origen"], "official_peru")
+
+    def test_topic_specific_official_feed_can_classify_a_product_title(self):
+        item = {
+            "titulo": "Rockbeasts llegará en enero de 2027",
+            "url": "https://blog.playstation.com/2026/10/08/rockbeasts/",
+            "origen": "official_world",
+        }
+        self.assertTrue(extractor.matches_category(item, "Gaming y Esports"))
 
     def test_specialist_query_uses_category_sites_and_peru_location(self):
         with patch.object(extractor, "extract_custom_topic_google_rss", return_value=[]) as search:
@@ -405,6 +430,7 @@ class PublicationTests(unittest.TestCase):
 
     def test_single_source_exception_requires_an_actual_primary_domain_and_review(self):
         candidate = article()
+        candidate["articulo_web"] = "El MTC publicó el calendario oficial de transporte para Lima. " * 12
         candidate["fuentes"] = [{"url": "https://www.gob.pe/institucion/mtc/noticias/123", "medio": "MTC"}]
         self.assertTrue(official_primary_source(candidate["fuentes"][0]["url"]))
         self.assertIn("Se requieren dos fuentes verificadas", publication_errors(candidate))
@@ -414,6 +440,13 @@ class PublicationTests(unittest.TestCase):
             candidate["fuentes"][0]["url"] = url
             self.assertFalse(official_primary_source(url))
             self.assertIn("Se requieren dos fuentes verificadas", publication_errors(candidate))
+
+    def test_one_licensed_image_and_related_video_are_sufficient(self):
+        candidate = article()
+        candidate["imagenes"] = candidate["imagenes"][:1]
+        self.assertEqual(publication_errors(candidate), [])
+        candidate["imagenes"][0]["licencia"] = ""
+        self.assertIn("Se requiere una imagen pertinente con licencia registrada", publication_errors(candidate))
 
     def test_editorial_gate_accepts_licensed_stock_video(self):
         candidate = article()
@@ -562,7 +595,9 @@ class PublicationTests(unittest.TestCase):
             output = Path(temp) / "output" / "2026-10-03" / "Noticias"
             public = Path(temp) / "public"
             output.mkdir(parents=True)
-            output.joinpath("good.json").write_text(json.dumps(article()), encoding="utf-8")
+            good = article()
+            good["imagenes"] = good["imagenes"][:1]
+            output.joinpath("good.json").write_text(json.dumps(good), encoding="utf-8")
             legacy = article()
             legacy["schema_version"] = 1
             output.joinpath("legacy.json").write_text(json.dumps(legacy), encoding="utf-8")

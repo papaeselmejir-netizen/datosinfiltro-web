@@ -58,7 +58,11 @@ def rank_event_candidates(candidates, limit):
         return len(specific_first & specific_second) >= 2
 
     coverage = {item["url"]: sum(related(item, other) for other in ranked) for item in ranked}
-    return sorted(ranked, key=lambda item: coverage[item["url"]], reverse=True)[:limit]
+    selected = sorted(ranked, key=lambda item: coverage[item["url"]], reverse=True)[:limit]
+    official = next((item for item in ranked if item.get("origen") in {"official_peru", "official_world"}), None)
+    if official and selected and official not in selected:
+        selected[-1] = official
+    return selected
 
 
 def alternative_source_pairs(sources, max_pairs=4):

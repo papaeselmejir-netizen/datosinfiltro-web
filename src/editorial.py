@@ -389,13 +389,13 @@ def publication_errors(article):
     if len(source_hosts) < 2 and not primary_exception:
         errors.append("Se requieren dos fuentes verificadas")
     images = article.get("imagenes", [])
-    if len(images) < 2 or any(
+    if len(images) < 1 or any(
         not isinstance(item, dict)
         or not all(item.get(field) for field in ("url", "licencia", "licencia_url", "origen", "credito"))
         or not all(https_url(item.get(field)) for field in ("url", "licencia_url", "origen"))
         for item in images[:2]
     ):
-        errors.append("Se requieren dos imágenes con licencia registrada")
+        errors.append("Se requiere una imagen pertinente con licencia registrada")
     if not valid_video(article):
         errors.append("Se requiere un video relacionado con origen verificable")
     headline_places = place_terms(article.get("titulo_articulo"))
@@ -465,8 +465,11 @@ def publication_errors(article):
             errors.append("El video de archivo no representa el encuentro empresarial")
     if contradictory_candidate_count(article.get("articulo_web")):
         errors.append("Los subtotales de candidatos no coinciden con el total")
-    if len((article.get("articulo_web") or "").split()) < 250:
+    word_count = len((article.get("articulo_web") or "").split())
+    if word_count < (100 if primary_exception else 250):
         errors.append("El artículo es demasiado breve")
+    if primary_exception and word_count > 220:
+        errors.append("La nota de fuente única supera la extensión permitida")
     if (article.get("titulo_articulo") or "").lower().startswith("error"):
         errors.append("Título de error")
     return errors
